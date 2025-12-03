@@ -8,6 +8,7 @@ import 'package:kiddo/router/app_pages.dart';
 import 'package:kiddo/router/app_router.dart';
 import 'package:kiddo/student_repo/home_repo.dart';
 import 'package:kiddo/student_repo/login_repo.dart';
+import 'package:kiddo/teacher_repo/teacher_class_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 
@@ -138,7 +139,9 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                         if (loged == true) {
                           // StudentHomeModel? infoModel =
                           //     await CustomerRepo().getHomeInfo();
-                          listClass = await LoginRepo().getListClass();
+
+                          listTeacherClass =
+                              await TeacherClassRepo().getTeacherClass();
                           listCategory = await HomeRepo().getCategories();
                           AppRouter.toPage(
                             context,
