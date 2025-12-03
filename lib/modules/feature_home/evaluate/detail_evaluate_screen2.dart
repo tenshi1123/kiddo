@@ -1,0 +1,278 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
+import 'package:kiddo/modules/notification/notification.dart';
+import 'package:kiddo/student_models/diem_danh_model.dart';
+import 'package:kiddo/student_models/review_models.dart';
+import 'package:kiddo/student_repo/extension_repo.dart';
+import 'package:kiddo/utils/constants/color.dart';
+import 'package:kiddo/utils/constants/styles.dart';
+
+class DetailEvaluateScreen extends StatefulWidget {
+  const DetailEvaluateScreen({
+    super.key,
+    required this.model,
+  });
+  final ClassModel model;
+  @override
+  State<DetailEvaluateScreen> createState() => _DetailEvaluateScreenState();
+}
+
+class _DetailEvaluateScreenState extends State<DetailEvaluateScreen> {
+  bool isLoading = true;
+  late ListFeedBackModel listLichHoc;
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      final data = await ExtensionRepo()
+          .getListFeedback(id: widget.model.customerCourseScheduleId);
+      setState(() {
+        listLichHoc = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      debugPrint('Error fetching data: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: mainOrange,
+        appBar: AppBar(
+          backgroundColor: mainOrange,
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            'Theo dõi đánh giá',
+            style: defaultText16B.copyWith(color: Colors.white),
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
+            ),
+          ),
+          actions: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NotificationScreen(),
+                  ),
+                );
+              },
+              child: SvgPicture.asset(
+                'assets/icons/bell.svg',
+                width: 20.w,
+                height: 20.h,
+                colorFilter: ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+            SizedBox(width: 16.w),
+          ],
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(26.r),
+              topRight: Radius.circular(26.r),
+            ),
+          ),
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 12.h),
+                padding: EdgeInsets.all(12.w),
+                child: Row(
+                  children: [
+                    Image.asset(
+                      'assets/images/computer.png',
+                      width: 40.w,
+                      height: 40.h,
+                    ),
+                    SizedBox(width: 12.w),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.model.courseName,
+                          style: defaultText14SB.copyWith(fontSize: 16.sp),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          widget.model.settingCourseTypeName,
+                          style: defaultText14Re,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: LessonHistoryBody(
+                  model: listLichHoc,
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+class LessonHistoryBody extends StatefulWidget {
+  const LessonHistoryBody({super.key, required this.model});
+  final ListFeedBackModel model;
+  @override
+  State<LessonHistoryBody> createState() => _LessonHistoryBodyState();
+}
+
+class _LessonHistoryBodyState extends State<LessonHistoryBody> {
+  int selectedTab = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = selectedTab == 0
+        ? widget.model.listFbDinhKy.where((item) => item.type == "gk").toList()
+        : widget.model.listFbDinhKy.where((item) => item.type == "ck").toList();
+
+    return Column(
+      children: [
+        // --- Thanh chọn ---
+        Container(
+          margin: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: Color(0xffF2E8E8),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => selectedTab = 0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color:
+                          selectedTab == 0 ? Colors.white : Colors.transparent,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Giữa Kỳ",
+                          style: defaultText14M.copyWith(
+                            color: selectedTab == 0
+                                ? colorText
+                                : colorText.withValues(alpha: 0.8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => setState(() => selectedTab = 1),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color:
+                          selectedTab == 1 ? Colors.white : Colors.transparent,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Cuối kỳ",
+                          style: defaultText14M.copyWith(
+                            color: selectedTab == 0
+                                ? colorText
+                                : colorText.withValues(alpha: 0.8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filtered.length,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            itemBuilder: (context, index) {
+              final lesson = filtered[index];
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${lesson.name} ${DateFormat('dd/MM//yyyy').format(lesson.createAt)}',
+                      style: defaultText16B,
+                    ),
+                    SizedBox(height: 16.h),
+                    Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12.w, vertical: 8.h),
+                        decoration: BoxDecoration(
+                          color: Color(0xffF6F6F6),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Html(data: lesson.content)
+                        // Text(
+                        //   ,
+                        //   style: defaultText14M.copyWith(
+                        //     color: colorText.withValues(alpha: 0.6),
+                        //   ),
+                        // ),
+                        ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}

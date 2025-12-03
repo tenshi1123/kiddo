@@ -1,0 +1,126 @@
+{
+  "project_info": {
+    "project_number": "494212956489",
+    "project_id": "teak-mantis-438812-k2",
+    "storage_bucket": "teak-mantis-438812-k2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494212956489:android:3d1c5f1cfbdd35a1edda98",
+        "android_client_info": {
+          "package_name": "com.english.kiddo.kiddoEnglish.kiddo_hub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "494212956489-j1flsu97ik944heotmql5ffs05lg8v01.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZcoMpIA2tpq1NS0JU5RR02HuwHPAHXxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "494212956489-j1flsu97ik944heotmql5ffs05lg8v01.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494212956489:android:3589e645f8978cd1edda98",
+        "android_client_info": {
+          "package_name": "com.english.pmp.pmp_english"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "494212956489-j1flsu97ik944heotmql5ffs05lg8v01.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZcoMpIA2tpq1NS0JU5RR02HuwHPAHXxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "494212956489-j1flsu97ik944heotmql5ffs05lg8v01.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494212956489:android:2fcad13a7e4cf25aedda98",
+        "android_client_info": {
+          "package_name": "edu.hvg.ha_duong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "494212956489-j1flsu97ik944heotmql5ffs05lg8v01.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZcoMpIA2tpq1NS0JU5RR02HuwHPAHXxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "494212956489-j1flsu97ik944heotmql5ffs05lg8v01.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:494212956489:android:d646b66c913166c5edda98",
+        "android_client_info": {
+          "package_name": "vn.com.ha_duong_bql"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "494212956489-j1flsu97ik944heotmql5ffs05lg8v01.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZcoMpIA2tpq1NS0JU5RR02HuwHPAHXxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "494212956489-j1flsu97ik944heotmql5ffs05lg8v01.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
