@@ -130,6 +130,86 @@ class TeacherClassRepo {
     return result;
   }
 
+  Future<String> changeDiemdanh({
+    required String typeTeacher,
+    required String checkinOffId,
+    required String status,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    String toStatusCode(String name) {
+      const status = [
+        "Vắng mặt", // 0
+        "Xin nghỉ", // 1
+        "Đi muộn", // 2
+        "Đúng giờ", // 3
+      ];
+      final index = status.indexOf(name);
+      if (index == -1) return "-1"; // hoặc "Không xác định"
+      return index.toString();
+    }
+
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    try {
+      Response response;
+      response = await dio.post(
+        ApiPathTeacher.updateTT,
+        data: FormData.fromMap(
+          {
+            'type_teacher': typeTeacher,
+            'checkin_off_id': checkinOffId,
+            'status': toStatusCode(status),
+          },
+        ),
+      );
+      if (response.data['status'] == 'error') {
+        return "Cập nhật thất bại";
+      } else if (response.data['status'] == 'success') {
+        return "Cập nhật thành công";
+      } else if (response.data['status'] == 'warning') {
+        return "Cập nhật thất bại";
+      }
+      return "Đã có lỗi xảy ra, vui lòng thử lại sau";
+    } catch (e) {
+      return "Cập nhật thất bại";
+    }
+  }
+
+  Future<String> changePhuDao({
+    required String id,
+    required String status,
+    required String type,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    try {
+      Response response;
+      response = await dio.post(
+        type == 'phudao'
+            ? ApiPathTeacher.updatePhuDao
+            : ApiPathTeacher.updateXepBu,
+        data: FormData.fromMap(
+          {
+            'status': status,
+            'id': id,
+          },
+        ),
+      );
+      if (response.data['status'] == 'error') {
+        return "Cập nhật thất bại";
+      } else if (response.data['status'] == 'success') {
+        return "Cập nhật thành công";
+      } else if (response.data['status'] == 'warning') {
+        return "Cập nhật thất bại";
+      }
+      return "Đã có lỗi xảy ra, vui lòng thử lại sau";
+    } catch (e) {
+      return "Cập nhật thất bại";
+    }
+  }
+
   Future<List<ValueAttitudeModel>> getListThaiDo({
     required String typeTeacher,
     required String buoiHocId,
@@ -180,13 +260,54 @@ class TeacherClassRepo {
         );
 
         return value.copyWith(
-          violationErrorId: violationInfo.id,
-          violationErrorName: violationInfo.name,
-        );
+            violationErrorId: violationInfo.id,
+            violationErrorName: violationInfo.name,
+            listError: violationErrors);
       }).toList();
     }
 
     return valueList.isNotEmpty ? attachViolationToValue() : [];
+  }
+
+  Future<String> changeThaiDo({
+    required String typeTeacher,
+    required String buoiHocId,
+    required String customerId,
+    required String violationErrorId,
+    required String content,
+    required int type,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    try {
+      Response response;
+      response = await dio.post(
+        type == 1
+            ? ApiPathTeacher.updateAttitude
+            : ApiPathTeacher.updateSituation,
+        data: FormData.fromMap(
+          {
+            'type_teacher': typeTeacher,
+            'buoi_hoc_id': buoiHocId,
+            'customer_id': customerId,
+            'violation_error_id': violationErrorId,
+            'content': content,
+          },
+        ),
+      );
+      if (response.data['status'] == 'error') {
+        return "Cập nhật thất bại";
+      } else if (response.data['status'] == 'success') {
+        return "Cập nhật thành công";
+      } else if (response.data['status'] == 'warning') {
+        return "Cập nhật thất bại";
+      }
+      return "Đã có lỗi xảy ra, vui lòng thử lại sau";
+    } catch (e) {
+      return "Cập nhật thất bại";
+    }
   }
 
   Future<List<FeedbackTermModel>> getListNhanXet({

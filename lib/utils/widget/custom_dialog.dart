@@ -743,3 +743,67 @@ void appointmentInfo(BuildContext context, String title) {
     },
   );
 }
+
+Future<bool?> showConfirmDialog({
+  required BuildContext context,
+  String title = "Xác nhận",
+  required String content,
+  String confirmText = "Có",
+  String cancelText = "Không",
+}) {
+  return showDialog<bool>(
+    context: context,
+    barrierDismissible: false, // Không cho tắt khi bấm ra ngoài
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                content,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Nút không
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(
+                      cancelText,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+
+                  // Nút có
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(
+                      confirmText,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}

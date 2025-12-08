@@ -36,11 +36,13 @@ class ValueAttitudeModel {
   final String fullName;
   final String customerId;
   final String buoiHocId;
-  final String content;
+  String content;
 
   /// thêm 2 field mới
-  final String? violationErrorId;
+  String? violationErrorId;
   final String? violationErrorName;
+
+  List<ViolationError>? listError = [];
 
   ValueAttitudeModel({
     required this.fullName,
@@ -49,6 +51,7 @@ class ValueAttitudeModel {
     required this.content,
     this.violationErrorId,
     this.violationErrorName,
+    this.listError,
   });
 
   factory ValueAttitudeModel.fromJson(Map<String, dynamic> json) {
@@ -57,6 +60,7 @@ class ValueAttitudeModel {
       customerId: json['customer_id'] ?? '',
       buoiHocId: json['buoi_hoc_id'] ?? '',
       content: json['content'] ?? 'Chưa có nhận xét',
+      listError: [],
     );
   }
 
@@ -64,6 +68,7 @@ class ValueAttitudeModel {
   ValueAttitudeModel copyWith({
     String? violationErrorId,
     String? violationErrorName,
+    List<ViolationError>? listError,
   }) {
     return ValueAttitudeModel(
       fullName: fullName,
@@ -72,6 +77,7 @@ class ValueAttitudeModel {
       content: content,
       violationErrorId: violationErrorId ?? this.violationErrorId,
       violationErrorName: violationErrorName ?? this.violationErrorName,
+      listError: listError ?? this.listError,
     );
   }
 }

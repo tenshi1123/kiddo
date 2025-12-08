@@ -8,6 +8,7 @@ import 'package:kiddo/teacher_modules/teacher_bottombar/screen/list_class/detail
 import 'package:kiddo/teacher_repo/teacher_class_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/widget/custom_dialog.dart';
 
 class ListTeacherClassScreen extends StatefulWidget {
   const ListTeacherClassScreen({super.key});
@@ -131,15 +132,57 @@ class _ListTeacherClassScreenState extends State<ListTeacherClassScreen> {
                       borderRadius: BorderRadius.circular(16.r),
                       color: Colors.white,
                     ),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      //physics: const NeverScrollableScrollPhysics(),
-                      itemCount: phuDaoClasses.length,
-                      itemBuilder: (context, index) {
-                        return AttendanceDetailCard(
-                          model: phuDaoClasses[index],
-                        );
-                      },
+                    child: Column(
+                      children: [
+                        // Padding(
+                        //   padding: EdgeInsetsGeometry.only(
+                        //     right: 16.w,
+                        //     left: 16.w,
+                        //   ),
+                        //   child: SizedBox(
+                        //     width: double.infinity,
+                        //     height: 50.h,
+                        //     child: ElevatedButton(
+                        //       style: ElevatedButton.styleFrom(
+                        //         backgroundColor: mainOrange,
+                        //         shape: RoundedRectangleBorder(
+                        //           borderRadius: BorderRadius.circular(12),
+                        //         ),
+                        //       ),
+                        //       onPressed: () async {
+                        //         bool? result = await showConfirmDialog(
+                        //           context: context,
+                        //           content:
+                        //               "Bạn chắc chắn muốn cập nhật trạng thái điểm danh",
+                        //         );
+                        //         if (result == true) {
+                        //           print("User chọn: Có");
+                        //         } else {
+                        //           print("User chọn: Không");
+                        //         }
+                        //         //showSuccessDialog(context);
+                        //       },
+                        //       child: Text('Cập nhật',
+                        //           style: defaultText18B.copyWith(
+                        //               color: Colors.white)),
+                        //     ),
+                        //   ),
+                        // ),
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            //physics: const NeverScrollableScrollPhysics(),
+                            itemCount: phuDaoClasses.length,
+                            itemBuilder: (context, index) {
+                              return AttendanceDetailCard(
+                                model: phuDaoClasses[index],
+                                stt: '${index + 1}',
+                                type: 'phudao',
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 )
@@ -158,6 +201,8 @@ class _ListTeacherClassScreenState extends State<ListTeacherClassScreen> {
                           itemBuilder: (context, index) {
                             return AttendanceDetailCard(
                               model: xepBuClasses[index],
+                              stt: '${index + 1}',
+                              type: 'xepbu',
                             );
                           },
                         ),
@@ -273,8 +318,11 @@ class _ListTeacherClassScreenState extends State<ListTeacherClassScreen> {
 }
 
 class AttendanceDetailCard extends StatefulWidget {
-  const AttendanceDetailCard({super.key, required this.model});
+  const AttendanceDetailCard(
+      {super.key, required this.model, required this.stt, required this.type});
   final PhuDaoClassModel model;
+  final String stt;
+  final String type;
   @override
   State<AttendanceDetailCard> createState() => _AttendanceDetailCardState();
 }
@@ -288,6 +336,7 @@ class _AttendanceDetailCardState extends State<AttendanceDetailCard> {
     'Đi muộn': false,
     'Đúng giờ': false,
   };
+  final ValueNotifier<bool> isChange = ValueNotifier<bool>(false);
   @override
   void initState() {
     attendanceStatus = {
@@ -302,14 +351,35 @@ class _AttendanceDetailCardState extends State<AttendanceDetailCard> {
 
   // Hàm xử lý khi trạng thái checkbox thay đổi
   void _onStatusChanged(String key, bool? newValue) {
-    setState(() {
-      // Logic: Chỉ cho phép chọn MỘT trạng thái tại một thời điểm (radio-like behavior)
-      attendanceStatus.forEach((status, isChecked) {
-        attendanceStatus[status] = false;
+    bool newVal = newValue ?? false;
+    // Kiểm tra xem giá trị hiện tại đã khác với giá trị mới chưa
+
+    String toStatusCode(String name) {
+      const status = [
+        'Chưa tham dự',
+        'Vắng mặt',
+        'Xin nghỉ',
+        'Đi muộn',
+        'Đúng giờ',
+      ];
+      final index = status.indexOf(name);
+      if (index == -1) return "-1"; // hoặc "Không xác định"
+      return index.toString();
+    }
+
+    if (attendanceStatus[key] != newVal) {
+      setState(() {
+        // Chỉ reset nếu có thay đổi
+        attendanceStatus.forEach((status, _) {
+          attendanceStatus[status] = false;
+        });
+        attendanceStatus[key] = newVal;
+
+        // Chỉ set true khi có thay đổi
+        isChange.value = true;
+        widget.model.status = toStatusCode(key);
       });
-      // Đặt trạng thái mới
-      attendanceStatus[key] = newValue ?? false;
-    });
+    }
   }
 
   @override
@@ -330,7 +400,7 @@ class _AttendanceDetailCardState extends State<AttendanceDetailCard> {
             mainAxisSize: MainAxisSize.min,
             children: [
               // === PHẦN 1: THÔNG TIN HỌC VIÊN ===
-              _buildStudentInfoRow("STT", widget.model.id, isHeader: true),
+              _buildStudentInfoRow("STT", widget.stt, isHeader: true),
               _buildStudentInfoRow(
                 "Họ tên:",
                 widget.model.customerName,
@@ -454,11 +524,83 @@ class _AttendanceDetailCardState extends State<AttendanceDetailCard> {
             const Spacer(flex: 1),
           ],
         ),
+        ValueListenableBuilder<bool>(
+          builder: (BuildContext context, bool value, Widget? child) {
+            return child!;
+          },
+          valueListenable: isChange,
+          child: isChange.value
+              ? Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: mainOrange,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () async {
+                      bool? result = await showConfirmDialog(
+                        context: context,
+                        content:
+                            "Bạn chắc chắn muốn cập nhật trạng thái điểm danh",
+                      );
+                      if (result == true) {
+                        try {
+                          await TeacherClassRepo().changePhuDao(
+                              id: widget.model.id,
+                              status: widget.model.status,
+                              type: widget.type);
+                          // ✔ Gọi xong toàn bộ, hiện dialog thành công
+                          if (context.mounted) {
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text("Thành công"),
+                                content: const Text(
+                                    "Đã cập nhật điểm danh cho tất cả học sinh."),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("OK"),
+                                  )
+                                ],
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          // ❌ Nếu có lỗi, show dialog lỗi
+                          if (context.mounted) {
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: const Text("Lỗi"),
+                                content: Text("Có lỗi xảy ra: $e"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("Đóng"),
+                                  )
+                                ],
+                              ),
+                            );
+                          }
+                        }
+                      } else {
+                        print("User chọn: Không");
+                      }
+                      //showSuccessDialog(context);
+                    },
+                    child: Text('Cập nhật',
+                        style: defaultText18B.copyWith(color: Colors.white)),
+                  ),
+                )
+              : SizedBox(),
+        ),
       ],
     );
   }
 
-  // Widget cho một ô kiểm tra (Checkbox)
   Widget _buildCheckboxItem(String label) {
     return Expanded(
       flex: 1,

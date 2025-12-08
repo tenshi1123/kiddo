@@ -31,7 +31,7 @@ class PhuDaoClassModel {
   final String address;
   final String zoomLink;
   final String typeLearn;
-  final String status;
+  String status;
   final String createdAt;
   PhuDaoClassModel({
     required this.id,

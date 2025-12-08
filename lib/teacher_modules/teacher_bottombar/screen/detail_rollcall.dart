@@ -8,6 +8,7 @@ import 'package:kiddo/teacher_model/teacher_class_model.dart';
 import 'package:kiddo/teacher_repo/teacher_class_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/widget/custom_dialog.dart';
 
 class DetailRollCallScreen extends StatefulWidget {
   const DetailRollCallScreen({
@@ -30,7 +31,12 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
   late List<DiemDanhModel> listDiemDanh = [];
   List<ValueAttitudeModel> listAttitude = [];
   List<ValueAttitudeModel> listSituation = [];
-  final List<String> statusList = ['Đúng giờ', 'Xin nghỉ', 'Vắng mặt'];
+  final List<String> statusList = [
+    "Vắng mặt",
+    "Xin nghỉ",
+    "Đi muộn",
+    "Đúng giờ",
+  ];
   Color _statusColor(String status) {
     switch (status) {
       case 'Đúng giờ':
@@ -39,6 +45,8 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
         return mainBlue;
       case 'Vắng mặt':
         return mainRed;
+      case 'Đi muộn':
+        return mainYellow;
       default:
         return Color(0xffEFEFEF);
     }
@@ -126,7 +134,9 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
             // Tabs
             CustomTabs(
               onChanged: (index) {
-                setState(() => selectedTab = index);
+                setState(() {
+                  selectedTab = index;
+                });
               },
             ),
             isLoading
@@ -233,7 +243,6 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                       padding: EdgeInsets.all(12.dg),
                                       child: Row(
                                         children: [
-                                          // Avatar
                                           Container(
                                               width: 40.w,
                                               height: 40.h,
@@ -245,8 +254,6 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                               child: Image.asset(
                                                   'assets/images/study.png')),
                                           SizedBox(width: 12.w),
-
-                                          // Tên + thời gian
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment:
@@ -263,8 +270,6 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                               ],
                                             ),
                                           ),
-
-                                          // Dropdown trạng thái
                                           Container(
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 8.w),
@@ -321,8 +326,6 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                                       );
                                                     }),
                                                   ],
-
-                                                  // 👇 phần hiển thị sau khi chọn (màu trắng)
                                                   selectedItemBuilder:
                                                       (BuildContext context) {
                                                     final allItems = [
@@ -370,8 +373,64 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
-                                  onPressed: () {
-                                    showSuccessDialog(context);
+                                  onPressed: () async {
+                                    bool? result = await showConfirmDialog(
+                                      context: context,
+                                      content:
+                                          "Bạn chắc chắn muốn cập nhật trạng thái điểm danh",
+                                    );
+                                    if (result == true) {
+                                      for (final student in listDiemDanh) {
+                                        try {
+                                          await TeacherClassRepo()
+                                              .changeDiemdanh(
+                                            typeTeacher: student.typeTeacher,
+                                            checkinOffId: student.checkinOffId,
+                                            status: student.status,
+                                          );
+                                          // ✔ Gọi xong toàn bộ, hiện dialog thành công
+                                          if (context.mounted) {
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) => AlertDialog(
+                                                title: const Text("Thành công"),
+                                                content: const Text(
+                                                    "Đã cập nhật điểm danh cho tất cả học sinh."),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    child: const Text("OK"),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        } catch (e) {
+                                          // ❌ Nếu có lỗi, show dialog lỗi
+                                          if (context.mounted) {
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) => AlertDialog(
+                                                title: const Text("Lỗi"),
+                                                content:
+                                                    Text("Có lỗi xảy ra: $e"),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    child: const Text("Đóng"),
+                                                  )
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      }
+                                    } else {
+                                      print("User chọn: Không");
+                                    }
+                                    //showSuccessDialog(context);
                                   },
                                   child: Text('Cập nhật',
                                       style: defaultText18B.copyWith(
@@ -390,6 +449,8 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                     itemBuilder: (context, index) {
                                       return StudentCard(
                                         model: listAttitude[index],
+                                        key: ValueKey(
+                                            "attitude_${listAttitude[index].customerId}"),
                                       );
                                     },
                                   ),
@@ -409,8 +470,72 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                               BorderRadius.circular(12),
                                         ),
                                       ),
-                                      onPressed: () {
-                                        showSuccessDialog(context);
+                                      onPressed: () async {
+                                        bool? result = await showConfirmDialog(
+                                          context: context,
+                                          content:
+                                              "Bạn chắc chắn muốn cập nhật trạng thái điểm danh",
+                                        );
+                                        if (result == true) {
+                                          for (final student in listAttitude) {
+                                            try {
+                                              await TeacherClassRepo()
+                                                  .changeThaiDo(
+                                                typeTeacher: widget.typeTeacher,
+                                                buoiHocId: student.buoiHocId,
+                                                customerId: student.customerId,
+                                                violationErrorId:
+                                                    student.violationErrorId ??
+                                                        '',
+                                                content: student.content,
+                                                type: 1,
+                                              );
+                                              // ✔ Gọi xong toàn bộ, hiện dialog thành công
+                                              if (context.mounted) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                    title: const Text(
+                                                        "Thành công"),
+                                                    content: const Text(
+                                                        "Đã cập nhật điểm danh cho tất cả học sinh."),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child: const Text("OK"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                            } catch (e) {
+                                              // ❌ Nếu có lỗi, show dialog lỗi
+                                              if (context.mounted) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                    title: const Text("Lỗi"),
+                                                    content: Text(
+                                                        "Có lỗi xảy ra: $e"),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child:
+                                                            const Text("Đóng"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          print("User chọn: Không");
+                                        }
                                       },
                                       child: Text(
                                         'Cập nhật',
@@ -430,6 +555,8 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                     itemBuilder: (context, index) {
                                       return StudentCard(
                                         model: listSituation[index],
+                                        key: ValueKey(
+                                            "situation_${listSituation[index].customerId}"),
                                       );
                                     },
                                   ),
@@ -449,8 +576,72 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                               BorderRadius.circular(12),
                                         ),
                                       ),
-                                      onPressed: () {
-                                        showSuccessDialog(context);
+                                      onPressed: () async {
+                                        bool? result = await showConfirmDialog(
+                                          context: context,
+                                          content:
+                                              "Bạn chắc chắn muốn cập nhật trạng thái điểm danh",
+                                        );
+                                        if (result == true) {
+                                          for (final student in listSituation) {
+                                            try {
+                                              await TeacherClassRepo()
+                                                  .changeThaiDo(
+                                                typeTeacher: widget.typeTeacher,
+                                                buoiHocId: student.buoiHocId,
+                                                customerId: student.customerId,
+                                                violationErrorId:
+                                                    student.violationErrorId ??
+                                                        '',
+                                                content: student.content,
+                                                type: 2,
+                                              );
+                                              // ✔ Gọi xong toàn bộ, hiện dialog thành công
+                                              if (context.mounted) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                    title: const Text(
+                                                        "Thành công"),
+                                                    content: const Text(
+                                                        "Đã cập nhật điểm danh cho tất cả học sinh."),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child: const Text("OK"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                            } catch (e) {
+                                              // ❌ Nếu có lỗi, show dialog lỗi
+                                              if (context.mounted) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => AlertDialog(
+                                                    title: const Text("Lỗi"),
+                                                    content: Text(
+                                                        "Có lỗi xảy ra: $e"),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child:
+                                                            const Text("Đóng"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          print("User chọn: Không");
+                                        }
                                       },
                                       child: Text(
                                         'Cập nhật',
@@ -546,28 +737,21 @@ class StudentCard extends StatefulWidget {
 }
 
 class _StudentCardState extends State<StudentCard> {
-  String selectedStatus = 'Không tương tác';
-
-  final List<String> statuses = [
-    'Không tương tác',
-    'Làm việc riêng',
-    'Chăm chỉ',
-  ];
-  Color _statusColor(String status) {
-    switch (status) {
-      case 'Không tương tác':
-        return mainYellow;
-      case 'Làm việc riêng':
-        return mainOrange;
-      case 'Chăm chỉ':
-        return mainGreen;
-      default:
-        return Color(0xffEFEFEF);
-    }
+  String? selectedStatus;
+  @override
+  void initState() {
+    super.initState();
+    selectedStatus = widget.model.violationErrorId?.toString();
   }
 
   @override
   Widget build(BuildContext context) {
+    final ids = widget.model.listError!.map((e) => e.id.toString()).toList();
+
+    // Nếu selectedStatus không nằm trong list → bỏ để tránh crash
+    if (selectedStatus != null && !ids.contains(selectedStatus)) {
+      selectedStatus = null;
+    }
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
@@ -612,18 +796,10 @@ class _StudentCardState extends State<StudentCard> {
                     ),
                   ),
                   SizedBox(height: 4.h),
-                  // Text(
-                  //   widget.model.createdAt,
-                  //   style: TextStyle(
-                  //     fontSize: 12.sp,
-                  //     color: Colors.grey,
-                  //   ),
-                  // ),
                 ],
               ),
             ],
           ),
-
           SizedBox(height: 12.h),
 
           /// Dropdown trạng thái
@@ -632,50 +808,44 @@ class _StudentCardState extends State<StudentCard> {
             height: 40.h,
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             decoration: BoxDecoration(
-              color: _statusColor(selectedStatus),
+              color: mainOrange,
               borderRadius: BorderRadius.circular(10.r),
             ),
             child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                value: selectedStatus,
-                icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                isExpanded: true,
-                dropdownColor: Colors.white,
-                style: defaultText12M.copyWith(color: Colors.black),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      selectedStatus = value;
-                    });
-                  }
-                },
-                items: statuses.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
+                child: DropdownButton<String>(
+              value: selectedStatus,
+              onChanged: (value) {
+                setState(() {
+                  selectedStatus = value;
+                  widget.model.violationErrorId = value;
+                });
+              },
+              dropdownColor: Colors.white,
+              icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+              items: widget.model.listError!.map((ViolationError item) {
+                return DropdownMenuItem<String>(
+                  value: item.id.toString(),
+                  child: Text(
+                    item.name,
+                    style: defaultText12M.copyWith(color: Colors.black),
+                  ),
+                );
+              }).toList(),
+              selectedItemBuilder: (context) {
+                return widget.model.listError!.map((e) {
+                  return Align(
+                    alignment: Alignment.centerLeft,
                     child: Text(
-                      value,
-                      style: defaultText12M.copyWith(color: Colors.black),
+                      e.name,
+                      style: defaultText12M.copyWith(color: Colors.white),
                     ),
                   );
-                }).toList(),
-                selectedItemBuilder: (BuildContext context) {
-                  return statuses.map((String value) {
-                    return Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        value,
-                        style: defaultText12M.copyWith(color: Colors.white),
-                      ),
-                    );
-                  }).toList();
-                },
-              ),
-            ),
+                }).toList();
+              },
+            )),
           ),
-
           SizedBox(height: 12.h),
 
-          /// Nội dung ghi chú
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(12.w),
@@ -683,14 +853,28 @@ class _StudentCardState extends State<StudentCard> {
               color: const Color(0xffF6F6F6),
               borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Text(
-              widget.model.content,
+            child: TextField(
+              controller: TextEditingController(text: widget.model.content)
+                ..selection = TextSelection.fromPosition(
+                  TextPosition(offset: widget.model.content.length),
+                ),
+              maxLines: null,
               style: TextStyle(
                 fontSize: 13.sp,
                 color: Colors.black87,
               ),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+              onChanged: (value) {
+                setState(() {
+                  widget.model.content = value; // 🔥 cập nhật vào model gốc
+                });
+              },
             ),
-          ),
+          )
         ],
       ),
     );

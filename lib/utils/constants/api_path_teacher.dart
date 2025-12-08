@@ -16,7 +16,8 @@ class ApiPathTeacher {
   static const String situation = '$teachersUrl/class/buoi_hoc/tinh_hinh';
   static const String updateSituation =
       '$teachersUrl/class/buoi_hoc/tinh_hinh_update_status';
-
+  static const String updatePhuDao = '$teachersUrl/class/phu_dao/update_status';
+  static const String updateXepBu = '$teachersUrl/class/xep_bu/update_status';
   // danh sách lớp
   static const String listClass = '$teachersUrl/class';
   static const String lessonByClass = '$teachersUrl/class/buoi_hoc';
