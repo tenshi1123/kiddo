@@ -11,6 +11,7 @@ import 'package:kiddo/student_models/excercise_model.dart';
 import 'package:kiddo/student_repo/mycourse_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/fullscreen_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailLessonScreen extends StatefulWidget {
@@ -47,13 +48,13 @@ class _DetailLessonScreenState extends State<DetailLessonScreen> {
     );
     //File(returnedImage!.path);
     if (photos.isNotEmpty) {
-      await MycourseRepo().uploadBtvn(id: id, photos: photos);
+      var message = await MycourseRepo().uploadBtvn(id: id, photos: photos);
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
             title: Text(
-              'Gửi thành công',
+              message,
               style: defaultText14SB,
             ),
             actions: <Widget>[
@@ -375,28 +376,71 @@ class _DetailLessonScreenState extends State<DetailLessonScreen> {
                                         itemBuilder: (_, i) => Column(
                                           children: [
                                             GestureDetector(
-                                              onTap: () async {
-                                                if (!await launchUrl(Uri.parse(
-                                                    'https://lms.kiddo.hvg.edu.vn/${detailBuoiHocModel.listHomeWork.first.urlFileCustomer[i]}'))) {
-                                                  throw Exception(
-                                                      'Could not launch ');
-                                                }
-                                              },
-                                              child: Container(
-                                                width: 120.w,
-                                                height: 80.h,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.r),
-                                                  image: DecorationImage(
-                                                    image: AssetImage(
-                                                        'assets/images/pdf_sample.png'),
-                                                    fit: BoxFit.fitWidth,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                                                onTap: () async {
+                                                  if (!await launchUrl(Uri.parse(
+                                                      'https://lms.kiddo.hvg.edu.vn/${detailBuoiHocModel.listHomeWork.first.urlFileCustomer[i]}'))) {
+                                                    throw Exception(
+                                                        'Could not launch ');
+                                                  }
+                                                },
+                                                child: detailBuoiHocModel
+                                                        .listHomeWork
+                                                        .first
+                                                        .urlFileCustomer
+                                                        .isNotEmpty
+                                                    ? Container(
+                                                        width: 120.w,
+                                                        height: 80.h,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      8.r),
+                                                          image:
+                                                              DecorationImage(
+                                                            image: AssetImage(
+                                                                'assets/images/pdf_sample.png'),
+                                                            fit:
+                                                                BoxFit.fitWidth,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : SizedBox(
+                                                        width: 343.w,
+                                                        height: 100.h,
+                                                        child: GridView.builder(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8),
+                                                          gridDelegate:
+                                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 1,
+                                                          ),
+                                                          itemCount:
+                                                              photos.length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            final file =
+                                                                photos[index];
+
+                                                            return GestureDetector(
+                                                              child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
+                                                                child:
+                                                                    Image.file(
+                                                                  file,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      )),
                                             // Text(
                                             //   detailBuoiHocModel
                                             //       .listHomeWork[i].name,
@@ -406,7 +450,7 @@ class _DetailLessonScreenState extends State<DetailLessonScreen> {
                                         ),
                                       ),
                                     ),
-                              SizedBox(height: 20.h),
+                              SizedBox(height: 10.h),
                               Center(
                                 child: OutlinedButton.icon(
                                   onPressed: () {

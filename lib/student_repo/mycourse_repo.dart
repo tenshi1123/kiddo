@@ -95,7 +95,7 @@ class MycourseRepo {
       ApiPath.uploadBtvn,
       data: formData,
     );
-    return response.data['data'];
+    return response.data['message'] ?? 'nộp bài thất bại';
   }
 
   Future<String> takeADayOff({
