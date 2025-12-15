@@ -54,16 +54,11 @@ class _Bottombar2State extends State<Bottombar2> {
 
   Future<void> setupOneSignal() async {
     await initOneSignal();
-    var onesignalId = await OneSignal.User.getOnesignalId();
+    //var onesignalId = await OneSignal.User.getOnesignalId();
     // await LoginRepo().pushOnesignalId(
     //   onesignalId: onesignalId ?? '',
     // );
-    if (Platform.isAndroid) {
-      OneSignal.Notifications.addClickListener((event) {});
-    } else {
-      //do nothing :v tự báo chính mình
-      OneSignal.Notifications.addClickListener((event) {});
-    }
+    OneSignal.Notifications.addClickListener((event) {});
     promptPolicyPrivacy();
   }
 

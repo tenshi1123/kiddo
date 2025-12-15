@@ -57,12 +57,10 @@ class _BottombarTeacherState extends State<BottombarTeacher> {
     // await LoginRepo().pushOnesignalId(
     //   onesignalId: onesignalId ?? '',
     // );
-    if (Platform.isAndroid) {
-      OneSignal.Notifications.addClickListener((event) {});
-    } else {
-      //do nothing :v tự báo chính mình
-      OneSignal.Notifications.addClickListener((event) {});
-    }
+
+    //do nothing :v tự báo chính mình
+    OneSignal.Notifications.addClickListener((event) {});
+
     promptPolicyPrivacy();
   }
 

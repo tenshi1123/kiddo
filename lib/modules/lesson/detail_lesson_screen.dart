@@ -11,7 +11,6 @@ import 'package:kiddo/student_models/excercise_model.dart';
 import 'package:kiddo/student_repo/mycourse_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
-import 'package:kiddo/utils/fullscreen_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailLessonScreen extends StatefulWidget {
