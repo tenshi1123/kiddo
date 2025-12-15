@@ -26,7 +26,7 @@ class _AppContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'KIDDO HUB',
+      title: 'K-Nest',
       locale: const Locale('vi', 'VN'),
       supportedLocales: const [
         Locale('vi', 'VN'),
