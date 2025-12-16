@@ -6,6 +6,7 @@
 	<string>development</string>
 	<key>com.apple.security.application-groups</key>
 	<array>
+		<string>group.com.english.kiddo.kiddoEnglish</string>
 		<string>group.com.english.kiddo.kiddoEnglish.onesignal</string>
 	</array>
 </dict>
