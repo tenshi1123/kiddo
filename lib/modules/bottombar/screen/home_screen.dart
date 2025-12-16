@@ -230,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(
-                  width: 15.w,
+                  width: 12.w,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
