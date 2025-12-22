@@ -454,3 +454,122 @@ class DetailBuoiHocExtendedModel {
     );
   }
 }
+
+class BaoCaoModel {
+  final String fullName;
+  final String phone;
+  final String email;
+  final String status;
+  final String changeClass;
+  final String soBuoiHoc;
+  final String vangMat;
+  final String xinNghi;
+  final String diMuon;
+  final String dungGio;
+  final String entryPoint;
+  final String pointBt;
+  final String pointBtOnline;
+
+  BaoCaoModel({
+    required this.fullName,
+    required this.phone,
+    required this.email,
+    required this.status,
+    required this.changeClass,
+    required this.soBuoiHoc,
+    required this.vangMat,
+    required this.xinNghi,
+    required this.diMuon,
+    required this.dungGio,
+    required this.entryPoint,
+    required this.pointBt,
+    required this.pointBtOnline,
+  });
+
+  factory BaoCaoModel.fromJson(Map<String, dynamic> json) {
+    return BaoCaoModel(
+      fullName: json['full_name'] ?? '',
+      phone: json['phone'] ?? '',
+      email: json['email'] ?? '',
+      status: json['status'] ?? '',
+      changeClass: json['change_class'] ?? '',
+      soBuoiHoc: json['so_buoi_hoc'].toString(),
+      vangMat: json['vang_mat'] ?? '',
+      xinNghi: json['xin_nghi'] ?? '',
+      diMuon: json['di_muon'] ?? '',
+      dungGio: json['dung_gio'] ?? '',
+      entryPoint: json['entry_point'] ?? '',
+      pointBt: json['point_bt'].toString(),
+      pointBtOnline: json['point_bt_online'].toString(),
+    );
+  }
+}
+
+class ListDocumentModel {
+  final String name;
+  final String createdDate;
+  final String timeStart;
+  final String timeEnd;
+  final String phongHocName;
+  final String cocoName;
+  final String address;
+  final List<DetailDocumentModel> listDetailDocument;
+
+  ListDocumentModel({
+    required this.name,
+    required this.createdDate,
+    required this.timeStart,
+    required this.timeEnd,
+    required this.phongHocName,
+    required this.cocoName,
+    required this.address,
+    required this.listDetailDocument,
+  });
+
+  factory ListDocumentModel.fromJson(Map<String, dynamic> json) {
+    return ListDocumentModel(
+      name: json['name'] ?? '',
+      createdDate: json['created_date'] ?? '',
+      timeStart: json['time_start'] ?? '',
+      timeEnd: json['time_end'] ?? '',
+      phongHocName: json['phonghoc_name'] ?? '',
+      cocoName: json['coso_name'] ?? '',
+      address: json['address'] ?? '',
+      listDetailDocument: (json['list'] as List)
+          .map((data) => DetailDocumentModel.fromJson(data))
+          .toList(),
+    );
+  }
+}
+
+class DetailDocumentModel {
+  final String classLessonDocumentId;
+  final String name;
+  final String note;
+  final String type;
+  final String urlFile;
+  final String createdAt;
+  final String linkWebview;
+
+  DetailDocumentModel({
+    required this.classLessonDocumentId,
+    required this.name,
+    required this.note,
+    required this.type,
+    required this.urlFile,
+    required this.createdAt,
+    required this.linkWebview,
+  });
+
+  factory DetailDocumentModel.fromJson(Map<String, dynamic> json) {
+    return DetailDocumentModel(
+      classLessonDocumentId: json['class_lesson_document_id'] ?? '',
+      name: json['name'] ?? '',
+      note: json['note'] ?? '',
+      type: json['type'] ?? '',
+      urlFile: json['url_file'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      linkWebview: json['link_webview'] ?? '',
+    );
+  }
+}

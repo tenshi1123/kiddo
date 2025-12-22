@@ -48,6 +48,15 @@ class ApiPathTeacher {
   static String listEventCheckinOff = '$teachersUrl/class/event_checkin_off';
   static String listBaoCao = '$teachersUrl/class/event_checkin_off/report';
 
+  // thao tác với tài liệu
+  static String listTaiLieu = '$teachersUrl/class/event_checkin_off/document';
+  static String uploadTaiLieu =
+      '$teachersUrl/class/event_checkin_off/document_add';
+  static String deleteTaiLieu =
+      '$teachersUrl/class/event_checkin_off/document_edit';
+  static String editTaiLieu =
+      '$teachersUrl/class/event_checkin_off/document_delete';
+
   static String detailsClass = '$teachersUrl/lop-hoc/detail';
   static String feedBack = '$teachersUrl/class/feedback';
   static String gopY = '$teachersUrl/class/gop_y';
@@ -60,4 +69,6 @@ class ApiPathTeacher {
   static String notification = '$teachersUrl/notification';
   //lich-day
   static String lichDay = '$teachersUrl/lich-day';
+  //danh sách tài liệu
+  static String listDocument = '$teachersUrl/class/event_checkin_off/document';
 }

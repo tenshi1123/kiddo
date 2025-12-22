@@ -208,23 +208,41 @@ class _ListTeacherClassScreenState extends State<ListTeacherClassScreen> {
                         ),
                       ),
                     )
-                  : Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(16.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.r),
-                          color: Colors.white,
+                  : selectedClassType == 'Lớp học trung tâm'
+                      ? Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(16.w),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.r),
+                              color: Colors.white,
+                            ),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              //physics: const NeverScrollableScrollPhysics(),
+                              itemCount: offClasses.length,
+                              itemBuilder: (context, index) {
+                                return _buildClassCard(offClasses[index]);
+                              },
+                            ),
+                          ),
+                        )
+                      : Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(16.w),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.r),
+                              color: Colors.white,
+                            ),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              //physics: const NeverScrollableScrollPhysics(),
+                              itemCount: zoomClasses.length,
+                              itemBuilder: (context, index) {
+                                return _buildClassCard(zoomClasses[index]);
+                              },
+                            ),
+                          ),
                         ),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          //physics: const NeverScrollableScrollPhysics(),
-                          itemCount: offClasses.length,
-                          itemBuilder: (context, index) {
-                            return _buildClassCard(offClasses[index]);
-                          },
-                        ),
-                      ),
-                    ),
         ],
       ),
     );

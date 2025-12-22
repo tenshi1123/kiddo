@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:kiddo/teacher_model/feed_back_model.dart';
 import 'package:kiddo/teacher_model/roll_call_model.dart';
@@ -102,6 +104,85 @@ class TeacherClassRepo {
     List<DetailBuoiHocExtendedModel> result = [];
     result = (response.data['data'] as List)
         .map((data) => DetailBuoiHocExtendedModel.fromJson(data))
+        .toList();
+    return result;
+  }
+
+  Future<void> uploadDocument({
+    required String name,
+    required String id,
+    required String type,
+    required String note,
+    required File photo,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    Response response;
+    response = await dio.post(ApiPathTeacher.uploadTaiLieu,
+        data: FormData.fromMap({
+          'name': name,
+          'event_checkin_off_id': id,
+          'type': type,
+          'note': note,
+          'files[]': await MultipartFile.fromFile(photo.path,
+              filename: photo.path.split('/').last),
+        }));
+    return response.data['data'];
+  }
+
+  Future<void> deleteDocument({
+    required String classLessonDocumentId,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    Response response;
+    response = await dio.post(ApiPathTeacher.uploadTaiLieu,
+        data: FormData.fromMap({
+          'class_lesson_document_id': classLessonDocumentId,
+        }));
+    return response.data['data'];
+  }
+
+  Future<List<BaoCaoModel>> getBaoCao({
+    required String courseScheduleId,
+    required String typeTeacher,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    Response response;
+    response = await dio.get(
+      ApiPathTeacher.listBaoCao,
+      queryParameters: {
+        'course_schedule_id': courseScheduleId,
+      },
+    );
+    List<BaoCaoModel> result = [];
+    result = (response.data['data'] as List)
+        .map((data) => BaoCaoModel.fromJson(data))
+        .toList();
+    return result;
+  }
+
+  Future<List<ListDocumentModel>> getDocument({
+    required String courseScheduleId,
+    required String typeTeacher,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    Response response;
+    response = await dio.get(
+      ApiPathTeacher.listTaiLieu,
+      queryParameters: {
+        'course_schedule_id': courseScheduleId,
+      },
+    );
+    List<ListDocumentModel> result = [];
+    result = (response.data['data'] as List)
+        .map((data) => ListDocumentModel.fromJson(data))
         .toList();
     return result;
   }

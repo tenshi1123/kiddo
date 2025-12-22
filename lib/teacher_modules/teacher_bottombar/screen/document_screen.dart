@@ -1,19 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/modules/bottombar/utils.dart';
 import 'package:kiddo/modules/notification/notification.dart';
+import 'package:kiddo/teacher_model/teacher_class_model.dart';
+import 'package:kiddo/teacher_repo/teacher_class_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/widget/upload_document_dialog.dart';
+import 'package:kiddo/utils/widget/webview_screen.dart';
 
 class DocumentScreen extends StatefulWidget {
   const DocumentScreen({
     super.key,
+    required this.typeTeacher,
+    required this.courseScheduleId,
   });
+  final String typeTeacher;
+  final String courseScheduleId;
   @override
   State<DocumentScreen> createState() => _DocumentScreenState();
 }
 
 class _DocumentScreenState extends State<DocumentScreen> {
+  List<ListDocumentModel> documents = [];
+  List<DetailBuoiHocExtendedModel> teachingSessions = [];
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response2 = await TeacherClassRepo().getDocument(
+        courseScheduleId: widget.courseScheduleId,
+        typeTeacher: widget.typeTeacher,
+      );
+      final response = await TeacherClassRepo().getDetailBuoiHoc(
+          courseScheduleId: widget.courseScheduleId,
+          typeTeacher: widget.typeTeacher);
+      setState(() {
+        documents = response2;
+        teachingSessions = response;
+      });
+    } catch (e) {
+      debugPrint('Lỗi khi gọi API: $e');
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +59,7 @@ class _DocumentScreenState extends State<DocumentScreen> {
           elevation: 0,
           centerTitle: true,
           title: Text(
-            'Theo dõi đánh giá',
+            'Tài liệu',
             style: defaultText16B.copyWith(color: Colors.white),
           ),
           leading: IconButton(
@@ -72,94 +108,160 @@ class _DocumentScreenState extends State<DocumentScreen> {
                 vertical: 16.h,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "      Folder được chia sẻ",
-                    style: defaultText14B,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height - 160.h,
+                    child: ListView.builder(
+                      // ListView.builder sẽ tự cuộn
+                      itemCount: documents.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 16.h,
+                          ),
+                          child: _documentCard(documents[index]),
+                        );
+                      },
+                    ),
                   ),
-                  SizedBox(height: 8.h),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 12.w,
-                      ),
-                      _buildFolderItem("kho_tai_lieu_trung_tam"),
-                      SizedBox(width: 12.w),
-                      _buildFolderItem("lc1a"),
-                    ],
-                  ),
-                  SizedBox(height: 20.h),
-                  Text(
-                    "      File được chia sẻ",
-                    style: defaultText14B,
-                  ),
-                  SizedBox(height: 8.h),
                   Padding(
-                    padding: EdgeInsetsGeometry.symmetric(horizontal: 16.w),
-                    child: _buildFileCard(
-                      title: "01. [S] What's Your Name.mp4",
-                      size: "28.7 MB",
-                      date: "2025-10-12 09:44:40",
-                      sharer: "HVG ADMIN",
-                      showClose: false,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
                     ),
-                  ),
-                  SizedBox(height: 24.h),
-                  Container(
-                    padding: EdgeInsets.all(12.w),
-                    height: 350.h,
-                    decoration: BoxDecoration(
-                      color: Color(0xffFFF1E8),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16.r),
-                        topRight: Radius.circular(16.r),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: mainOrange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => SizedBox(
+                            height: 650.h,
+                            child: AddDocumentSheet(
+                              sessions: teachingSessions,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12.h),
+                            child: Text(
+                              '  Thêm tài liệu',
+                              style:
+                                  defaultText16B.copyWith(color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        // ===== Folders =====
-                        Row(
-                          children: [
-                            Text(
-                              "  Folders",
-                              style: defaultText14B,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        Row(
-                          children: [
-                            _buildFolderItem(" ",
-                                icon: Icons.reply, isBack: true),
-                            SizedBox(width: 12.w),
-                            _buildFolderItem("Học liệu", showClose: true),
-                          ],
-                        ),
-                        SizedBox(height: 20.h),
-
-                        // ===== File của bạn =====
-                        Row(
-                          children: [
-                            Text(
-                              "  File của bạn",
-                              style: defaultText14B,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.h),
-                        _buildFileCard(
-                          title: "01. [S] What's Your Name.mp4",
-                          size: "28.7 MB",
-                          date: "2025-10-12 09:44:40",
-                          sharer: "ILAAA",
-                          showClose: true,
-                        ),
-                      ],
-                    ),
+                  ),
+                  SizedBox(
+                    height: 32.h,
                   ),
                 ],
               ),
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Text(
+              //       "      Folder được chia sẻ",
+              //       style: defaultText14B,
+              //     ),
+              //     SizedBox(height: 8.h),
+              //     Row(
+              //       children: [
+              //         SizedBox(
+              //           width: 12.w,
+              //         ),
+              //         _buildFolderItem("kho_tai_lieu_trung_tam"),
+              //         SizedBox(width: 12.w),
+              //         _buildFolderItem("lc1a"),
+              //       ],
+              //     ),
+              //     SizedBox(height: 20.h),
+              //     Text(
+              //       "      File được chia sẻ",
+              //       style: defaultText14B,
+              //     ),
+              //     SizedBox(height: 8.h),
+              //     Padding(
+              //       padding: EdgeInsetsGeometry.symmetric(horizontal: 16.w),
+              //       child: _buildFileCard(
+              //         title: "01. [S] What's Your Name.mp4",
+              //         size: "28.7 MB",
+              //         date: "2025-10-12 09:44:40",
+              //         sharer: "HVG ADMIN",
+              //         showClose: false,
+              //       ),
+              //     ),
+              //     SizedBox(height: 24.h),
+              //     Container(
+              //       padding: EdgeInsets.all(12.w),
+              //       height: 350.h,
+              //       decoration: BoxDecoration(
+              //         color: Color(0xffFFF1E8),
+              //         borderRadius: BorderRadius.only(
+              //           topLeft: Radius.circular(16.r),
+              //           topRight: Radius.circular(16.r),
+              //         ),
+              //       ),
+              //       child: Column(
+              //         children: [
+              //           // ===== Folders =====
+              //           Row(
+              //             children: [
+              //               Text(
+              //                 "  Folders",
+              //                 style: defaultText14B,
+              //               ),
+              //             ],
+              //           ),
+              //           SizedBox(height: 8.h),
+              //           Row(
+              //             children: [
+              //               _buildFolderItem(" ",
+              //                   icon: Icons.reply, isBack: true),
+              //               SizedBox(width: 12.w),
+              //               _buildFolderItem("Học liệu", showClose: true),
+              //             ],
+              //           ),
+              //           SizedBox(height: 20.h),
+
+              //           // ===== File của bạn =====
+              //           Row(
+              //             children: [
+              //               Text(
+              //                 "  File của bạn",
+              //                 style: defaultText14B,
+              //               ),
+              //             ],
+              //           ),
+              //           SizedBox(height: 8.h),
+              //           _buildFileCard(
+              //             title: "01. [S] What's Your Name.mp4",
+              //             size: "28.7 MB",
+              //             date: "2025-10-12 09:44:40",
+              //             sharer: "ILAAA",
+              //             showClose: true,
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
+              // ),
             )));
   }
 }
@@ -280,6 +382,212 @@ Widget _buildFileCard({
           ),
         ],
       ),
+    ),
+  );
+}
+
+Widget _documentCard(ListDocumentModel sessionData) {
+  return Container(
+    padding: EdgeInsets.symmetric(
+      horizontal: 16.w,
+      vertical: 16.h,
+    ),
+    width: 343.w,
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.all(Radius.circular(12.r)),
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xff273D8C).withValues(alpha: 0.12),
+          blurRadius: 16,
+          spreadRadius: 0,
+          offset: const Offset(0, 4), // Shadow position
+        ),
+      ],
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          sessionData.name,
+          style: defaultText16B,
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Row(
+          children: [
+            SvgPicture.asset('assets/icons/clock.svg'),
+            SizedBox(
+              width: 10.w,
+            ),
+            SizedBox(
+              width: 270.w,
+              child: Text(
+                formatDisplay(
+                  sessionData.createdDate,
+                  sessionData.timeStart,
+                  sessionData.timeEnd,
+                ),
+                style: defaultText14M,
+              ),
+            )
+          ],
+        ),
+        SizedBox(
+          height: 4.h,
+        ),
+        Row(
+          children: [
+            SvgPicture.asset('assets/icons/class.svg'),
+            SizedBox(
+              width: 10.w,
+            ),
+            SizedBox(
+              width: 270.w,
+              child: Text(
+                '${sessionData.phongHocName} - ${sessionData.cocoName}',
+                style: defaultText14M,
+              ),
+            )
+          ],
+        ),
+        SizedBox(
+          height: 4.h,
+        ),
+        Row(
+          children: [
+            SvgPicture.asset('assets/icons/place.svg'),
+            SizedBox(
+              width: 10.w,
+            ),
+            SizedBox(
+              width: 270.w,
+              child: Text(
+                sessionData.address,
+                style: defaultText14M,
+              ),
+            )
+          ],
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        Divider(),
+        sessionData.listDetailDocument.isEmpty
+            ? Text(
+                'Chưa có tài liệu',
+                style: defaultText14M,
+              )
+            : SizedBox(
+                height: 80.h,
+                child: ListView.builder(
+                  // ListView.builder sẽ tự cuộn
+                  itemCount: sessionData.listDetailDocument.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset('assets/icons/pdf.svg'),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            SizedBox(
+                              width: 270.w,
+                              child: Text(
+                                sessionData.listDetailDocument[index].name,
+                                style: defaultText14SB,
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                // Xử lý sự kiện xem tài liệu
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WebViewScreen(
+                                      link: sessionData
+                                          .listDetailDocument[index]
+                                          .linkWebview,
+                                      title: sessionData
+                                          .listDetailDocument[index].name,
+                                      type: 1,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                height: 40.h,
+                                width: 95.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  color: mainGreen,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Xem',
+                                    style: defaultText14SB.copyWith(
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 40.h,
+                              width: 95.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.r),
+                                color: mainBlue,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Sửa',
+                                  style: defaultText14SB.copyWith(
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                TeacherClassRepo().deleteDocument(
+                                    classLessonDocumentId: sessionData
+                                        .listDetailDocument[index]
+                                        .classLessonDocumentId);
+                              },
+                              child: Container(
+                                height: 40.h,
+                                width: 95.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  color: mainRed,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Xoá',
+                                    style: defaultText14SB.copyWith(
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    );
+                  },
+                ),
+              )
+      ],
     ),
   );
 }

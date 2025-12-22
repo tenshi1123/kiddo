@@ -108,9 +108,12 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Hi ${widget.model.fullName}',
-                      style: defaultText18B.copyWith(color: Colors.white),
+                    SizedBox(
+                      width: 200.w,
+                      child: Text(
+                        'Hi ${widget.model.fullName}',
+                        style: defaultText18B.copyWith(color: Colors.white),
+                      ),
                     ),
                     dateTimeDisplayWidget()
                   ],
@@ -224,7 +227,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                       ? CircularProgressIndicator()
                       : listLichHoc.isEmpty
                           ? Text(
-                              'Chưa có lịch học sắp tới',
+                              'Chưa có lịch dạy sắp tới',
                               style: defaultText14M,
                             )
                           : ClipRRect(
@@ -692,11 +695,13 @@ class _SmoothHorizontalMenuState extends State<SmoothHorizontalMenu> {
         type: 'Điểm danh',
       ),
     },
-    // {
-    //   "icon": 'assets/images/hoc_lieu.png',
-    //   "title": "Tài liệu",
-    //   'screen': DocumentScreen(),
-    // },
+    {
+      "icon": 'assets/images/hoc_lieu.png',
+      "title": "Tài liệu",
+      'screen': ListClassScreen(
+        type: 'Tài liệu',
+      ),
+    },
     {
       "icon": 'assets/images/nhan_xet.png',
       "title": "Nhận xét",

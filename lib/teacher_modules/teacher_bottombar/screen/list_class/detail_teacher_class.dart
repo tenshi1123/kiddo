@@ -8,6 +8,8 @@ import 'package:kiddo/teacher_repo/teacher_class_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:kiddo/utils/widget/custom_dialog.dart';
+import 'package:kiddo/utils/widget/upload_document_dialog.dart';
+import 'package:kiddo/utils/widget/webview_screen.dart';
 
 class DetailTeacherClass extends StatefulWidget {
   const DetailTeacherClass({
@@ -21,6 +23,8 @@ class DetailTeacherClass extends StatefulWidget {
 
 class _DetailTeacherClassState extends State<DetailTeacherClass> {
   List<DetailBuoiHocExtendedModel> teachingSessions = [];
+  List<BaoCaoModel> reports = [];
+  List<ListDocumentModel> documents = [];
   String selectedTopTab = 'Lịch dạy';
   bool isLoading = true;
   @override
@@ -34,8 +38,16 @@ class _DetailTeacherClassState extends State<DetailTeacherClass> {
       final response = await TeacherClassRepo().getDetailBuoiHoc(
           courseScheduleId: widget.model.courseScheduleId,
           typeTeacher: widget.model.typeTeacher);
+      final response1 = await TeacherClassRepo().getBaoCao(
+          courseScheduleId: widget.model.courseScheduleId,
+          typeTeacher: widget.model.typeTeacher);
+      final response2 = await TeacherClassRepo().getDocument(
+          courseScheduleId: widget.model.courseScheduleId,
+          typeTeacher: widget.model.typeTeacher);
       setState(() {
         teachingSessions = response;
+        reports = response1;
+        documents = response2;
         isLoading = false;
       });
     } catch (e) {
@@ -152,9 +164,11 @@ class _DetailTeacherClassState extends State<DetailTeacherClass> {
                     : selectedTopTab == 'Báo cáo'
                         ? ListView.builder(
                             // ListView.builder sẽ tự cuộn
-                            itemCount: teachingSessions.length,
+                            itemCount: reports.length,
                             itemBuilder: (context, index) {
-                              return StudentDetailsCard();
+                              return StudentDetailsCard(
+                                model: reports[index],
+                              );
                             },
                           )
                         : selectedTopTab == 'Đề thi'
@@ -212,36 +226,73 @@ class _DetailTeacherClassState extends State<DetailTeacherClass> {
                                       SizedBox(
                                         height: 10.h,
                                       ),
-                                      //_documentCard(teachingSessions.first),
+                                      SizedBox(
+                                        height: 520.h,
+                                        child: ListView.builder(
+                                          // ListView.builder sẽ tự cuộn
+                                          itemCount: documents.length,
+                                          itemBuilder: (context, index) {
+                                            return Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 16.w,
+                                                vertical: 16.h,
+                                              ),
+                                              child: _documentCard(
+                                                  documents[index]),
+                                            );
+                                          },
+                                        ),
+                                      ),
                                       Spacer(),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: mainOrange,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 16.w),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: mainOrange,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              builder: (_) => SizedBox(
+                                                height: 650.h,
+                                                child: AddDocumentSheet(
+                                                  sessions: teachingSessions,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.add,
+                                                color: Colors.white,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 12.h),
+                                                child: Text(
+                                                  '  Thêm tài liệu',
+                                                  style:
+                                                      defaultText16B.copyWith(
+                                                          color: Colors.white),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        onPressed: () {},
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 4.h),
-                                              child: Text(
-                                                '  Thêm tài liệu',
-                                                style: defaultText16B.copyWith(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 32.h,
                                       ),
                                     ],
                                   ),
@@ -401,24 +452,9 @@ class BuildTeachinhSessionCard extends StatelessWidget {
   }
 }
 
-// Dữ liệu giả định của học viên
-const Map<String, dynamic> studentData = {
-  "STT": 1,
-  "Họ tên": "Phan Thông",
-  "SĐT": "0977064101",
-  "Số buổi học": 32,
-  "Vắng mặt": 32,
-  "Xin nghỉ": 0,
-  "Đi muộn": 0,
-  "Đúng giờ": 0,
-  "Điểm đầu vào": 0.00,
-  "Điểm bài tập": 0,
-  "Điểm bt online": 0,
-};
-
 class StudentDetailsCard extends StatelessWidget {
-  const StudentDetailsCard({super.key});
-
+  const StudentDetailsCard({super.key, required this.model});
+  final BaoCaoModel model;
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -437,23 +473,18 @@ class StudentDetailsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min, // Chiếm không gian tối thiểu
               children: [
-                _buildInfoRow("STT", studentData["STT"].toString(),
-                    isBold: true),
+                // _buildInfoRow("STT", model.toString(), isBold: true),
                 const SizedBox(height: 10),
-                _buildInfoRow("Họ tên:", studentData["Họ tên"]),
-                _buildInfoRow("SĐT:", studentData["SĐT"]),
-                _buildInfoRow(
-                    "Số buổi học:", studentData["Số buổi học"].toString()),
-                _buildInfoRow("Vắng mặt:", studentData["Vắng mặt"].toString()),
-                _buildInfoRow("Xin nghỉ:", studentData["Xin nghỉ"].toString()),
-                _buildInfoRow("Đi muộn:", studentData["Đi muộn"].toString()),
-                _buildInfoRow("Đúng giờ:", studentData["Đúng giờ"].toString()),
-                _buildInfoRow("Điểm đầu vào:",
-                    studentData["Điểm đầu vào"].toStringAsFixed(2)),
-                _buildInfoRow(
-                    "Điểm bài tập:", studentData["Điểm bài tập"].toString()),
-                _buildInfoRow("Điểm bt online:",
-                    studentData["Điểm bt online"].toString()),
+                _buildInfoRow("Họ tên:", model.fullName),
+                _buildInfoRow("SĐT:", model.phone),
+                _buildInfoRow("Số buổi học:", model.soBuoiHoc),
+                _buildInfoRow("Vắng mặt:", model.vangMat),
+                _buildInfoRow("Xin nghỉ:", model.xinNghi),
+                _buildInfoRow("Đi muộn:", model.diMuon),
+                _buildInfoRow("Đúng giờ:", model.dungGio),
+                _buildInfoRow("Điểm đầu vào:", model.entryPoint),
+                _buildInfoRow("Điểm bài tập:", model.pointBt),
+                _buildInfoRow("Điểm bt online:", model.pointBtOnline),
               ],
             ),
           ),
@@ -478,14 +509,17 @@ class StudentDetailsCard extends StatelessWidget {
                 )),
           ),
           // Value (Giá trị, căn phải và luôn đậm)
-          Text(value, style: defaultText14SB),
+          SizedBox(
+            width: 160.w,
+            child: Text(value, style: defaultText14SB),
+          ),
         ],
       ),
     );
   }
 }
 
-Widget _documentCard(DetailBuoiHocExtendedModel sessionData) {
+Widget _documentCard(ListDocumentModel sessionData) {
   return Container(
     padding: EdgeInsets.symmetric(
       horizontal: 16.w,
@@ -509,7 +543,7 @@ Widget _documentCard(DetailBuoiHocExtendedModel sessionData) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Buổi 3 - Week 1 Reading practice ',
+          sessionData.name,
           style: defaultText16B,
         ),
         SizedBox(
@@ -518,9 +552,19 @@ Widget _documentCard(DetailBuoiHocExtendedModel sessionData) {
         Row(
           children: [
             SvgPicture.asset('assets/icons/clock.svg'),
-            Text(
-              '    2025-10-14 (13:30 - 15:30)',
-              style: defaultText14M,
+            SizedBox(
+              width: 10.w,
+            ),
+            SizedBox(
+              width: 270.w,
+              child: Text(
+                formatDisplay(
+                  sessionData.createdDate,
+                  sessionData.timeStart,
+                  sessionData.timeEnd,
+                ),
+                style: defaultText14M,
+              ),
             )
           ],
         ),
@@ -530,9 +574,15 @@ Widget _documentCard(DetailBuoiHocExtendedModel sessionData) {
         Row(
           children: [
             SvgPicture.asset('assets/icons/class.svg'),
-            Text(
-              '    Phòng học 101 - HN',
-              style: defaultText14M,
+            SizedBox(
+              width: 10.w,
+            ),
+            SizedBox(
+              width: 270.w,
+              child: Text(
+                '${sessionData.phongHocName} - ${sessionData.cocoName}',
+                style: defaultText14M,
+              ),
             )
           ],
         ),
@@ -542,9 +592,15 @@ Widget _documentCard(DetailBuoiHocExtendedModel sessionData) {
         Row(
           children: [
             SvgPicture.asset('assets/icons/place.svg'),
-            Text(
-              '    33 Trung Kính, Trung Hòa, \n    Cầu Giấy, Hà Nội',
-              style: defaultText14M,
+            SizedBox(
+              width: 10.w,
+            ),
+            SizedBox(
+              width: 270.w,
+              child: Text(
+                sessionData.address,
+                style: defaultText14M,
+              ),
             )
           ],
         ),
@@ -552,65 +608,118 @@ Widget _documentCard(DetailBuoiHocExtendedModel sessionData) {
           height: 10.h,
         ),
         Divider(),
-        Row(
-          children: [
-            SvgPicture.asset('assets/icons/pdf.svg'),
-            Text(
-              '    Tên tài liệu',
-              style: defaultText14SB,
-            )
-          ],
-        ),
-        SizedBox(
-          height: 10.h,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Container(
-              height: 40.h,
-              width: 95.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: mainGreen,
-              ),
-              child: Center(
-                child: Text(
-                  'Xem',
-                  style: defaultText14SB.copyWith(color: Colors.white),
+        sessionData.listDetailDocument.isEmpty
+            ? Text(
+                'Chưa có tài liệu',
+                style: defaultText14M,
+              )
+            : SizedBox(
+                height: 80.h,
+                child: ListView.builder(
+                  // ListView.builder sẽ tự cuộn
+                  itemCount: sessionData.listDetailDocument.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset('assets/icons/pdf.svg'),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            SizedBox(
+                              width: 270.w,
+                              child: Text(
+                                sessionData.listDetailDocument[index].name,
+                                style: defaultText14SB,
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                // Xử lý sự kiện xem tài liệu
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WebViewScreen(
+                                      link: sessionData
+                                          .listDetailDocument[index]
+                                          .linkWebview,
+                                      title: sessionData
+                                          .listDetailDocument[index].name,
+                                      type: 1,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                height: 40.h,
+                                width: 95.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  color: mainGreen,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Xem',
+                                    style: defaultText14SB.copyWith(
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 40.h,
+                              width: 95.w,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.r),
+                                color: mainBlue,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Sửa',
+                                  style: defaultText14SB.copyWith(
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                TeacherClassRepo().deleteDocument(
+                                    classLessonDocumentId: sessionData
+                                        .listDetailDocument[index]
+                                        .classLessonDocumentId);
+                              },
+                              child: Container(
+                                height: 40.h,
+                                width: 95.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  color: mainRed,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'Xoá',
+                                    style: defaultText14SB.copyWith(
+                                        color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    );
+                  },
                 ),
-              ),
-            ),
-            Container(
-              height: 40.h,
-              width: 95.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: mainBlue,
-              ),
-              child: Center(
-                child: Text(
-                  'Sửa',
-                  style: defaultText14SB.copyWith(color: Colors.white),
-                ),
-              ),
-            ),
-            Container(
-              height: 40.h,
-              width: 95.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.r),
-                color: mainRed,
-              ),
-              child: Center(
-                child: Text(
-                  'Xoá',
-                  style: defaultText14SB.copyWith(color: Colors.white),
-                ),
-              ),
-            ),
-          ],
-        )
+              )
       ],
     ),
   );

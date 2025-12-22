@@ -5,6 +5,7 @@ import 'package:kiddo/main.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/teacher_modules/teacher_bottombar/screen/detail_feedback.dart';
 import 'package:kiddo/teacher_modules/teacher_bottombar/screen/detail_rollcall.dart';
+import 'package:kiddo/teacher_modules/teacher_bottombar/screen/document_screen.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 
@@ -88,15 +89,25 @@ class _ListClassScreenState extends State<ListClassScreen> {
                           ),
                         ),
                       )
-                    : Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailFeedbackScreen(
-                            typeTeacher: item.typeTeacher,
-                            courseScheduleId: item.courseScheduleId,
-                          ),
-                        ),
-                      );
+                    : widget.type == 'Tài liệu'
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DocumentScreen(
+                                typeTeacher: item.typeTeacher,
+                                courseScheduleId: item.courseScheduleId,
+                              ),
+                            ),
+                          )
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailFeedbackScreen(
+                                typeTeacher: item.typeTeacher,
+                                courseScheduleId: item.courseScheduleId,
+                              ),
+                            ),
+                          );
               },
               child: Container(
                 margin: EdgeInsets.only(bottom: 12.h),
