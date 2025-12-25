@@ -371,18 +371,6 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("Hạn thanh toán:", style: defaultText14B),
-                                Text(
-                                  item.expiryDate,
-                                  style: defaultText14B.copyWith(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
                                 Text("Hình thức:", style: defaultText14B),
                                 Text(
                                   item.paymentMethodName,
@@ -395,15 +383,40 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("Ngày thanh toán:", style: defaultText14B),
+                                Text("Hạn thanh toán:", style: defaultText14B),
                                 Text(
-                                  DateFormat('dd-MM-yyyy')
-                                      .format(DateTime.parse(item.createdAt)),
+                                  DateFormat('dd/MM/yyyy')
+                                      .format(DateTime.parse(item.expiryDate)),
                                   style: defaultText14B.copyWith(
                                       fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
+                            SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Ngày thanh toán:", style: defaultText14B),
+                                Text(
+                                  convertDate(item.createDate),
+                                  style: defaultText14B.copyWith(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            // SizedBox(height: 8),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     Text("Thời gian:", style: defaultText14B),
+                            //     Text(
+                            //       DateFormat('HH:mm dd/MM/yyyy')
+                            //           .format(DateTime.parse(item.createdAt)),
+                            //       style: defaultText14B.copyWith(
+                            //           fontWeight: FontWeight.bold),
+                            //     ),
+                            //   ],
+                            // ),
                             SizedBox(height: 8),
                             Text("Nội dung:", style: defaultText14B),
                             SizedBox(height: 8),
@@ -461,4 +474,9 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
       ],
     );
   }
+}
+
+String convertDate(String input) {
+  final parts = input.split('-'); // [12, 09, 2025]
+  return '${parts[0]}/${parts[1]}/${parts[2]}';
 }

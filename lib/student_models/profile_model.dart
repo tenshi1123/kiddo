@@ -96,6 +96,7 @@ class PaymentModel {
   final String orderId;
   final String amount;
   final String expiryDate;
+  final String createDate;
   final String paymentMethodName;
   final String pendingPaymentId;
   final String status;
@@ -107,6 +108,7 @@ class PaymentModel {
     required this.orderId,
     required this.amount,
     required this.expiryDate,
+    required this.createDate,
     required this.paymentMethodName,
     required this.pendingPaymentId,
     required this.status,
@@ -120,6 +122,7 @@ class PaymentModel {
       orderId: json['order_id'] ?? '',
       amount: json['amount'] ?? '',
       expiryDate: json['expiry_date'] ?? '',
+      createDate: json['created_date'] ?? '',
       paymentMethodName: json['payment_method_name'] ?? '',
       pendingPaymentId: json['pending_payment_id'] ?? '',
       status: json['status'] ?? '',

@@ -235,9 +235,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Hi ${widget.model.fullName}',
-                      style: defaultText18B.copyWith(color: colorText),
+                    SizedBox(
+                      width: 220.w,
+                      child: Text(
+                        'Hi ${widget.model.fullName}',
+                        style: defaultText18B.copyWith(color: colorText),
+                      ),
                     ),
                     dateTimeDisplayWidget()
                   ],
