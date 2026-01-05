@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:kiddo/modules/feature_home/hoc_phi/confirm_screen.dart';
 import 'package:kiddo/student_repo/customer_repo.dart';
 import 'package:kiddo/student_repo/mycourse_repo.dart';
+import 'package:kiddo/teacher_repo/teacher_class_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 
@@ -458,7 +459,7 @@ Future<void> showLeaveReasonDialog(BuildContext context,
   );
 }
 
-void showTeachingDialog(BuildContext context, String title) {
+void showTeachingDialog(BuildContext context, String title, String id) {
   final TextEditingController contentController = TextEditingController();
   final TextEditingController linkController = TextEditingController();
 
@@ -555,7 +556,15 @@ void showTeachingDialog(BuildContext context, String title) {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          TeacherClassRepo()
+                              .updateContentOff(
+                            content: contentController.text,
+                            linkRecording: linkController.text,
+                            id: id,
+                          )
+                              .then((value) {
+                            Navigator.pop(context);
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: mainGreen,

@@ -429,7 +429,8 @@ class BuildTeachinhSessionCard extends StatelessWidget {
               ),
             ),
             child: TextButton.icon(
-              onPressed: () => showTeachingDialog(context, 'Buổi 3'),
+              onPressed: () => showTeachingDialog(
+                  context, 'Buổi 3', sessionData.eventCheckinOffId),
               icon: SvgPicture.asset('assets/icons/edit.svg'),
               label: Text(
                 'Chỉnh sửa',

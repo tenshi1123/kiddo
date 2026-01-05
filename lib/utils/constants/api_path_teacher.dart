@@ -46,6 +46,12 @@ class ApiPathTeacher {
   static String listXepBuClass = '$teachersUrl/class/xep_bu';
 
   static String listEventCheckinOff = '$teachersUrl/class/event_checkin_off';
+  static String listEventZoom = '$teachersUrl/class/meeting';
+
+  static String updateContentOff =
+      '$teachersUrl/class/event_checkin_off/update_content';
+  static String updateContentZoom = '$teachersUrl/class/meeting/update_content';
+
   static String listBaoCao = '$teachersUrl/class/event_checkin_off/report';
 
   // thao tác với tài liệu
