@@ -177,35 +177,49 @@ class _DetailTeacherClassState extends State<DetailTeacherClass> {
                                   SizedBox(
                                     height: 10.h,
                                   ),
-                                  SearchExamBar(),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16.w,
+                                      vertical: 12.h,
+                                    ),
+                                    child: SearchExamBar(),
+                                  ),
                                   SizedBox(
                                     height: 10.h,
                                   ),
                                   //_dethiCard(teachingSessions.first),
                                   Spacer(),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: mainOrange,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w, vertical: 12.h),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: mainOrange,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      onPressed: () {},
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                          ),
+                                          Text(
+                                            '  Thêm đề thi',
+                                            style: defaultText18B.copyWith(
+                                                color: Colors.white),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    onPressed: () {},
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                        ),
-                                        Text(
-                                          '  Thêm đề thi',
-                                          style: defaultText18B.copyWith(
-                                              color: Colors.white),
-                                        ),
-                                      ],
-                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 32.h,
                                   ),
                                 ],
                               )
@@ -430,7 +444,12 @@ class BuildTeachinhSessionCard extends StatelessWidget {
             ),
             child: TextButton.icon(
               onPressed: () => showTeachingDialog(
-                  context, 'Buổi 3', sessionData.eventCheckinOffId),
+                context,
+                'Buổi 3',
+                sessionData.eventCheckinOffId,
+                sessionData.teachingContent,
+                sessionData.linkRecord,
+              ),
               icon: SvgPicture.asset('assets/icons/edit.svg'),
               label: Text(
                 'Chỉnh sửa',

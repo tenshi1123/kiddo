@@ -459,7 +459,13 @@ Future<void> showLeaveReasonDialog(BuildContext context,
   );
 }
 
-void showTeachingDialog(BuildContext context, String title, String id) {
+void showTeachingDialog(
+  BuildContext context,
+  String title,
+  String id,
+  String? content,
+  String? linkRecording,
+) {
   final TextEditingController contentController = TextEditingController();
   final TextEditingController linkController = TextEditingController();
 
@@ -522,7 +528,7 @@ void showTeachingDialog(BuildContext context, String title, String id) {
                       controller: contentController,
                       maxLines: 4,
                       decoration: InputDecoration(
-                        hintText: "",
+                        hintText: content,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.r),
                           borderSide: BorderSide(color: Colors.grey.shade100),
@@ -542,7 +548,7 @@ void showTeachingDialog(BuildContext context, String title, String id) {
                     TextField(
                       controller: linkController,
                       decoration: InputDecoration(
-                        hintText: "",
+                        hintText: linkRecording,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.r),
                           borderSide: BorderSide(color: Colors.grey.shade100),
