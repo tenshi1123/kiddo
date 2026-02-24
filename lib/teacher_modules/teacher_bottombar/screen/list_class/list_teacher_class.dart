@@ -623,12 +623,15 @@ class _AttendanceDetailCardState extends State<AttendanceDetailCard> {
     return Expanded(
       flex: 1,
       child: InkWell(
-        onTap: () => _onStatusChanged(label, !attendanceStatus[label]!),
+        onTap: () {
+          final current = attendanceStatus[label] ?? false;
+          _onStatusChanged(label, !current);
+        },
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Checkbox(
-              value: attendanceStatus[label],
+              value: attendanceStatus[label] ?? false,
               onChanged: (newValue) => _onStatusChanged(label, newValue),
               activeColor: const Color(
                   0xFF34C759), // Màu xanh lá cây cho trạng thái được chọn

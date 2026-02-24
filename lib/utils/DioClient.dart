@@ -5,7 +5,8 @@ class DioClient {
   static Dio? _dio;
 
   static Future<Dio> getInstance() async {
-    if (_dio != null) return _dio!;
+    final existing = _dio;
+    if (existing != null) return existing;
 
     final dio = Dio();
 

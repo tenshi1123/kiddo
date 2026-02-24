@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:upgrader/upgrader.dart';
 import 'modules/splash/splash_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
 
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -13,32 +19,28 @@ class App extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, __) {
-        return const _AppContent();
+        return UpgradeAlert(
+            upgrader: Upgrader(
+              durationUntilAlertAgain: const Duration(hours: 6),
+            ),
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'K-Nest',
+              locale: const Locale('vi', 'VN'),
+              supportedLocales: const [
+                Locale('vi', 'VN'),
+                Locale('en', 'US'),
+              ],
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              theme: ThemeData(),
+              home: const Splshscreen(),
+            ));
+        //return const _AppContent();
       },
-    );
-  }
-}
-
-class _AppContent extends StatelessWidget {
-  const _AppContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'K-Nest',
-      locale: const Locale('vi', 'VN'),
-      supportedLocales: const [
-        Locale('vi', 'VN'),
-        Locale('en', 'US'),
-      ],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      theme: ThemeData(),
-      home: const Splshscreen(),
     );
   }
 }

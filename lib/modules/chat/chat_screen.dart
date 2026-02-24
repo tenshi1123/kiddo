@@ -75,6 +75,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future _pickImageFromGallery() async {
     final returnedImage = await ImagePicker().pickMultiImage();
+    if (!mounted) return;
+    if (!mounted) return;
     photos = List<File>.from(
       (returnedImage).map(
         (e) => File(e.path),
@@ -159,10 +161,13 @@ class _ChatScreenState extends State<ChatScreen> {
               SizedBox(
                 width: 10.w,
               ),
-              Text(
-                widget.model.fullName,
-                style: defaultText18B.copyWith(
-                  color: Colors.white,
+              SizedBox(
+                width: 230.w,
+                child: Text(
+                  widget.model.fullName,
+                  style: defaultText18B.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

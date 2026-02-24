@@ -307,6 +307,7 @@ class _ExcerciseItem extends StatelessWidget {
           id: model.id,
           customerCourseScheduleId: model.customerCourseScheduleId,
         );
+        if (!context.mounted) return;
         if (model.type == '1') {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => TestScreen(

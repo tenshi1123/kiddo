@@ -81,6 +81,7 @@ class LeaveRequestDialog extends StatelessWidget {
                           checkinOffId: checkinOffId,
                           meetingId: meetingId,
                           reason: reasonController.text);
+                      if (!context.mounted) return;
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -569,6 +570,7 @@ void showTeachingDialog(
                             id: id,
                           )
                               .then((value) {
+                            if (!context.mounted) return;
                             Navigator.pop(context);
                           });
                         },

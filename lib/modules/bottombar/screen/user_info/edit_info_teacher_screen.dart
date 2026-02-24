@@ -33,94 +33,98 @@ class InfoUser extends StatelessWidget {
             SizedBox(
               height: 320.h,
               width: 343.w,
-              child: ListView(
+              child: ListView.builder(
                 padding: const EdgeInsets.all(8),
-                children: <Widget>[
-                  Container(
-                    height: 56.h,
-                    width: 343.w,
-                    decoration: BoxDecoration(
-                      color: const Color(0xffF7F7F7),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(
-                          18.r,
-                        ),
-                      ),
-                    ),
-                    margin: EdgeInsets.only(
-                      top: 18.h,
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 16.w,
-                        ),
-                        Text(
-                          teacherProfileModel.fullName,
-                          style: defaultText16M.copyWith(
-                            fontWeight: FontWeight.w500,
+                itemCount: 3,
+                itemBuilder: (context, idx) {
+                  final children = <Widget>[
+                    Container(
+                      height: 56.h,
+                      width: 343.w,
+                      decoration: BoxDecoration(
+                        color: const Color(0xffF7F7F7),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(
+                            18.r,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 56.h,
-                    width: 343.w,
-                    margin: EdgeInsets.only(
-                      top: 18.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xffF7F7F7),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(
-                          18.r,
-                        ),
+                      ),
+                      margin: EdgeInsets.only(
+                        top: 18.h,
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 16.w,
+                          ),
+                          Text(
+                            teacherProfileModel.fullName,
+                            style: defaultText16M.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 16.w,
-                        ),
-                        Text(
-                          teacherProfileModel.dob,
-                          style: defaultText16M.copyWith(
-                            fontWeight: FontWeight.w500,
+                    Container(
+                      height: 56.h,
+                      width: 343.w,
+                      margin: EdgeInsets.only(
+                        top: 18.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffF7F7F7),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(
+                            18.r,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: 56.h,
-                    width: 343.w,
-                    margin: EdgeInsets.only(
-                      top: 18.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xffF7F7F7),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(
-                          18.r,
                         ),
                       ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 16.w,
+                          ),
+                          Text(
+                            teacherProfileModel.dob,
+                            style: defaultText16M.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 16.w,
-                        ),
-                        Text(
-                          teacherProfileModel.phone,
-                          style: defaultText16M.copyWith(
-                            fontWeight: FontWeight.w500,
+                    Container(
+                      height: 56.h,
+                      width: 343.w,
+                      margin: EdgeInsets.only(
+                        top: 18.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffF7F7F7),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(
+                            18.r,
                           ),
                         ),
-                      ],
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 16.w,
+                          ),
+                          Text(
+                            teacherProfileModel.phone,
+                            style: defaultText16M.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ];
+                  return children[idx];
+                },
               ),
             )
           ],

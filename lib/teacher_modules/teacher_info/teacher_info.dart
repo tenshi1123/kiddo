@@ -5,6 +5,7 @@ import 'package:kiddo/modules/bottombar/screen/user_info/edit_info_teacher_scree
 import 'package:kiddo/teacher_model/home_teacher_model.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 
 class TeacherInfo extends StatelessWidget {
   const TeacherInfo({super.key, required this.teacherProfileModel});
@@ -46,8 +47,8 @@ class TeacherInfo extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16.r),
-            child: Image.network(
-              teacherProfileModel.avatar, // Thay bằng ảnh của bạn
+            child: AppImage(
+              url: teacherProfileModel.avatar, // Thay bằng ảnh của bạn
               width: 80.w,
               height: 80.h,
               fit: BoxFit.cover,

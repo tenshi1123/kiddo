@@ -8,6 +8,7 @@ import 'package:kiddo/student_repo/video_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/widget/webview_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 import '../../../utils/constants/styles.dart';
 
 class VideoCourse extends StatelessWidget {
@@ -106,8 +107,8 @@ class VideoCourse extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(16.r)),
                   color: Colors.white,
                 ),
-                child: Image.network(
-                  courseVideoModel.detailClassModel.courseImg,
+                child: AppImage(
+                  url: courseVideoModel.detailClassModel.courseImg,
                   width: 200.w,
                   //height: 160.h,
                   fit: BoxFit.fitWidth,
@@ -234,6 +235,7 @@ class _LessonItemState extends State<LessonItem> {
               topicalId: widget.topicModel.topicalId,
               settingCoureTypeId: widget.topicModel.settingCourseTypeId,
             );
+            if (!mounted) return;
             setState(() {
               isExpanded = !isExpanded;
             });
@@ -339,6 +341,7 @@ class _LessonItemState extends State<LessonItem> {
                               lessonId: e.lessonsId,
                               settingCoureTypeId: e.settingCourseTypeId,
                               lessonType: e.lessonType);
+                          if (!context.mounted) return;
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -353,6 +356,7 @@ class _LessonItemState extends State<LessonItem> {
                               lessonId: e.lessonsId,
                               settingCoureTypeId: e.settingCourseTypeId,
                               lessonType: e.lessonType);
+                          if (!context.mounted) return;
                           if (!await launchUrl(Uri.parse(link))) {
                             throw Exception('Could not launch ');
                           }

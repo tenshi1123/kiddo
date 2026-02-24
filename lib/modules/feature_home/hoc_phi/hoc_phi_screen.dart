@@ -183,7 +183,7 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
                         Text(
                           "Đã thanh toán",
                           style: defaultText14M.copyWith(
-                            color: selectedTab == 0
+                            color: selectedTab == 1
                                 ? colorText
                                 : colorText.withValues(alpha: 0.8),
                           ),
@@ -253,9 +253,9 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
                                       Text("Hạn thanh toán:",
                                           style: defaultText14B),
                                       Text(
-                                        item.expiryDate,
-                                        style: defaultText14B.copyWith(
-                                            fontWeight: FontWeight.bold),
+                                        DateFormat('dd/MM/yyyy').format(
+                                            DateTime.parse(item.expiryDate)),
+                                        style: defaultText14B,
                                       ),
                                     ],
                                   ),

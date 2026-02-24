@@ -9,6 +9,7 @@ import 'package:kiddo/student_repo/customer_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -111,8 +112,8 @@ class _AccountScreenState extends State<AccountScreen> {
                             color: Colors.white,
                             shape: BoxShape.circle,
                           ),
-                          child: Image.network(
-                            widget.model.avatar,
+                          child: AppImage(
+                            url: widget.model.avatar,
                             width: 80.w,
                             height: 80.h,
                             fit: BoxFit.fill,
@@ -328,6 +329,7 @@ Future<void> _dialogBuilder(BuildContext context) {
             onPressed: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.remove('token');
+              if (!context.mounted) return;
               Navigator.push(
                 context,
                 MaterialPageRoute(

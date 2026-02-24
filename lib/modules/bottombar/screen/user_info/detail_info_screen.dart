@@ -8,6 +8,7 @@ import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/customer_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 
 class DetailInfoScreen extends StatefulWidget {
   const DetailInfoScreen({super.key, required this.model});
@@ -123,8 +124,8 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
-                      child: Image.network(
-                        widget.model.avatar,
+                      child: AppImage(
+                        url: widget.model.avatar,
                         width: 80.w,
                         height: 80.h,
                         fit: BoxFit.fill,
@@ -453,9 +454,9 @@ Future pickImageFromGallery1(
 ) async {
   final returnedImage = await ImagePicker().pickMultiImage();
 
+  if (!context.mounted) return;
   if (returnedImage.isNotEmpty) {
     List<File> photos = List<File>.from(returnedImage.map((e) => File(e.path)));
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -591,6 +592,7 @@ Future<void> pickImageFromCamera1(
   List<File> photos = [];
 
   final pickedImage = await picker.pickImage(source: ImageSource.camera);
+  if (!context.mounted) return;
   if (pickedImage != null) {
     photos.add(File(pickedImage.path));
 
@@ -641,10 +643,11 @@ Future<void> pickImageFromCamera1(
                       const SizedBox(height: 16),
                       InkWell(
                         onTap: () async {
-                          CustomerRepo().changeAvatar(photos.last);
+                          await CustomerRepo().changeAvatar(photos.last);
+                          if (!context.mounted) return;
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text(
                                 'Đổi ảnh đại diện thành công!',
                               ),

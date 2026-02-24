@@ -84,6 +84,7 @@ class EvaluateScreen extends StatelessWidget {
                     onTap: () async {
                       ReviewDetailModels model = await ExtensionRepo()
                           .getDetailReview(listReview[index].id);
+                      if (!context.mounted) return;
                       Navigator.push(
                         context,
                         MaterialPageRoute(

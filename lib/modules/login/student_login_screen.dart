@@ -135,11 +135,13 @@ class _StudentLoginState extends State<StudentLogin> {
                           phoneController.text,
                           passwordController.text,
                         );
+                        if (!mounted) return;
                         if (loged == true) {
                           // StudentHomeModel? infoModel =
                           //     await CustomerRepo().getHomeInfo();
                           listClass = await LoginRepo().getListClass();
                           listCategory = await HomeRepo().getCategories();
+                          if (!mounted) return;
                           AppRouter.toPage(
                             context,
                             AppPages.BottomNavBarPage,

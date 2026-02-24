@@ -20,6 +20,7 @@ import 'package:kiddo/teacher_repo/teacher_schedule_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:kiddo/utils/widget/custom_widget.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class TeacherHomeScreen extends StatefulWidget {
@@ -95,8 +96,8 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     color: Colors.white,
                     shape: BoxShape.circle,
                   ),
-                  child: Image.network(
-                    widget.model.avatar,
+                  child: AppImage(
+                    url: widget.model.avatar,
                     width: 50.w,
                     height: 50.h,
                     fit: BoxFit.fill,
@@ -111,7 +112,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     SizedBox(
                       width: 200.w,
                       child: Text(
-                        'Hi ${widget.model.fullName}',
+                        'Hi! ${widget.model.fullName}',
                         style: defaultText18B.copyWith(color: Colors.white),
                       ),
                     ),
@@ -311,7 +312,6 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                                     height: 55.h,
                                     width: 350.w,
                                     child: ListView.builder(
-                                      shrinkWrap: true,
                                       physics: const ScrollPhysics(),
                                       itemCount: listCategory.length,
                                       scrollDirection: Axis.horizontal,

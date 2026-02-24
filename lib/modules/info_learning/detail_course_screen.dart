@@ -5,6 +5,7 @@ import 'package:kiddo/student_models/my_course_model.dart';
 import 'package:kiddo/student_repo/home_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 
 class DetailCourseScreen extends StatefulWidget {
   const DetailCourseScreen(
@@ -19,7 +20,7 @@ class DetailCourseScreen extends StatefulWidget {
 
 class _DetailCourseScreenState extends State<DetailCourseScreen> {
   bool isLoading = true;
-  late DetailClass data;
+  DetailClass? data;
   @override
   void initState() {
     super.initState();
@@ -48,7 +49,8 @@ class _DetailCourseScreenState extends State<DetailCourseScreen> {
   int selectedTab = 0;
   @override
   Widget build(BuildContext context) {
-    final filtered = selectedTab == 0 ? data.daXayRa : data.chuaXayRa;
+    final filtered =
+        selectedTab == 0 ? data?.daXayRa ?? [] : data?.chuaXayRa ?? [];
     return isLoading
         ? Center(
             child: CircularProgressIndicator(),
@@ -99,14 +101,14 @@ class _DetailCourseScreenState extends State<DetailCourseScreen> {
                           Padding(
                             padding: EdgeInsets.only(left: 12.w),
                             child: Text(
-                              data.info.name,
+                              data?.info.name ?? '',
                               style: defaultText14SB.copyWith(fontSize: 16.sp),
                             ),
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 12.w, top: 4.h),
                             child: Text(
-                              data.info.settingCourseTypeName,
+                              data?.info.settingCourseTypeName ?? '',
                               style: defaultText14Re,
                             ),
                           ),
@@ -115,8 +117,8 @@ class _DetailCourseScreenState extends State<DetailCourseScreen> {
                     ],
                   ),
                   SizedBox(height: 16.h),
-                  Image.network(
-                    data.info.courseImg,
+                  AppImage(
+                    url: data?.info.courseImg ?? '',
                     width: 343.w,
                     fit: BoxFit.fitWidth,
                   ),
@@ -158,23 +160,23 @@ class _DetailCourseScreenState extends State<DetailCourseScreen> {
                                     ),
                                   ),
                                   Container(
-                                    margin: const EdgeInsets.only(left: 6),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8.w, vertical: 2.h),
-                                    decoration: BoxDecoration(
-                                      color: selectedTab == 0
-                                          ? mainOrange
-                                          : Color(0xffC9B2A5),
-                                      borderRadius: BorderRadius.circular(24.r),
-                                    ),
-                                    child: Text(
-                                      data.cntDaDienRa.toString(),
-                                      style: defaultText14SB.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 12.sp,
+                                      margin: const EdgeInsets.only(left: 6),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8.w, vertical: 2.h),
+                                      decoration: BoxDecoration(
+                                        color: selectedTab == 0
+                                            ? mainOrange
+                                            : Color(0xffC9B2A5),
+                                        borderRadius:
+                                            BorderRadius.circular(24.r),
                                       ),
-                                    ),
-                                  )
+                                      child: Text(
+                                        (data?.cntDaDienRa ?? 0).toString(),
+                                        style: defaultText14SB.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 12.sp,
+                                        ),
+                                      ))
                                 ],
                               ),
                             ),
@@ -204,23 +206,23 @@ class _DetailCourseScreenState extends State<DetailCourseScreen> {
                                     ),
                                   ),
                                   Container(
-                                    margin: const EdgeInsets.only(left: 6),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8.w, vertical: 2.h),
-                                    decoration: BoxDecoration(
-                                      color: selectedTab == 1
-                                          ? mainOrange
-                                          : Color(0xffC9B2A5),
-                                      borderRadius: BorderRadius.circular(24.r),
-                                    ),
-                                    child: Text(
-                                      data.cntChuaDienRa.toString(),
-                                      style: defaultText14SB.copyWith(
-                                        color: Colors.white,
-                                        fontSize: 12.sp,
+                                      margin: const EdgeInsets.only(left: 6),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8.w, vertical: 2.h),
+                                      decoration: BoxDecoration(
+                                        color: selectedTab == 1
+                                            ? mainOrange
+                                            : Color(0xffC9B2A5),
+                                        borderRadius:
+                                            BorderRadius.circular(24.r),
                                       ),
-                                    ),
-                                  )
+                                      child: Text(
+                                        (data?.cntChuaDienRa ?? 0).toString(),
+                                        style: defaultText14SB.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 12.sp,
+                                        ),
+                                      ))
                                 ],
                               ),
                             ),

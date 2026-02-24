@@ -136,6 +136,7 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                           phoneController.text,
                           passwordController.text,
                         );
+                        if (!mounted) return;
                         if (loged == true) {
                           // StudentHomeModel? infoModel =
                           //     await CustomerRepo().getHomeInfo();
@@ -143,6 +144,7 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                           listTeacherClass =
                               await TeacherClassRepo().getTeacherClass();
                           listCategory = await HomeRepo().getCategories();
+                          if (!mounted) return;
                           AppRouter.toPage(
                             context,
                             AppPages.BottomNavBarTeacher,

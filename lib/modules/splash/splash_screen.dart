@@ -34,12 +34,14 @@ class _SplshscreenState extends State<Splshscreen> {
       final String? token = prefs.getString('token');
       final String? type = prefs.getString(ConstString.type);
       checked = (token != null && token != '');
+      if (!mounted) return;
       if (checked) {
         if (type != null) {
           if (type == 'student') {
             listClass = await LoginRepo().getListClass();
             listCategory = await HomeRepo().getCategories();
-            if (listClass.isNotEmpty) {
+            if (!mounted) return;
+            if (listCategory.isNotEmpty) {
               AppRouter.toPage(
                 context,
                 AppPages.BottomNavBarPage,
@@ -47,6 +49,7 @@ class _SplshscreenState extends State<Splshscreen> {
             } else {
               // remove token chỗ này
               await removeToken();
+              if (!mounted) return;
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -57,6 +60,7 @@ class _SplshscreenState extends State<Splshscreen> {
           } else {
             listTeacherClass = await TeacherClassRepo().getTeacherClass();
             listCategory = await HomeRepo().getCategories();
+            if (!mounted) return;
             if (listTeacherClass.isNotEmpty) {
               Navigator.pushReplacement(
                 context,
@@ -69,6 +73,7 @@ class _SplshscreenState extends State<Splshscreen> {
             } else {
               // remove token chỗ này
               await removeToken();
+              if (!mounted) return;
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -79,6 +84,7 @@ class _SplshscreenState extends State<Splshscreen> {
           }
         } else {
           await removeToken();
+          if (!mounted) return;
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -88,6 +94,7 @@ class _SplshscreenState extends State<Splshscreen> {
         }
       } else {
         await removeToken();
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

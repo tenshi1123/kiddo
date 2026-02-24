@@ -80,71 +80,27 @@ class _ListConversationScreenState extends State<ListConversationScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-        child: isLoading
+      child: isLoading
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 10.h,
-                    ),
-                    // Row(
-                    //   children: [
-                    //     SizedBox(
-                    //       width: 20.w,
-                    //     ),
-                    //     GestureDetector(
-                    //       onTap: () {},
-                    //       child: Container(
-                    //         padding: EdgeInsets.symmetric(
-                    //           horizontal: 10.w,
-                    //           vertical: 4.h,
-                    //         ),
-                    //         decoration: BoxDecoration(
-                    //             color: Colors.white,
-                    //             borderRadius: BorderRadius.all(
-                    //               Radius.circular(16.r),
-                    //             ),
-                    //             boxShadow: [
-                    //               BoxShadow(
-                    //                 color: Colors.grey.withValues(alpha: 0.2),
-                    //                 spreadRadius: 5,
-                    //                 blurRadius: 7,
-                    //                 offset: const Offset(0, 2),
-                    //               ),
-                    //             ]),
-                    //         child: Text(
-                    //           'Danh sách giáo viên',
-                    //           style: defaultText14M.copyWith(
-                    //             decoration: TextDecoration.underline,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                    // SizedBox(
-                    //   height: 10.h,
-                    // ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(
-                          left: 20.w, right: 20.w, bottom: 20.w),
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: listConversation.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 10.h),
-                          child: ConversationItem(
-                            model: listConversation[index],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+            : ListView.builder(
+                padding: EdgeInsets.only(
+                  left: 20.w, 
+                  right: 20.w, 
+                  bottom: 20.w,
+                  top: 10.h, // Added top padding replacing SizedBox
                 ),
+                physics: const ClampingScrollPhysics(),
+                itemCount: listConversation.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 10.h),
+                    child: ConversationItem(
+                      model: listConversation[index],
+                    ),
+                  );
+                },
               ),
       ),
     );

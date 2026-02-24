@@ -237,6 +237,7 @@ class _InfoTest extends StatelessWidget {
                                   customerCourseScheduleId,
                               examDetailId: model.examDetailId,
                             );
+                            if (!context.mounted) return;
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => TestDetailScreen(

@@ -9,6 +9,7 @@ import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/customer_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:gal/gal.dart';
@@ -27,7 +28,7 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
   ScreenshotController screenshotController = ScreenshotController();
 
   bool isLoading = true;
-  late PaymentDetailModel detailPayment;
+  PaymentDetailModel? detailPayment;
   @override
   void initState() {
     super.initState();
@@ -37,6 +38,7 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
   Future<void> fetchData() async {
     try {
       final response = await CustomerRepo().getDetailPayment(widget.id);
+      if (!mounted) return;
       setState(() {
         detailPayment = response;
         isLoading = false;
@@ -118,8 +120,8 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
                     SizedBox(height: 16.h),
                     Screenshot(
                         controller: screenshotController,
-                        child: Image.network(
-                          detailPayment.linkQr,
+                        child: AppImage(
+                          url: detailPayment?.linkQr ?? '',
                           width: 343,
                           height: 454,
                           fit: BoxFit.cover,
@@ -146,8 +148,8 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
                               MaterialPageRoute(
                                 builder: (context) => ComfirmScreen(
                                   pendingPaymentId:
-                                      detailPayment.pendingPaymentId,
-                                  orderId: detailPayment.orderId,
+                                      detailPayment?.pendingPaymentId ?? '',
+                                  orderId: detailPayment?.orderId ?? '',
                                 ),
                               ),
                             );
@@ -180,12 +182,14 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
       if (!hasPermission) {
         final bool granted = await Gal.requestAccess(toAlbum: false);
         if (!granted) {
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
                 content: Text('Quyền truy cập thư viện ảnh bị từ chối.')),
           );
 
           if (await Permission.photos.isPermanentlyDenied) {
+            if (!mounted) return;
             openAppSettings();
           }
           return;
@@ -199,10 +203,12 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
       );
 
       if (byteData != null) {
+        if (!mounted) return;
         await Gal.putImageBytes(
           byteData,
           name: "Kiddo_QR_${DateTime.now().millisecondsSinceEpoch}",
         );
+        if (!mounted) return;
         showDialog(
           context: context,
           builder: (context) {
@@ -215,6 +221,7 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
               actions: [
                 ElevatedButton(
                   onPressed: () {
+                    if (!mounted) return;
                     Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(

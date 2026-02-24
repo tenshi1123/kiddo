@@ -58,14 +58,16 @@ extension AppPagesExtension on AppPages {
     }
   }
 
-  static PageConfig getPageConfigForUnknownRouteName(String? name) =>
-      getPageConfig(
-        name == AppPages.Initial.name || name?.isEmpty == true
-            ? AppPages.Initial
-            : AppPages.values.firstWhere(
-                (e) => e.name.contains(name!),
-                orElse: () => AppPages.Initial,
-              ),
-        {},
-      );
+  static PageConfig getPageConfigForUnknownRouteName(String? name) {
+    final n = name ?? '';
+    return getPageConfig(
+      n == AppPages.Initial.name || n.isEmpty
+          ? AppPages.Initial
+          : AppPages.values.firstWhere(
+              (e) => e.name.contains(n),
+              orElse: () => AppPages.Initial,
+            ),
+      {},
+    );
+  }
 }

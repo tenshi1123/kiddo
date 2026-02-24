@@ -115,6 +115,7 @@ class _EditInfoStudentScreenState extends State<EditInfoStudentScreen> {
                     email: emailController.text,
                     dob: birthdayController.text,
                   );
+                  if (!context.mounted) return;
                   //show dialog
                   showDialog(
                     context: context,
@@ -189,6 +190,7 @@ Widget buildLabeledField({
                   firstDate: DateTime(1900),
                   lastDate: DateTime(2100),
                 );
+                if (!context.mounted) return;
                 if (selectedDate != null) {
                   controller.text =
                       '${selectedDate.day.toString().padLeft(2, '0')}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.year}';

@@ -27,6 +27,7 @@ import 'package:kiddo/utils/constants/const_string.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:kiddo/utils/widget/custom_dialog.dart';
 import 'package:kiddo/utils/widget/custom_widget.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -68,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
       final data2 = await CustomerRepo().getChilren();
 
+      if (!mounted) return;
       setState(() {
         listLichHoc = data;
         listChild = data2;
@@ -147,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   .getListClass();
                                               listCategory = await HomeRepo()
                                                   .getCategories();
+                                              if (!mounted) return;
                                               AppRouter.toPage(
                                                 context,
                                                 AppPages.BottomNavBarPage,
@@ -214,99 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 20.h,
             ),
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(12.dg),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Image.network(
-                    widget.model.avatar,
-                    width: 50.w,
-                    height: 50.h,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                SizedBox(
-                  width: 12.w,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 220.w,
-                      child: Text(
-                        'Hi ${widget.model.fullName}',
-                        style: defaultText18B.copyWith(color: colorText),
-                      ),
-                    ),
-                    dateTimeDisplayWidget()
-                  ],
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NotificationScreen(),
-                      ),
-                    );
-                  },
-                  child: SizedBox(
-                    width: 37.w,
-                    height: 26.h,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          left: 0,
-                          bottom: 0,
-                          child: SvgPicture.asset(
-                            'assets/icons/bell.svg',
-                            width: 20.w,
-                            height: 20.h,
-                            colorFilter: ColorFilter.mode(
-                              mainOrange,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                        // Positioned(
-                        //   right: 0,
-                        //   top: 0,
-                        //   child: Container(
-                        //     padding: EdgeInsets.symmetric(
-                        //       horizontal: 8.w,
-                        //       vertical: 0,
-                        //     ),
-                        //     decoration: BoxDecoration(
-                        //       color: mainBlue,
-                        //       borderRadius: BorderRadius.circular(12.r),
-                        //       border: Border.all(
-                        //         color: Colors.white,
-                        //         width: 1.5,
-                        //       ),
-                        //     ),
-                        //     child: Text(
-                        //       '3',
-                        //       style: defaultText12B.copyWith(
-                        //         color: Colors.white,
-                        //         fontSize: 10.sp,
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 14.w,
-                )
-              ],
-            ),
+            _Header(model: widget.model),
             SizedBox(
               height: 30.h,
             ),
@@ -314,348 +225,16 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 30.h,
             ),
-            Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 20.h,
-              ),
-              decoration: BoxDecoration(
-                color: Color(0xffFBF0E7),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(24.r),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 16.w,
-                      ),
-                      SvgPicture.asset(
-                        'assets/icons/schedule_icon.svg',
-                        width: 16.w,
-                        height: 16.h,
-                      ),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Text(
-                        'Lịch học sắp tới',
-                        style: defaultText14B,
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CalenderScreen(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 6.h,
-                            horizontal: 11.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: mainOrange,
-                            border: Border.all(
-                              color: Colors.white,
-                            ),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.r),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withValues(alpha: 0.2),
-                                spreadRadius: 5,
-                                blurRadius: 7,
-                                offset: const Offset(
-                                    0, 2), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              SvgPicture.asset('assets/icons/schedule.svg',
-                                  width: 14.w, height: 14.h),
-                              Text(
-                                '  Xem lịch học',
-                                style: defaultText12B.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 16.w,
-                      )
-                    ],
-                  ),
-                  isLoading
-                      ? CircularProgressIndicator()
-                      : listLichHoc.isEmpty
-                          ? Text(
-                              'Chưa có lịch học sắp tới',
-                              style: defaultText14M,
-                            )
-                          : ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(16.r),
-                              ),
-                              child: SizedBox(
-                                height: 216.h,
-                                width: 375.w,
-                                child: PageView.builder(
-                                  padEnds: false,
-                                  controller: controller1,
-                                  itemCount: listLichHoc.length,
-                                  itemBuilder: (_, index) {
-                                    return _Upcoming(listLichHoc[index]);
-                                  },
-                                ),
-                              ),
-                            ),
-                  SizedBox(
-                    height: 8.h,
-                  ),
-                  SmoothPageIndicator(
-                    controller: controller1,
-                    count: listLichHoc.length > 3 ? 3 : listLichHoc.length,
-                    effect: CustomizableEffect(
-                      activeDotDecoration: DotDecoration(
-                        width: 20.w,
-                        height: 8.h,
-                        color: mainOrange,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      dotDecoration: DotDecoration(
-                        width: 8.w,
-                        height: 8.h,
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(16),
-                        verticalOffset: 0,
-                      ),
-                      spacing: 6.0,
-                    ),
-                    onDotClicked: (index) {
-                      controller1.animateToPage(index,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut);
-                    },
-                  ),
-                ],
-              ),
+            _ScheduleList(
+              isLoading: isLoading,
+              listLichHoc: listLichHoc,
+              controller: controller1,
             ),
-            GestureDetector(
-              onTap: () {
-                //show dialog
-                showInviteDialog(context);
-              },
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-                width: 343.w,
-                height: 44.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8.r),
-                  ),
-                  color: mainPurple,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withValues(alpha: 0.2),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/invite.svg',
-                      width: 16.w,
-                      height: 16.h,
-                    ),
-                    Text(
-                      '  Mời bạn bè, nhận quà liền tay',
-                      style: defaultText14B.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 20.w, top: 10.h),
-              child: Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/news.svg',
-                    width: 16.w,
-                    height: 16.h,
-                  ),
-                  Text(
-                    '  Bảng tin trung tâm',
-                    style: defaultText14B,
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            SizedBox(
-              height: 284.h,
-              width: 375.w,
-              child: ValueListenableBuilder<int>(
-                valueListenable: _centralBoard,
-                builder: (BuildContext context, int value, Widget? child) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: 55.h,
-                        width: 350.w,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: const ScrollPhysics(),
-                          itemCount: listCategory.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: EdgeInsets.only(right: 16.w),
-                              child: GestureDetector(
-                                onTap: () {
-                                  _centralBoard.value = index;
-                                },
-                                child: Column(
-                                  children: [
-                                    feedbackItem(
-                                      value == index,
-                                      listCategory[index].categoryName,
-                                    ),
-                                    const Spacer(),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                          height: 229.h,
-                          width: 350.w,
-                          child: FutureBuilder(
-                            future: HomeRepo().getListPost(
-                                id: listCategory[_centralBoard.value]
-                                    .id), // Hàm gọi API
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Center(
-                                  child: SizedBox(
-                                    width: 40.w,
-                                    height: 40.h,
-                                    child: const CircularProgressIndicator(),
-                                  ),
-                                );
-                              } else if (snapshot.hasError) {
-                                return Text(
-                                  'Vui lòng kiểm tra lại kết nối internet',
-                                  style: defaultText14M,
-                                );
-                              } else if (snapshot.hasData) {
-                                final listPost =
-                                    snapshot.data as List<PostModel>;
-                                return SizedBox(
-                                  width: 375.w,
-                                  height: 166.h,
-                                  child: listPost.isEmpty
-                                      ? Center(
-                                          child: Center(
-                                            child: Image.asset(
-                                              'assets/images/empty.png',
-                                              height: 200.h,
-                                              width: 200.w,
-                                            ),
-                                          ),
-                                        )
-                                      : Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(16.r),
-                                              ),
-                                              child: SizedBox(
-                                                height: 208.h,
-                                                width: 375.w,
-                                                child: PageView.builder(
-                                                  padEnds: false,
-                                                  controller: controller3,
-                                                  itemCount: listPost.length,
-                                                  itemBuilder: (_, index) {
-                                                    return PostItem(
-                                                      model: listPost[index],
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            SmoothPageIndicator(
-                                              controller: controller3,
-                                              count: listPost.isEmpty
-                                                  ? 0
-                                                  : listPost.length > 3
-                                                      ? 3
-                                                      : listPost.length,
-                                              effect: CustomizableEffect(
-                                                activeDotDecoration:
-                                                    DotDecoration(
-                                                  width: 20.w,
-                                                  height: 8.h,
-                                                  color: Colors.indigo,
-                                                  borderRadius:
-                                                      BorderRadius.circular(24),
-                                                ),
-                                                dotDecoration: DotDecoration(
-                                                  width: 8.w,
-                                                  height: 8.h,
-                                                  color: Colors.grey,
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  verticalOffset: 0,
-                                                ),
-                                                spacing: 6.0,
-                                              ),
-                                              onDotClicked: (index) {
-                                                controller3.animateToPage(index,
-                                                    duration: const Duration(
-                                                        milliseconds: 300),
-                                                    curve: Curves.easeInOut);
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                );
-                              } else {
-                                return Text(
-                                  'Vui lòng kiểm tra lại kết nối internet2',
-                                  style: defaultText14M,
-                                );
-                              }
-                            },
-                          )),
-                    ],
-                  );
-                },
-              ),
+            const _InviteBanner(),
+            _NewsSection(
+              centralBoard: _centralBoard,
+              listCategory: listCategory,
+              controller: controller3,
             ),
             SizedBox(
               height: 120.h,
@@ -1046,4 +625,440 @@ Widget feedbackItem(bool value, String title) {
               color: mainOrange,
             ))),
   );
+}
+
+class _Header extends StatelessWidget {
+  const _Header({required this.model});
+
+  final ProfileModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(12.dg),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+          ),
+          child: AppImage(
+            url: model.avatar,
+            width: 50.w,
+            height: 50.h,
+            fit: BoxFit.fill,
+          ),
+        ),
+        SizedBox(width: 12.w),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 220.w,
+              child: Text(
+                'Hi! ${model.fullName}',
+                style: defaultText18B.copyWith(color: colorText),
+              ),
+            ),
+            dateTimeDisplayWidget()
+          ],
+        ),
+        const Spacer(),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NotificationScreen(),
+              ),
+            );
+          },
+          child: SizedBox(
+            width: 37.w,
+            height: 26.h,
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 0,
+                  bottom: 0,
+                  child: SvgPicture.asset(
+                    'assets/icons/bell.svg',
+                    width: 20.w,
+                    height: 20.h,
+                    colorFilter: ColorFilter.mode(
+                      mainOrange,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(width: 14.w)
+      ],
+    );
+  }
+}
+
+class _ScheduleList extends StatelessWidget {
+  const _ScheduleList({
+    required this.isLoading,
+    required this.listLichHoc,
+    required this.controller,
+  });
+
+  final bool isLoading;
+  final List<ScheduleModel> listLichHoc;
+  final PageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20.h),
+      decoration: BoxDecoration(
+        color: const Color(0xffFBF0E7),
+        borderRadius: BorderRadius.all(Radius.circular(24.r)),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(width: 16.w),
+              SvgPicture.asset(
+                'assets/icons/schedule_icon.svg',
+                width: 16.w,
+                height: 16.h,
+              ),
+              SizedBox(width: 10.w),
+              Text(
+                'Lịch học sắp tới',
+                style: defaultText14B,
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CalenderScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 6.h,
+                    horizontal: 11.w,
+                  ),
+                  decoration: BoxDecoration(
+                    color: mainOrange,
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withValues(alpha: 0.2),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      SvgPicture.asset('assets/icons/schedule.svg',
+                          width: 14.w, height: 14.h),
+                      Text(
+                        '  Xem lịch học',
+                        style: defaultText12B.copyWith(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 16.w)
+            ],
+          ),
+          isLoading
+              ? const CircularProgressIndicator()
+              : listLichHoc.isEmpty
+                  ? Text(
+                      'Chưa có lịch học sắp tới',
+                      style: defaultText14M,
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(16.r)),
+                      child: SizedBox(
+                        height: 216.h,
+                        width: 375.w,
+                        child: PageView.builder(
+                          padEnds: false,
+                          controller: controller,
+                          itemCount: listLichHoc.length,
+                          itemBuilder: (_, index) {
+                            return _Upcoming(listLichHoc[index]);
+                          },
+                        ),
+                      ),
+                    ),
+          SizedBox(height: 8.h),
+          SmoothPageIndicator(
+            controller: controller,
+            count: listLichHoc.length > 3 ? 3 : listLichHoc.length,
+            effect: CustomizableEffect(
+              activeDotDecoration: DotDecoration(
+                width: 20.w,
+                height: 8.h,
+                color: mainOrange,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              dotDecoration: DotDecoration(
+                width: 8.w,
+                height: 8.h,
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(16),
+                verticalOffset: 0,
+              ),
+              spacing: 6.0,
+            ),
+            onDotClicked: (index) {
+              controller.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InviteBanner extends StatelessWidget {
+  const _InviteBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showInviteDialog(context);
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+        width: 343.w,
+        height: 44.h,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+          color: mainPurple,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.2),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/icons/invite.svg',
+              width: 16.w,
+              height: 16.h,
+            ),
+            Text(
+              '  Mời bạn bè, nhận quà liền tay',
+              style: defaultText14B.copyWith(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NewsSection extends StatelessWidget {
+  const _NewsSection({
+    required this.centralBoard,
+    required this.listCategory,
+    required this.controller,
+  });
+
+  final ValueNotifier<int> centralBoard;
+  final List<CategoryModel> listCategory;
+  final PageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 20.w, top: 10.h),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                'assets/icons/news.svg',
+                width: 16.w,
+                height: 16.h,
+              ),
+              Text(
+                '  Bảng tin trung tâm',
+                style: defaultText14B,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 10.h),
+        SizedBox(
+          height: 284.h,
+          width: 375.w,
+          child: ValueListenableBuilder<int>(
+            valueListenable: centralBoard,
+            builder: (BuildContext context, int value, Widget? child) {
+              return Column(
+                children: [
+                  SizedBox(
+                    height: 55.h,
+                    width: 350.w,
+                    child: ListView.builder(
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: listCategory.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(right: 16.w),
+                          child: GestureDetector(
+                            onTap: () {
+                              centralBoard.value = index;
+                            },
+                            child: Column(
+                              children: [
+                                feedbackItem(
+                                  value == index,
+                                  listCategory[index].categoryName,
+                                ),
+                                const Spacer(),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 229.h,
+                    width: 350.w,
+                    child: FutureBuilder(
+                      future: HomeRepo().getListPost(
+                        id: listCategory[centralBoard.value].id,
+                      ),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: SizedBox(
+                              width: 40.w,
+                              height: 40.h,
+                              child: const CircularProgressIndicator(),
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text(
+                            'Vui lòng kiểm tra lại kết nối internet',
+                            style: defaultText14M,
+                          );
+                        } else if (snapshot.hasData) {
+                          final listPost = snapshot.data as List<PostModel>;
+                          return SizedBox(
+                            width: 375.w,
+                            height: 166.h,
+                            child: listPost.isEmpty
+                                ? Center(
+                                    child: Center(
+                                      child: Image.asset(
+                                        'assets/images/empty.png',
+                                        height: 200.h,
+                                        width: 200.w,
+                                      ),
+                                    ),
+                                  )
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(16.r),
+                                        ),
+                                        child: SizedBox(
+                                          height: 208.h,
+                                          width: 375.w,
+                                          child: PageView.builder(
+                                            padEnds: false,
+                                            controller: controller,
+                                            itemCount: listPost.length,
+                                            itemBuilder: (_, index) {
+                                              return PostItem(
+                                                model: listPost[index],
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      SmoothPageIndicator(
+                                        controller: controller,
+                                        count: listPost.isEmpty
+                                            ? 0
+                                            : listPost.length > 3
+                                                ? 3
+                                                : listPost.length,
+                                        effect: CustomizableEffect(
+                                          activeDotDecoration: DotDecoration(
+                                            width: 20.w,
+                                            height: 8.h,
+                                            color: Colors.indigo,
+                                            borderRadius:
+                                                BorderRadius.circular(24),
+                                          ),
+                                          dotDecoration: DotDecoration(
+                                            width: 8.w,
+                                            height: 8.h,
+                                            color: Colors.grey,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            verticalOffset: 0,
+                                          ),
+                                          spacing: 6.0,
+                                        ),
+                                        onDotClicked: (index) {
+                                          controller.animateToPage(
+                                            index,
+                                            duration: const Duration(
+                                              milliseconds: 300,
+                                            ),
+                                            curve: Curves.easeInOut,
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                          );
+                        } else {
+                          return Text(
+                            'Vui lòng kiểm tra lại kết nối internet2',
+                            style: defaultText14M,
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 }

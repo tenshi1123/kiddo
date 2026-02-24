@@ -85,6 +85,7 @@ class _ListDocumentsState extends State<ListDocuments> {
                     scheduleId: listClass[index].courseScheduleId,
                     courseId: listClass[index].courseId,
                   );
+                  if (!context.mounted) return;
                   pushWithoutNavBar(
                     context,
                     MaterialPageRoute(

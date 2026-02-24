@@ -37,13 +37,16 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
     );
 
     if (result != null && result.files.single.path != null) {
-      setState(() {
-        pickedFile = PickedFileModel(
-          name: result.files.single.name,
-          path: result.files.single.path!,
-          size: result.files.single.size,
-        );
-      });
+      final path = result.files.single.path;
+      if (path != null) {
+        setState(() {
+          pickedFile = PickedFileModel(
+            name: result.files.single.name,
+            path: path,
+            size: result.files.single.size,
+          );
+        });
+      }
     }
   }
 
@@ -226,7 +229,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
         children: [
           Expanded(
             child: Text(
-              pickedFile!.name,
+              pickedFile?.name ?? '',
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -255,14 +258,17 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
           onPressed: pickedFile == null
               ? null
               : () {
+                  final pf = pickedFile;
+                  final session = selectedSession;
+                  if (pf == null || session == null) return;
                   // TODO: upload file lên server
-                  print('Upload: ${pickedFile!.path}');
+                  print('Upload: ${pf.path}');
                   TeacherClassRepo().uploadDocument(
-                    id: selectedSession!.eventCheckinOffId,
+                    id: session.eventCheckinOffId,
                     type: selectedType.toString(),
                     name: _nameController.text,
                     note: _noteController.text,
-                    photo: File(pickedFile!.path),
+                    photo: File(pf.path),
                   );
                 },
           child: Text(

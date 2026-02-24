@@ -142,7 +142,10 @@ class AppRouter {
   static void subscribe(RouteAware routeAware, BuildContext context) {
     if (_routeObserver == null) _routeObserverIsRequired();
 
-    _routeObserver?.subscribe(routeAware, ModalRoute.of(context)!);
+    final modal = ModalRoute.of(context);
+    if (modal != null) {
+      _routeObserver?.subscribe(routeAware, modal);
+    }
   }
 
   static GlobalKey<NavigatorState>? _navigatorKey;
@@ -152,13 +155,11 @@ class AppRouter {
 
   static NavigatorState? get currentNavigator => _navigatorKey?.currentState;
   static NavigatorState get navigator {
-    try {
-      return _navigatorKey!.currentState!;
-    } catch (e) {
-      throw StateError(
-        "${e.toString()}. Maybe you did not create Navigator key",
-      );
-    }
+    final state = _navigatorKey?.currentState;
+    if (state != null) return state;
+    throw StateError(
+      "NavigatorState not available. Maybe you did not create Navigator key",
+    );
   }
 
   static void unsubscribe<R extends Route<dynamic>>(RouteAware routeAware) {
@@ -179,8 +180,10 @@ class AppRouter {
 
   /// Trick explained here: https://github.com/flutter/flutter/issues/20451
   /// Note `ModalRoute.of(context).settings.name` doesn't always work.
-  static String? getCurrentNavigatorRouteName(BuildContext context) =>
-      getCurrentNavigatorRoute(context)!.settings.name;
+  static String? getCurrentNavigatorRouteName(BuildContext context) {
+    final current = getCurrentNavigatorRoute(context);
+    return current?.settings.name;
+  }
 
   /// {@macro flutter.widgets.widgetsApp.onGenerateInitialRoutes}
   static List<Route<dynamic>> onGenerateInitialRoutes(String initialRoute) => [

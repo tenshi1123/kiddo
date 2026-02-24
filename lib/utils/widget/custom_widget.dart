@@ -16,6 +16,7 @@ import 'package:kiddo/utils/constants/styles.dart';
 import 'package:kiddo/utils/widget/webview_screen.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 
 class Lesson extends StatelessWidget {
   const Lesson({
@@ -144,6 +145,7 @@ class ExcerciseItem extends StatelessWidget {
           id: model?.id ?? '',
           customerCourseScheduleId: courseID ?? '',
         );
+        if (!context.mounted) return;
         if (model?.type == '1') {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => TestScreen(
@@ -752,8 +754,8 @@ class PostItem extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(16.r)),
-            child: Image.network(
-              model.img,
+            child: AppImage(
+              url: model.img,
               width: 240.w,
               height: 160.h,
               fit: BoxFit.fill,

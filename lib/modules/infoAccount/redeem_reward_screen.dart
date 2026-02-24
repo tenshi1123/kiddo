@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kiddo/student_models/gift_models.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/widget/app_image.dart';
 
 class RedeemRewardScreen extends StatefulWidget {
   const RedeemRewardScreen({super.key, required this.giftModel});
@@ -322,8 +323,8 @@ class PresentItem extends StatelessWidget {
               ),
             ],
           ),
-          Image.network(
-            'https://lms.kiddoenglish.edu.vn/images/${model.img}',
+          AppImage(
+            url: 'https://lms.kiddoenglish.edu.vn/images/${model.img}',
             height: 88.h,
             fit: BoxFit.fitHeight,
           ),
