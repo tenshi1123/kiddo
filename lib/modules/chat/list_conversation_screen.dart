@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/student_models/chat_models.dart';
 import 'package:kiddo/student_repo/chat_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
@@ -37,6 +38,7 @@ class _ListConversationScreenState extends State<ListConversationScreen> {
       // Xử lý lỗi nếu cần
       debugPrint('Lỗi khi gọi API: $e');
       setState(() {
+        listConversation = [];
         isLoading = false;
       });
     }
@@ -80,28 +82,35 @@ class _ListConversationScreenState extends State<ListConversationScreen> {
             topRight: Radius.circular(24.r),
           ),
         ),
-      child: isLoading
+        child: isLoading
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : ListView.builder(
-                padding: EdgeInsets.only(
-                  left: 20.w, 
-                  right: 20.w, 
-                  bottom: 20.w,
-                  top: 10.h, // Added top padding replacing SizedBox
-                ),
-                physics: const ClampingScrollPhysics(),
-                itemCount: listConversation.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 10.h),
-                    child: ConversationItem(
-                      model: listConversation[index],
+            : listConversation.isEmpty
+                ? Center(
+                    child: Text(
+                      L10n.of(context).noConversation,
+                      style: defaultText14M,
                     ),
-                  );
-                },
-              ),
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.only(
+                      left: 20.w,
+                      right: 20.w,
+                      bottom: 20.w,
+                      top: 10.h, // Added top padding replacing SizedBox
+                    ),
+                    physics: const ClampingScrollPhysics(),
+                    itemCount: listConversation.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 10.h),
+                        child: ConversationItem(
+                          model: listConversation[index],
+                        ),
+                      );
+                    },
+                  ),
       ),
     );
   }

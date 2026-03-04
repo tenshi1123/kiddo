@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:kiddo/core/localization/language_cubit.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/modules/feature_home/hoc_phi/confirm_screen.dart';
 import 'package:kiddo/student_repo/customer_repo.dart';
 import 'package:kiddo/student_repo/mycourse_repo.dart';
@@ -823,4 +826,54 @@ Future<bool?> showConfirmDialog({
       );
     },
   );
+}
+
+void showLanguageDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (_) {
+      return AlertDialog(
+        title: Text(L10n.of(context).chooseLanguage),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _LanguageItem(
+              title: 'Tiếng Việt',
+              locale: const Locale('vi'),
+            ),
+            _LanguageItem(
+              title: 'English',
+              locale: const Locale('en'),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+class _LanguageItem extends StatelessWidget {
+  final String title;
+  final Locale locale;
+
+  const _LanguageItem({
+    required this.title,
+    required this.locale,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final current = context.watch<LanguageCubit>().state;
+
+    return ListTile(
+      title: Text(title),
+      trailing: current.languageCode == locale.languageCode
+          ? const Icon(Icons.check, color: Colors.green)
+          : null,
+      onTap: () {
+        context.read<LanguageCubit>().changeLanguage(locale);
+        Navigator.pop(context);
+      },
+    );
+  }
 }

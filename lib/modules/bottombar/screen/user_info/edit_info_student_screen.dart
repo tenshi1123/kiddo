@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/customer_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
@@ -34,7 +35,9 @@ class _EditInfoStudentScreenState extends State<EditInfoStudentScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Thông tin cá nhân'),
+        title: Text(
+          L10n.of(context).profileInfo,
+        ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,

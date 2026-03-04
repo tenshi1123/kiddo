@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 
@@ -51,7 +52,7 @@ class _ChangePassScreenState extends State<ChangePassScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Thay đổi mật khẩu',
+                    L10n.of(context).changePassword,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.clip,
                     style: defaultText18B.copyWith(

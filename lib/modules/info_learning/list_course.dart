@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/main.dart';
 import 'package:kiddo/modules/info_learning/detail_course_screen.dart';
 import 'package:kiddo/modules/notification/notification.dart';
@@ -26,7 +27,7 @@ class _ListCourseScreenState extends State<ListCourseScreen> {
           elevation: 0,
           centerTitle: true,
           title: Text(
-            'Danh sách khoá học',
+            L10n.of(context).listCourse,
             style: defaultText16B.copyWith(color: Colors.white),
           ),
           leading: IconButton(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/main.dart';
 import 'package:kiddo/modules/bottombar/screen/extension.dart/schedule_screen.dart';
 import 'package:kiddo/modules/feature_home/chinh_sach/list_chinh_sach.dart';
@@ -117,11 +118,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: const Text('Chuyển tài khoản'),
+                                        title: Text(
+                                          L10n.of(context).switchAccount,
+                                        ),
                                         content: RichText(
                                           text: TextSpan(
-                                            text:
-                                                'Bạn chắc chắn muốn chuyển sang tài khoản ',
+                                            text: L10n.of(context)
+                                                .comfirmSwitchAcc,
                                             style: defaultText14M,
                                             children: <TextSpan>[
                                               TextSpan(
@@ -336,7 +339,7 @@ class _Upcoming extends StatelessWidget {
                   width: 24.w,
                   height: 24.h,
                 ),
-                Text('Lớp học ${model.typeLearn}',
+                Text('${L10n.of(context).lopHoc2} ${model.typeLearn}',
                     style: defaultText14M.copyWith(
                       color: mainBlue,
                     )),

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/modules/chat/list_conversation_screen.dart';
 import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/teacher_repo/teacher_info_repo.dart';
@@ -86,10 +87,10 @@ class _BottombarTeacherState extends State<BottombarTeacher> {
       ),
     ];
     final List<Map<String, String>> items = [
-      {"icon": 'home_icon.svg', "label": "Trang chủ"},
-      {"icon": 'icon_class.svg', "label": "Lớp học"},
-      {"icon": 'chat.svg', "label": "Chat"},
-      {"icon": 'personal.svg', "label": "Tài khoản"},
+      {"icon": 'home_icon.svg', "label": L10n.of(context).home},
+      {"icon": 'icon_class.svg', "label": L10n.of(context).lopHoc2},
+      {"icon": 'chat.svg', "label": 'Chat'},
+      {"icon": 'personal.svg', "label": L10n.of(context).profile},
     ];
     return isLoading
         ? Image.asset(

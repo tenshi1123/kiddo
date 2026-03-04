@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/modules/bottombar/screen/user_info/change_pass_screen.dart';
 import 'package:kiddo/modules/bottombar/screen/user_info/detail_info_screen.dart';
+import 'package:kiddo/modules/bottombar/screen/user_info/pronuce_test.dart';
+import 'package:kiddo/modules/bottombar/screen/user_info/speech_to_text_widget.dart';
 import 'package:kiddo/modules/splash/onboarding.dart';
 import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/customer_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
-
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:kiddo/utils/widget/app_image.dart';
+import 'package:kiddo/utils/widget/custom_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -62,28 +65,16 @@ class _AccountScreenState extends State<AccountScreen> {
                         child: Column(
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SizedBox(width: 24.w),
                                 Text(
-                                  'Tài khoản',
+                                  L10n.of(context).switchAccount,
                                   style: defaultText16B.copyWith(
                                     color: Colors.white,
                                   ),
                                 ),
-                                SvgPicture.asset(
-                                  'assets/icons/bell.svg',
-                                  width: 24.w,
-                                  height: 24.h,
-                                  colorFilter: ColorFilter.mode(
-                                    Colors.white,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
                               ],
-                            ),
-                            SizedBox(
-                              height: 16.h,
                             ),
                           ],
                         ),
@@ -138,7 +129,10 @@ class _AccountScreenState extends State<AccountScreen> {
                   style: defaultText14M.copyWith(
                       color: colorText.withValues(alpha: 0.6)),
                 ),
-                GestureDetector(
+
+                buildActionTile(
+                  title: L10n.of(context).accountInfo,
+                  iconPath: 'assets/icons/person.svg',
                   onTap: () {
                     Navigator.push(
                       context,
@@ -149,47 +143,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                     );
                   },
-                  child: Container(
-                    margin: EdgeInsets.only(top: 16.h),
-                    width: 343.w,
-                    height: 60.h,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F4),
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 36.w,
-                            height: 36.h,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: Center(
-                              child: SvgPicture.asset(
-                                'assets/icons/person.svg',
-                                width: 20.w,
-                                height: 20.h,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Text("Thông tin tài khoản", style: defaultText14B),
-                          Spacer(),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20.r,
-                            color: colorText,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
                 ),
-                GestureDetector(
+                buildActionTile(
+                  title: L10n.of(context).changePass,
+                  iconPath: 'assets/icons/key.svg',
                   onTap: () {
                     Navigator.push(
                       context,
@@ -198,91 +155,31 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                     );
                   },
-                  child: Container(
-                    margin: EdgeInsets.only(top: 16.h),
-                    width: 343.w,
-                    height: 60.h,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F4),
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 36.w,
-                            height: 36.h,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: Center(
-                              child: SvgPicture.asset(
-                                'assets/icons/key.svg',
-                                width: 20.w,
-                                height: 20.h,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Text("Đổi mật khẩu", style: defaultText14B),
-                          Spacer(),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20.r,
-                            color: colorText,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
                 ),
-                GestureDetector(
+                buildActionTile(
+                  title: L10n.of(context).language,
+                  onTap: () {
+                    showLanguageDialog(context);
+                  },
+                ),
+                buildActionTile(
+                  title: L10n.of(context).logout,
+                  iconPath: 'assets/icons/logout.svg',
+                  textColor: mainRed,
                   onTap: () => _dialogBuilder(context),
-                  child: Container(
-                    margin: EdgeInsets.only(top: 16.h),
-                    width: 343.w,
-                    height: 60.h,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F4),
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 36.w,
-                            height: 36.h,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: Center(
-                              child: SvgPicture.asset(
-                                'assets/icons/logout.svg',
-                                width: 20.w,
-                                height: 20.h,
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Text("Đăng xuất",
-                              style: defaultText14B.copyWith(
-                                color: mainRed,
-                              )),
-                          Spacer(),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 20.r,
-                            color: colorText,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ),
+                //test button
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PronunciationDemo(),
+                      ),
+                    );
+                  },
+                  child: Text("Test"),
+                )
               ],
             ),
     );
@@ -341,5 +238,62 @@ Future<void> _dialogBuilder(BuildContext context) {
         ],
       );
     },
+  );
+}
+
+Widget buildActionTile({
+  required String title,
+  String? iconPath,
+  required VoidCallback onTap,
+  Color? textColor,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      margin: EdgeInsets.only(top: 16.h),
+      width: 343.w,
+      height: 60.h,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0F2F4),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: Row(
+          children: [
+            Container(
+              width: 36.w,
+              height: 36.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Center(
+                child: iconPath != null
+                    ? SvgPicture.asset(
+                        iconPath,
+                        width: 20.w,
+                        height: 20.h,
+                      )
+                    : Icon(Icons.language, size: 20.r),
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Text(
+              title,
+              style: defaultText14B.copyWith(
+                color: textColor ?? colorText,
+              ),
+            ),
+            const Spacer(),
+            Icon(
+              Icons.arrow_forward_ios,
+              size: 20.r,
+              color: colorText,
+            ),
+          ],
+        ),
+      ),
+    ),
   );
 }

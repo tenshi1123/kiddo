@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/customer_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
@@ -74,21 +75,12 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
                             ),
                             Spacer(),
                             Text(
-                              'Tài khoản',
+                              L10n.of(context).accountInfo,
                               style: defaultText16B.copyWith(
                                 color: Colors.white,
                               ),
                             ),
                             Spacer(),
-                            SvgPicture.asset(
-                              'assets/icons/bell.svg',
-                              width: 24.w,
-                              height: 24.h,
-                              colorFilter: ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.srcIn,
-                              ),
-                            ),
                             SizedBox(
                               width: 16.w,
                             )
@@ -196,7 +188,7 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
               ]),
             ),
             MyTextFormField(
-              labelText: 'Họ và tên',
+              labelText: L10n.of(context).fullName,
               controller: fullNameController,
               keyboardType: TextInputType.phone,
               onChanged: (value) {
@@ -207,7 +199,7 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
               hasIcon: true,
             ),
             MyTextFormField(
-              labelText: 'Số điện thoại',
+              labelText: L10n.of(context).phone,
               controller: TextEditingController(text: widget.model.phone),
               keyboardType: TextInputType.phone,
               onChanged: (value) {},

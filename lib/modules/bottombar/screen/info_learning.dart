@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/main.dart';
 import 'package:kiddo/modules/info_learning/detail_course_screen.dart';
 import 'package:kiddo/modules/info_learning/list_course.dart';
@@ -237,7 +238,8 @@ class InfoLearingScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Chi tiết khóa học', style: defaultText14B),
+                      Text(L10n.of(context).detailCourse,
+                          style: defaultText14B),
                       Spacer(),
                       Icon(Icons.arrow_forward_ios, size: 16.sp),
                     ],
@@ -273,7 +275,7 @@ class InfoLearingScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Danh sách khoá học', style: defaultText14B),
+                      Text(L10n.of(context).listCourse, style: defaultText14B),
                       Spacer(),
                       Icon(Icons.arrow_forward_ios, size: 16.sp),
                     ],

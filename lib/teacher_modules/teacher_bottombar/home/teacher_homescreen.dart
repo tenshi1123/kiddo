@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/main.dart';
 import 'package:kiddo/modules/lesson/detail_lesson_screen.dart';
 import 'package:kiddo/modules/notification/notification.dart';
@@ -215,7 +216,8 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                         width: 10.w,
                       ),
                       Text(
-                        'Lịch dạy sắp tới',
+                        L10n.of(context).lastestTeachingSchedule,
+                        //'Lịch dạy sắp tới',
                         style: defaultText14B,
                       ),
                       Spacer(),
@@ -288,8 +290,12 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                           width: 16.w,
                           height: 16.h,
                         ),
+                        SizedBox(
+                          width: 10.w,
+                        ),
                         Text(
-                          '  Bảng tin trung tâm',
+                          L10n.of(context).news,
+                          //'  Bảng tin trung tâm',
                           style: defaultText14B,
                         ),
                       ],
@@ -509,6 +515,7 @@ Widget _homeIcon({required String title, required String image}) {
         Center(
           child: Text(
             title,
+            textAlign: TextAlign.center,
             style: defaultText12B,
           ),
         ),
@@ -682,54 +689,11 @@ class _SmoothHorizontalMenuState extends State<SmoothHorizontalMenu> {
   final ScrollController _scrollController = ScrollController();
   double _currentPage = 0;
   int pageCount = 0;
-  final List<Map<String, dynamic>> menuItems = [
-    {
-      "icon": 'assets/images/lich_day.png',
-      "title": "Lịch dạy",
-      'screen': TeacherCalender(),
-    },
-    {
-      "icon": 'assets/images/lich_thi.png',
-      "title": "Điểm danh",
-      'screen': ListClassScreen(
-        type: 'Điểm danh',
-      ),
-    },
-    {
-      "icon": 'assets/images/hoc_lieu.png',
-      "title": "Tài liệu",
-      'screen': ListClassScreen(
-        type: 'Tài liệu',
-      ),
-    },
-    {
-      "icon": 'assets/images/nhan_xet.png',
-      "title": "Nhận xét",
-      'screen': ListClassScreen(
-        type: 'Nhận xét',
-      ),
-    },
-    {
-      "icon": 'assets/images/bao_cao.png',
-      "title": "Báo cáo",
-      'screen': BaoCaoScreen(),
-    },
-    {
-      "icon": 'assets/images/phan_hoi.png',
-      "title": "Phản hồi",
-      'screen': FeedbackUserScreen(),
-    },
-    // {
-    //   "icon": 'assets/images/chung_nhan.png',
-    //   "title": "Chứng nhận",
-    //   'screen': DiemDanhScreen(),
-    // },
-  ];
 
   @override
   void initState() {
     super.initState();
-    pageCount = (menuItems.length / 4).ceil();
+    pageCount = (6 / 4).ceil();
     _scrollController.addListener(() {
       final maxScroll = _scrollController.position.maxScrollExtent;
       final progress = (_scrollController.offset / maxScroll).clamp(0.0, 1.0);
@@ -742,6 +706,49 @@ class _SmoothHorizontalMenuState extends State<SmoothHorizontalMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> menuItems = [
+      {
+        "icon": 'assets/images/lich_day.png',
+        "title": L10n.of(context).teachingSchedule,
+        'screen': TeacherCalender(),
+      },
+      {
+        "icon": 'assets/images/lich_thi.png',
+        "title": L10n.of(context).diemdanh,
+        'screen': ListClassScreen(
+          type: 'Điểm danh',
+        ),
+      },
+      {
+        "icon": 'assets/images/hoc_lieu.png',
+        "title": L10n.of(context).materials,
+        'screen': ListClassScreen(
+          type: 'Tài liệu',
+        ),
+      },
+      {
+        "icon": 'assets/images/nhan_xet.png',
+        "title": L10n.of(context).comment,
+        'screen': ListClassScreen(
+          type: 'Nhận xét',
+        ),
+      },
+      {
+        "icon": 'assets/images/bao_cao.png',
+        "title": L10n.of(context).report,
+        'screen': BaoCaoScreen(),
+      },
+      {
+        "icon": 'assets/images/phan_hoi.png',
+        "title": L10n.of(context).feedBack,
+        'screen': FeedbackUserScreen(),
+      },
+      // {
+      //   "icon": 'assets/images/chung_nhan.png',
+      //   "title": "Chứng nhận",
+      //   'screen': DiemDanhScreen(),
+      // },
+    ];
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

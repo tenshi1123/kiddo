@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/modules/bottombar/utils.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/teacher_model/teacher_class_model.dart';
@@ -109,16 +110,20 @@ class _ListTeacherClassScreenState extends State<ListTeacherClassScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildClassTypeButton('Lớp học trung tâm'),
-                    _buildClassTypeButton('Lớp học zoom'),
+                    _buildClassTypeButton(
+                      L10n.of(context).centralClassroom,
+                    ),
+                    _buildClassTypeButton(
+                      L10n.of(context).zoomClassroom,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildClassTypeButton('Lớp phụ đạo'),
-                    _buildClassTypeButton('Lớp xếp bù'),
+                    _buildClassTypeButton(L10n.of(context).tutoringClass),
+                    _buildClassTypeButton(L10n.of(context).makeupClass),
                   ],
                 ),
               ],
