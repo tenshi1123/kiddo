@@ -542,4 +542,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get avatar => 'Avatar';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get notHaveTeachingSchedule =>
+      'There is no upcoming teaching schedule yet.';
 }

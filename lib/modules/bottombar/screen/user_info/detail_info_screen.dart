@@ -469,7 +469,7 @@ Future pickImageFromGallery1(
                           const Icon(Icons.verified_user_outlined,
                               color: Colors.blue),
                           const SizedBox(width: 8),
-                          Text('Ảnh đại diện', style: defaultText14M),
+                          Text(L10n.of(context).avatar, style: defaultText14M),
                           const Spacer(),
                           const CloseButton(
                             color: Colors.black,

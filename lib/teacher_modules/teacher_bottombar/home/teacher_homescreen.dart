@@ -230,7 +230,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                       ? CircularProgressIndicator()
                       : listLichHoc.isEmpty
                           ? Text(
-                              'Chưa có lịch dạy sắp tới',
+                              L10n.of(context).notHaveTeachingSchedule,
                               style: defaultText14M,
                             )
                           : ClipRRect(
@@ -377,7 +377,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                                                   ? Center(
                                                       child: Center(
                                                         child: Image.asset(
-                                                          'assets/images/empty.png',
+                                                          'assets/images/empty2.png',
                                                           height: 200.h,
                                                           width: 200.w,
                                                         ),

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/modules/feature_home/hoc_phi/confirm_screen.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/student_models/profile_model.dart';
@@ -163,7 +164,7 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
                               borderRadius: BorderRadius.circular(20.r),
                             ),
                             child: Text(
-                              'Xác nhận',
+                              L10n.of(context).confirm,
                               style: defaultText14B.copyWith(color: mainBlue),
                             ),
                           ),
@@ -216,7 +217,9 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              title: const Text("Thông báo"),
+              title: Text(
+                L10n.of(context).notification,
+              ),
               content: Text("Đã lưu ảnh mã QR vào thư viện ảnh!"),
               actions: [
                 ElevatedButton(
@@ -242,7 +245,7 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              title: const Text("Thông báo"),
+              title: Text(L10n.of(context).notification),
               content: Text("Không thể chụp ảnh widget."),
               actions: [
                 ElevatedButton(
@@ -268,7 +271,9 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            title: const Text("Thông báo"),
+            title: Text(
+              L10n.of(context).success,
+            ),
             content: Text("Lỗi: $e"),
             actions: [
               ElevatedButton(

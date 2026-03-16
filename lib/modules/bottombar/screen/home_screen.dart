@@ -980,7 +980,7 @@ class _NewsSection extends StatelessWidget {
                                 ? Center(
                                     child: Center(
                                       child: Image.asset(
-                                        'assets/images/empty.png',
+                                        'assets/images/empty2.png',
                                         height: 200.h,
                                         width: 200.w,
                                       ),

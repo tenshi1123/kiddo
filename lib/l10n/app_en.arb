@@ -179,5 +179,8 @@
     "comfirmSwitchAcc": "You definitely want to switch to account ",
     "detailCourse": "Detail Course",
     "listCourse": "Lists Course",
-    "avatar": "Avatar"
+    "avatar": "Avatar",
+    "success": "Success",
+    "close": "Close",
+    "notHaveTeachingSchedule": "There is no upcoming teaching schedule yet."
 }

@@ -541,4 +541,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get avatar => 'Ảnh đại diện';
+
+  @override
+  String get success => 'Thành công';
+
+  @override
+  String get close => 'Đóng';
+
+  @override
+  String get notHaveTeachingSchedule => 'Chưa có lịch dạy sắp tới';
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/modules/feature_home/hoc_phi/confirm_screen.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/teacher_model/roll_call_model.dart';
@@ -393,7 +394,8 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                             showDialog(
                                               context: context,
                                               builder: (_) => AlertDialog(
-                                                title: const Text("Thành công"),
+                                                title: Text(
+                                                    L10n.of(context).success),
                                                 content: const Text(
                                                     "Đã cập nhật điểm danh cho tất cả học sinh."),
                                                 actions: [
@@ -419,7 +421,8 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                                   TextButton(
                                                     onPressed: () =>
                                                         Navigator.pop(context),
-                                                    child: const Text("Đóng"),
+                                                    child: Text(
+                                                        L10n.of(context).close),
                                                   )
                                                 ],
                                               ),
@@ -524,8 +527,9 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                                         onPressed: () =>
                                                             Navigator.pop(
                                                                 context),
-                                                        child:
-                                                            const Text("Đóng"),
+                                                        child: Text(
+                                                            L10n.of(context)
+                                                                .close),
                                                       )
                                                     ],
                                                   ),
@@ -630,8 +634,9 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                                         onPressed: () =>
                                                             Navigator.pop(
                                                                 context),
-                                                        child:
-                                                            const Text("Đóng"),
+                                                        child: Text(
+                                                            L10n.of(context)
+                                                                .close),
                                                       )
                                                     ],
                                                   ),

@@ -136,7 +136,7 @@ class _EditInfoStudentScreenState extends State<EditInfoStudentScreen> {
                         actions: <Widget>[
                           TextButton(
                             child: Text(
-                              'ok',
+                              'Ok',
                               style: defaultText16M.copyWith(
                                   color: const Color(0xff3C3C3C)),
                             ),

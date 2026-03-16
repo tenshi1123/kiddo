@@ -579,7 +579,7 @@ class _AttendanceDetailCardState extends State<AttendanceDetailCard> {
                             showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
-                                title: const Text("Thành công"),
+                                title: Text(L10n.of(context).success),
                                 content: const Text(
                                     "Đã cập nhật điểm danh cho tất cả học sinh."),
                                 actions: [
@@ -602,7 +602,7 @@ class _AttendanceDetailCardState extends State<AttendanceDetailCard> {
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),
-                                    child: const Text("Đóng"),
+                                    child: Text(L10n.of(context).close),
                                   )
                                 ],
                               ),

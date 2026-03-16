@@ -179,5 +179,8 @@
     "comfirmSwitchAcc": "Bạn chắc chắn muốn chuyển sang tài khoản ",
     "detailCourse": "Chi tiết khóa học",
     "listCourse": "Danh sách khoá học",
-    "avatar": "Ảnh đại diện"
+    "avatar": "Ảnh đại diện",
+    "success": "Thành công",
+    "close": "Đóng",
+    "notHaveTeachingSchedule": "Chưa có lịch dạy sắp tới"
 }

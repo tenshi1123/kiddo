@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/student_models/diem_danh_model.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
@@ -68,7 +69,7 @@ class AttendanceDetails extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Lớp',
+                              L10n.of(context).lophoc,
                               style: defaultText12Re,
                             ),
                             Text(
@@ -93,7 +94,7 @@ class AttendanceDetails extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Tham gia',
+                              L10n.of(context).join,
                               style: defaultText14Re,
                             ),
                             Container(
@@ -117,7 +118,7 @@ class AttendanceDetails extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Chưa học',
+                              L10n.of(context).notYetStudied,
                               style: defaultText14Re,
                             ),
                             Container(

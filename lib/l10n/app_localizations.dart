@@ -1159,6 +1159,24 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Ảnh đại diện'**
   String get avatar;
+
+  /// No description provided for @success.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thành công'**
+  String get success;
+
+  /// No description provided for @close.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get close;
+
+  /// No description provided for @notHaveTeachingSchedule.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lịch dạy sắp tới'**
+  String get notHaveTeachingSchedule;
 }
 
 class _AppLocalizationsDelegate
