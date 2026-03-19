@@ -69,7 +69,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               children: [
                                 SizedBox(width: 24.w),
                                 Text(
-                                  L10n.of(context).switchAccount,
+                                  L10n.of(context).accountManagement,
                                   style: defaultText16B.copyWith(
                                     color: Colors.white,
                                   ),
@@ -169,17 +169,17 @@ class _AccountScreenState extends State<AccountScreen> {
                   onTap: () => _dialogBuilder(context),
                 ),
                 //test button
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PronunciationDemo(),
-                      ),
-                    );
-                  },
-                  child: Text("Test"),
-                )
+                // ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => PronunciationDemo(),
+                //       ),
+                //     );
+                //   },
+                //   child: Text("Test"),
+                // )
               ],
             ),
     );

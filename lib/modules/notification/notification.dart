@@ -187,7 +187,10 @@ class NotificationItem extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DetailNotiScreen()),
+          MaterialPageRoute(
+              builder: (context) => DetailNotiScreen(
+                    item: item,
+                  )),
         );
       },
       child: Container(

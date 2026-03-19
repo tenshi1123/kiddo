@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 
 class DetailNotiScreen extends StatefulWidget {
   const DetailNotiScreen({
     super.key,
+    required this.item,
   });
-
+  final NotificationModel item;
   @override
   State<DetailNotiScreen> createState() => _DetailNotiScreenState();
 }
@@ -52,18 +54,18 @@ class _DetailNotiScreenState extends State<DetailNotiScreen> {
           children: [
             Image.asset('assets/images/news2.png'),
             Text(
-              'Ra mắt khóa học tiếng anh nâng cao ',
+              widget.item.title,
               style: defaultText14SB.copyWith(fontSize: 16.sp),
             ),
             SizedBox(height: 8.h),
             Text(
-              '20:05 - 28/10/2022',
+              widget.item.time,
               style: defaultText14Re.copyWith(
                 color: colorText.withValues(alpha: 0.8),
               ),
             ),
             Text(
-              'when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions ...',
+              widget.item.message,
               style: defaultText14Re,
             ),
           ],

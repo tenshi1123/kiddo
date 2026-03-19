@@ -224,53 +224,63 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: filtered.length,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            itemBuilder: (context, index) {
-              final lesson = filtered[index];
-              return Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+          child: filtered.isEmpty
+              ? Center(
+                  child: Image.asset(
+                    'assets/images/empty2.png',
+                    height: 300.h,
+                    width: 300.w,
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: filtered.length,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  itemBuilder: (context, index) {
+                    final lesson = filtered[index];
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.w, vertical: 16.h),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${lesson.name} ${DateFormat('dd/MM//yyyy').format(lesson.createAt)}',
+                            style: defaultText16B,
+                          ),
+                          SizedBox(height: 16.h),
+                          Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w, vertical: 8.h),
+                              decoration: BoxDecoration(
+                                color: Color(0xffF6F6F6),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Html(data: lesson.content)
+                              // Text(
+                              //   ,
+                              //   style: defaultText14M.copyWith(
+                              //     color: colorText.withValues(alpha: 0.6),
+                              //   ),
+                              // ),
+                              ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${lesson.name} ${DateFormat('dd/MM//yyyy').format(lesson.createAt)}',
-                      style: defaultText16B,
-                    ),
-                    SizedBox(height: 16.h),
-                    Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 12.w, vertical: 8.h),
-                        decoration: BoxDecoration(
-                          color: Color(0xffF6F6F6),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Html(data: lesson.content)
-                        // Text(
-                        //   ,
-                        //   style: defaultText14M.copyWith(
-                        //     color: colorText.withValues(alpha: 0.6),
-                        //   ),
-                        // ),
-                        ),
-                  ],
-                ),
-              );
-            },
-          ),
         ),
       ],
     );

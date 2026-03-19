@@ -28,7 +28,7 @@ class _AppState extends State<App> {
               durationUntilAlertAgain: const Duration(hours: 6),
             ),
             child: MaterialApp(
-              locale: locale,
+              locale: Locale('vi'),
               supportedLocales: const [
                 Locale('vi'),
                 Locale('en'),

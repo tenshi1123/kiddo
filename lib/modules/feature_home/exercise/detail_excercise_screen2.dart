@@ -127,7 +127,15 @@ class _DetailExcerciseScreenState extends State<DetailExcerciseScreen> {
                     ),
                   ),
                   listBaiTap.isEmpty
-                      ? Text('Không có bài tập')
+                      ? Center(
+                          child: Center(
+                            child: Image.asset(
+                              'assets/images/empty2.png',
+                              height: 300.h,
+                              width: 300.w,
+                            ),
+                          ),
+                        )
                       : ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
