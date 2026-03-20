@@ -342,6 +342,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  flutter_bunny_video_player_ios:
+    dependency: "direct main"
+    description:
+      name: flutter_bunny_video_player_ios
+      sha256: "9ce15cdd40e8bbc765502cc11dc47807cf0e4e53d6747d44af69f6edc648301c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   flutter_cache_manager:
     dependency: transitive
     description:

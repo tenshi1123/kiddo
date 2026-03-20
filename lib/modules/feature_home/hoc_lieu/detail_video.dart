@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bunny_video_player/flutter_bunny_video_player.dart';
-//import 'package:flutter_bunny_video_player_ios/flutter_bunny_video_player_ios.dart';
+import 'package:flutter_bunny_video_player_ios/flutter_bunny_video_player_ios.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 
@@ -38,28 +38,25 @@ class _DetailVideoState extends State<DetailVideo> {
             ),
           ),
         ),
-        body:
-            // (Platform.isAndroid)
-            //     ?
-            BunnyPlayerView(
-          accessKey: null,
-          videoId: widget.videoId,
-          libraryId: widget.libraryId,
-          token: null,
-          expire: null,
-          referer: null,
-          //isPortrait: true,
-          //isScreenShotProtectEnable: true,
-        )
-        // : BunnyIosPlayerView(
-        //     accessKey: null,
-        //     videoId: widget.videoId,
-        //     libraryId: widget.libraryId,
-        //     token: null, // Optional for DRM
-        //     expires: null, // Optional token expiration
+        body: (Platform.isAndroid)
+            ? BunnyPlayerView(
+                accessKey: null,
+                videoId: widget.videoId,
+                libraryId: widget.libraryId,
+                token: null,
+                expire: null,
+                referer: null,
+                //isPortrait: true,
+                isScreenShotProtectEnable: true,
+              )
+            : BunnyIosPlayerView(
+                accessKey: null,
+                videoId: widget.videoId,
+                libraryId: widget.libraryId,
+                token: null, // Optional for DRM
+                expires: null, // Optional token expiration
 
-        //     //playIconAsset: 'assets/play_icon.png', // Optional custom play icon
-        //   )
-        );
+                //playIconAsset: 'assets/play_icon.png', // Optional custom play icon
+              ));
   }
 }

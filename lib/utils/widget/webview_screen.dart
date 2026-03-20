@@ -70,8 +70,18 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      // ..setNavigationDelegate(
+      //   NavigationDelegate(
+      //     onPageFinished: (url) => debugPrint("✅ Finished: $url"),
+      //     onWebResourceError: (error) =>
+      //         debugPrint("❌ Error: ${error.description}"),
+      //   ),
+      // )
       ..setNavigationDelegate(
         NavigationDelegate(
+          onNavigationRequest: (request) {
+            return NavigationDecision.navigate;
+          },
           onPageFinished: (url) => debugPrint("✅ Finished: $url"),
           onWebResourceError: (error) =>
               debugPrint("❌ Error: ${error.description}"),
