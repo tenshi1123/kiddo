@@ -81,16 +81,18 @@ class _DetailChinhSachScreenState extends State<DetailChinhSachScreen> {
         ),
         child: isLoading
             ? Center(child: CircularProgressIndicator())
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Chính sách khoá : ${widget.title}',
-                    style: defaultText14SB.copyWith(fontSize: 16.sp),
-                  ),
-                  SizedBox(height: 8.h),
-                  Html(data: data)
-                ],
+            : SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Chính sách khoá : ${widget.title}',
+                      style: defaultText14SB.copyWith(fontSize: 16.sp),
+                    ),
+                    SizedBox(height: 8.h),
+                    Html(data: data)
+                  ],
+                ),
               ),
       ),
     );

@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bunny_video_player/flutter_bunny_video_player.dart';
-import 'package:flutter_bunny_video_player_ios/flutter_bunny_video_player_ios.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:webview_flutter/webview_flutter.dart';
