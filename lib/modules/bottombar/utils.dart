@@ -71,18 +71,18 @@ class _ItemTableCalenderState extends State<ItemTableCalender> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: ((context) => DetailLessonScreen(
-                  typeLearn: widget.model.typeLearn,
-                  checkinOffId: widget.model.checkinOffId ?? '',
-                  meetingId: widget.model.meetingId ?? '',
-                )),
-          ),
-        );
-      },
+      // onTap: () async {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: ((context) => DetailLessonScreen(
+      //             typeLearn: widget.model.typeLearn,
+      //             checkinOffId: widget.model.checkinOffId ?? '',
+      //             meetingId: widget.model.meetingId ?? '',
+      //           )),
+      //     ),
+      //   );
+      // },
       child: _isLoading
           ? SizedBox(
               height: 136.h,

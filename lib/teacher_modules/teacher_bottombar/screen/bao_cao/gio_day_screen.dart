@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:kiddo/modules/notification/notification.dart';
+import 'package:kiddo/teacher_model/roll_call_model.dart';
+import 'package:kiddo/teacher_repo/teacher_info_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 
@@ -14,17 +16,35 @@ class GioDayScreen extends StatefulWidget {
 }
 
 class _GioDayScreenState extends State<GioDayScreen> {
+  List<TeachingHourReportModel> listGioDay = [];
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response = await TeacherInfoRepo().getTeachingHourReport();
+      setState(() {
+        listGioDay = response;
+      });
+    } catch (e) {
+      debugPrint('Lỗi khi gọi API: $e');
+      setState(() {});
+    }
+  }
+
   DateTime? startDate;
   DateTime? endDate;
 
   // Dữ liệu demo
-  final List<Map<String, dynamic>> lessonList = [
-    {"date": "2025-10-01", "hours": 2, "minutes": 120},
-    {"date": "2025-10-02", "hours": 2, "minutes": 120},
-    {"date": "2025-10-03", "hours": 2, "minutes": 120},
-    {"date": "2025-10-04", "hours": 2, "minutes": 120},
-  ];
-
+  // final List<Map<String, dynamic>> lessonList = [
+  //   {"date": "2025-10-01", "hours": 2, "minutes": 120},
+  //   {"date": "2025-10-02", "hours": 2, "minutes": 120},
+  //   {"date": "2025-10-03", "hours": 2, "minutes": 120},
+  //   {"date": "2025-10-04", "hours": 2, "minutes": 120},
+  // ];
   Future<void> _selectDate({required bool isStart}) async {
     final now = DateTime.now();
     final picked = await showDatePicker(
@@ -57,10 +77,8 @@ class _GioDayScreenState extends State<GioDayScreen> {
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
-      final totalMinutes = lessonList.fold<int>(
-        0,
-        (sum, e) => sum + (e['minutes'] as int),
-      );
+      final totalMinutes = calculateTotalMinutes(listGioDay);
+
       final totalHours = totalMinutes ~/ 60;
       final remainingMinutes = totalMinutes % 60;
       return Scaffold(
@@ -144,7 +162,15 @@ class _GioDayScreenState extends State<GioDayScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // TODO: Thực hiện lọc dữ liệu theo startDate, endDate
+                          final filtered = filterByDate(
+                            list: listGioDay,
+                            startDate: startDate,
+                            endDate: endDate,
+                          );
+
+                          setState(() {
+                            listGioDay = filtered;
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff1D7FE0),
@@ -175,40 +201,37 @@ class _GioDayScreenState extends State<GioDayScreen> {
                         topRight: Radius.circular(16.r),
                       ),
                     ),
-                    child: Expanded(
-                      child: Column(
-                        children: [
-                          ...lessonList.map(
-                            (e) => Padding(
-                              padding: EdgeInsets.only(bottom: 10.h),
-                              child: _buildLessonItem(e),
+                    child: Column(
+                      children: [
+                        ...listGioDay.map(
+                          (e) => Padding(
+                            padding: EdgeInsets.only(bottom: 10.h),
+                            child: _buildLessonItem(e),
+                          ),
+                        ),
+                        const Icon(Icons.more_horiz, color: Colors.grey),
+                        SizedBox(height: 16.h),
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(14.w),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: const Color(0xffF06423)),
+                            borderRadius: BorderRadius.circular(10.r),
+                            color: Color(0xffF9F6F4),
+                          ),
+                          child: Text(
+                            "Tổng số giờ dạy: $totalHours giờ $remainingMinutes phút",
+                            textAlign: TextAlign.center,
+                            style: defaultText14SB.copyWith(
+                              color: mainOrange,
+                              fontSize: 16.sp,
                             ),
                           ),
-                          const Icon(Icons.more_horiz, color: Colors.grey),
-                          SizedBox(height: 16.h),
-                          Container(
-                            width: double.infinity,
-                            padding: EdgeInsets.all(14.w),
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: const Color(0xffF06423)),
-                              borderRadius: BorderRadius.circular(10.r),
-                              color: Color(0xffF9F6F4),
-                            ),
-                            child: Text(
-                              "Tổng số giờ dạy: $totalMinutes ($totalHours giờ $remainingMinutes phút)",
-                              textAlign: TextAlign.center,
-                              style: defaultText14SB.copyWith(
-                                color: mainOrange,
-                                fontSize: 16.sp,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 100.h,
-                          )
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: 100.h,
+                        )
+                      ],
                     ),
                   ),
                 ],
@@ -248,7 +271,7 @@ class _GioDayScreenState extends State<GioDayScreen> {
     );
   }
 
-  Widget _buildLessonItem(Map<String, dynamic> e) {
+  Widget _buildLessonItem(TeachingHourReportModel e) {
     return Container(
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
@@ -278,12 +301,20 @@ class _GioDayScreenState extends State<GioDayScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                e['date'],
+                e.createdDate,
                 style: defaultText14SB,
               ),
               Text(
-                "${e['hours']} giờ (${e['minutes']} phút)",
-                style: defaultText12Re,
+                "${e.timeStart} - ${e.timeEnd}",
+                style: defaultText14Re,
+              ),
+              Text(
+                formatMinutes(
+                  _parseTime(e.timeEnd)
+                      .difference(_parseTime(e.timeStart))
+                      .inMinutes,
+                ),
+                style: defaultText14Re,
               ),
             ],
           ),
@@ -291,4 +322,52 @@ class _GioDayScreenState extends State<GioDayScreen> {
       ),
     );
   }
+}
+
+DateTime _parseTime(String time) {
+  final parts = time.split(":");
+  return DateTime(
+    0,
+    1,
+    1,
+    int.parse(parts[0]),
+    int.parse(parts[1]),
+    int.parse(parts[2]),
+  );
+}
+
+String formatMinutes(int totalMinutes) {
+  final hours = totalMinutes ~/ 60;
+  final minutes = totalMinutes % 60;
+
+  return "$hours giờ $minutes phút";
+}
+
+DateTime parseCreatedDate(String date) {
+  final parts = date.split("-");
+  return DateTime(
+    int.parse(parts[2]), // year
+    int.parse(parts[1]), // month
+    int.parse(parts[0]), // day
+  );
+}
+
+List<TeachingHourReportModel> filterByDate({
+  required List<TeachingHourReportModel> list,
+  required DateTime? startDate,
+  required DateTime? endDate,
+}) {
+  return list.where((item) {
+    final created = parseCreatedDate(item.createdDate);
+
+    if (startDate != null && created.isBefore(startDate)) {
+      return false;
+    }
+
+    if (endDate != null && created.isAfter(endDate)) {
+      return false;
+    }
+
+    return true;
+  }).toList();
 }

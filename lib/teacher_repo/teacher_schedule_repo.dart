@@ -35,7 +35,8 @@ class TeacherScheduleRepo {
     List<ScheduleModel> result = ((response.data)['data'] as List)
         .map((e) => ScheduleModel.fromJson(e))
         .toList();
-    return result;
+    List<ScheduleModel> filteredList = removeDuplicateLessons(result);
+    return filteredList;
   }
 
   Future<List<AppointmentModel>> getAppointmentList(
@@ -56,4 +57,19 @@ class TeacherScheduleRepo {
         .toList();
     return result;
   }
+}
+
+List<ScheduleModel> removeDuplicateLessons(List<ScheduleModel> lessons) {
+  final seen = <String>{};
+
+  return lessons.where((lesson) {
+    final key = "${lesson.createdDate}_${lesson.timeStart}_${lesson.timeEnd}";
+
+    if (seen.contains(key)) {
+      return false; // trùng -> bỏ
+    } else {
+      seen.add(key);
+      return true; // giữ lại
+    }
+  }).toList();
 }

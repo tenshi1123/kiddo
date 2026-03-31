@@ -13,9 +13,11 @@ class DetailFeedbackScreen extends StatefulWidget {
     super.key,
     required this.typeTeacher,
     required this.courseScheduleId,
+    required this.name,
   });
   final String typeTeacher;
   final String courseScheduleId;
+  final String name;
   @override
   State<DetailFeedbackScreen> createState() => _DetailFeedbackScreenState();
 }
@@ -57,48 +59,48 @@ class _DetailFeedbackScreenState extends State<DetailFeedbackScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: mainOrange,
-      appBar: AppBar(
         backgroundColor: mainOrange,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Lớp Orca 56',
-          style: defaultText16B.copyWith(color: Colors.white),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
+        appBar: AppBar(
+          backgroundColor: mainOrange,
+          elevation: 0,
+          centerTitle: true,
+          title: Text(
+            widget.name,
+            style: defaultText16B.copyWith(color: Colors.white),
           ),
-        ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NotificationScreen(),
-                ),
-              );
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
             },
-            child: SvgPicture.asset(
-              'assets/icons/bell.svg',
-              width: 20.w,
-              height: 20.h,
-              colorFilter: ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.white,
             ),
           ),
-          SizedBox(width: 16.w),
-        ],
-      ),
-      body: Container(
+          actions: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NotificationScreen(),
+                  ),
+                );
+              },
+              child: SvgPicture.asset(
+                'assets/icons/bell.svg',
+                width: 20.w,
+                height: 20.h,
+                colorFilter: ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+            SizedBox(width: 16.w),
+          ],
+        ),
+        body: Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -113,44 +115,44 @@ class _DetailFeedbackScreenState extends State<DetailFeedbackScreen> {
                   setState(() => selectedTab = index);
                 },
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                itemCount:
-                    selectedTab == 0 ? feedBackGk.length : feedBackCk.length,
-                itemBuilder: (context, index) {
-                  var item =
-                      selectedTab == 0 ? feedBackGk[index] : feedBackCk[index];
-                  return GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => MidtermReviewDialog(
-                          model: item,
-                        ),
-                      );
-                    },
-                    child: Container(
-                      height: 64.h,
-                      width: 343.w,
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.r),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withValues(alpha: 0.2),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 2), // changes position of shadow
+              Expanded(
+                child: ListView.builder(
+                  itemCount:
+                      selectedTab == 0 ? feedBackGk.length : feedBackCk.length,
+                  itemBuilder: (context, index) {
+                    var item = selectedTab == 0
+                        ? feedBackGk[index]
+                        : feedBackCk[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => MidtermReviewDialog(
+                            model: item,
                           ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
+                        );
+                      },
+                      child: Container(
+                        height: 64.h,
+                        width: 343.w,
+                        margin: EdgeInsets.symmetric(
+                            horizontal: 16.w, vertical: 8.h),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.r),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withValues(alpha: 0.2),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
                               width: 40.w,
                               height: 40.h,
                               margin: EdgeInsets.symmetric(horizontal: 16.w),
@@ -159,32 +161,34 @@ class _DetailFeedbackScreenState extends State<DetailFeedbackScreen> {
                                 color: mainPurple,
                                 shape: BoxShape.circle,
                               ),
-                              child: Image.asset('assets/images/study.png')),
-                          SizedBox(
-                            width: 200.w,
-                            child: Text(
-                              item.fullName,
-                              style: defaultText14SB,
+                              child: Image.asset('assets/images/study.png'),
                             ),
-                          ),
-                          Spacer(),
-                          SvgPicture.asset('assets/icons/view.svg'),
-                          Text(
-                            ' View',
-                            style: defaultText14SB.copyWith(color: mainOrange),
-                          ),
-                          SizedBox(
-                            width: 16.w,
-                          )
-                        ],
+                            SizedBox(
+                              width: 200.w,
+                              child: Text(
+                                item.fullName,
+                                style: defaultText14SB,
+                              ),
+                            ),
+                            const Spacer(),
+                            SvgPicture.asset('assets/icons/view.svg'),
+                            Text(
+                              ' View',
+                              style: defaultText14SB.copyWith(
+                                color: mainOrange,
+                              ),
+                            ),
+                            SizedBox(width: 16.w),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
-              )
+                    );
+                  },
+                ),
+              ),
             ],
-          )),
-    );
+          ),
+        ));
   }
 }
 

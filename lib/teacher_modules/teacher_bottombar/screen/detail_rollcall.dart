@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kiddo/l10n/l10n.dart';
-import 'package:kiddo/modules/feature_home/hoc_phi/confirm_screen.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/teacher_model/roll_call_model.dart';
 import 'package:kiddo/teacher_model/teacher_class_model.dart';
@@ -16,9 +15,11 @@ class DetailRollCallScreen extends StatefulWidget {
     super.key,
     required this.typeTeacher,
     required this.courseScheduleId,
+    required this.name,
   });
   final String typeTeacher;
   final String courseScheduleId;
+  final String name;
   @override
   State<DetailRollCallScreen> createState() => _DetailRollCallScreenState();
 }
@@ -87,7 +88,7 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Lớp Orca 56',
+          widget.name,
           style: defaultText16B.copyWith(color: Colors.white),
         ),
         leading: IconButton(

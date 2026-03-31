@@ -86,6 +86,7 @@ class _ListClassScreenState extends State<ListClassScreen> {
                           builder: (context) => DetailRollCallScreen(
                             typeTeacher: item.typeTeacher,
                             courseScheduleId: item.courseScheduleId,
+                            name: item.name,
                           ),
                         ),
                       )
@@ -105,6 +106,7 @@ class _ListClassScreenState extends State<ListClassScreen> {
                               builder: (context) => DetailFeedbackScreen(
                                 typeTeacher: item.typeTeacher,
                                 courseScheduleId: item.courseScheduleId,
+                                name: item.name,
                               ),
                             ),
                           );

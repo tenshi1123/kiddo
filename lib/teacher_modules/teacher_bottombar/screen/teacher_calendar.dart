@@ -140,7 +140,7 @@ class _TeacherCalenderState extends State<TeacherCalender> {
       {required String dayStart, required String dayEnd}) async {
     _listLichHoc =
         await TeacherScheduleRepo().getScheduleList(dayStart, dayEnd);
-    _selectedEvents.value = _listLichHoc;
+    _selectedEvents.value = removeDuplicateLessons(_listLichHoc);
   }
 
   List<ScheduleModel> _getEventsForDay(DateTime day) {
@@ -155,7 +155,7 @@ class _TeacherCalenderState extends State<TeacherCalender> {
       dayStart: DateFormat('yyyy-MM-dd').format(start),
       dayEnd: DateFormat('yyyy-MM-dd').format(end),
     );
-    return _listLichHoc;
+    return removeDuplicateLessons(_listLichHoc);
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {

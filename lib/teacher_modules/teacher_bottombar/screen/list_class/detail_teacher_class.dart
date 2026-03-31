@@ -67,7 +67,7 @@ class _DetailTeacherClassState extends State<DetailTeacherClass> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Lớp Orca 56',
+          widget.model.name,
           style: defaultText16B.copyWith(color: Colors.white),
         ),
         leading: IconButton(
@@ -445,7 +445,7 @@ class BuildTeachinhSessionCard extends StatelessWidget {
             child: TextButton.icon(
               onPressed: () => showTeachingDialog(
                 context,
-                'Buổi 3',
+                sessionData.name,
                 sessionData.eventCheckinOffId,
                 sessionData.teachingContent,
                 sessionData.linkRecord,

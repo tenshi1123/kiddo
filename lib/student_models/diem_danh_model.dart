@@ -196,8 +196,7 @@ class ScheduleModel implements BaseCalendarEvent {
     return ScheduleModel(
       courseName: json["course_name"] ?? '',
       buoiHoc: json["buoi_hoc"] ?? '',
-      createdDate:
-          DateFormat("dd-MM-yyyy").parse(json["created_date"] ?? ''),
+      createdDate: DateFormat("dd-MM-yyyy").parse(json["created_date"] ?? ''),
       timeStart: json["time_start"] ?? '',
       timeEnd: json["time_end"] ?? '',
       phongHocName: json["phonghoc_name"],
@@ -205,12 +204,11 @@ class ScheduleModel implements BaseCalendarEvent {
       checkinOffId: json["checkin_off_id"],
       linkZoom: json["link_zoom"],
       meetingId: json["meeting_id"],
-      typeLearn: json["type_learn"] ?? '',
+      typeLearn: json["type_learn"] ?? json["type_teacher"] ?? '',
       typeTeacher: json["type_teacher"],
     );
   }
 }
-
 
 class AppointmentModel implements BaseCalendarEvent {
   @override
@@ -256,7 +254,6 @@ class AppointmentModel implements BaseCalendarEvent {
     );
   }
 }
-
 
 abstract class BaseCalendarEvent {
   DateTime get date;

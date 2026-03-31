@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:kiddo/modules/notification/notification.dart';
+import 'package:kiddo/teacher_model/roll_call_model.dart';
 import 'package:kiddo/teacher_modules/teacher_bottombar/screen/bao_cao/gio_day_screen.dart';
+import 'package:kiddo/teacher_repo/teacher_info_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:kiddo/utils/widget/custom_sumary.dart';
 
 class BaoCaoScreen extends StatefulWidget {
   const BaoCaoScreen({
@@ -17,6 +21,29 @@ class BaoCaoScreen extends StatefulWidget {
 
 class _BaoCaoScreenState extends State<BaoCaoScreen> {
   int selectedTab = 0;
+  DataBaoCaoModel report = DataBaoCaoModel(
+    infoReport: InfoReportModel(total: 0, off: 0, zoom: 0),
+    cntToday: 0,
+    teachingHourReport: [],
+  );
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final response = await TeacherInfoRepo().getInfoReport();
+      setState(() {
+        report = response;
+      });
+    } catch (e) {
+      debugPrint('Lỗi khi gọi API: $e');
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,77 +99,9 @@ class _BaoCaoScreenState extends State<BaoCaoScreen> {
           ),
           child: Column(
             children: [
-              Row(
-                children: [
-                  Image.asset(
-                    'assets/images/bieu_do.png',
-                    height: 140.h,
-                    fit: BoxFit.fitHeight,
-                  ),
-                  Column(
-                    children: [
-                      Container(
-                        height: 44.h,
-                        width: 180.w,
-                        padding: EdgeInsets.only(left: 10.h),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: colorText.withValues(alpha: 0.08),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 24.h,
-                              width: 24.w,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(6.r)),
-                                color: mainGreen,
-                              ),
-                            ),
-                            Text(
-                              '  2 lớp zoom',
-                              style: defaultText14SB,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 16.h,
-                      ),
-                      Container(
-                        height: 44.h,
-                        width: 180.w,
-                        padding: EdgeInsets.only(left: 10.h),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: colorText.withValues(alpha: 0.08),
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(12.r)),
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 24.h,
-                              width: 24.w,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(6.r)),
-                                color: mainBlue,
-                              ),
-                            ),
-                            Text(
-                              '  4 lớp trực tiếp',
-                              style: defaultText14SB,
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  )
-                ],
+              ClassSummaryWidget(
+                zoomCount: report.infoReport.zoom,
+                offlineCount: report.infoReport.off,
               ),
               SizedBox(
                 height: 20.h,
@@ -198,7 +157,8 @@ class _BaoCaoScreenState extends State<BaoCaoScreen> {
                                 ),
                                 SizedBox(height: 4.h),
                                 Text(
-                                  "25-06-2025",
+                                  DateFormat('yyyy-MM-dd')
+                                      .format(DateTime.now()),
                                   style: TextStyle(
                                     fontSize: 13.sp,
                                     color: Colors.grey.shade600,
@@ -210,7 +170,7 @@ class _BaoCaoScreenState extends State<BaoCaoScreen> {
 
                           // Số lượng lớp
                           Text(
-                            "02",
+                            report.cntToday.toString(),
                             style: defaultText20B.copyWith(
                               color: mainRed,
                             ),

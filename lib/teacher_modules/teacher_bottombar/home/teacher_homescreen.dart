@@ -60,11 +60,11 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
           ),
         ),
       );
-      final data2 = await CustomerRepo().getChilren();
+      //final data2 = await CustomerRepo().getChilren();
 
       setState(() {
         listLichHoc = data;
-        listChild = data2;
+        //listChild = data2;
         isLoading = false;
       });
     } catch (e) {
