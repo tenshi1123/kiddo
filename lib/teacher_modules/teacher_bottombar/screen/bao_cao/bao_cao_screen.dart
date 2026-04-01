@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:kiddo/main.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/teacher_model/roll_call_model.dart';
+import 'package:kiddo/teacher_model/teacher_class_model.dart';
 import 'package:kiddo/teacher_modules/teacher_bottombar/screen/bao_cao/gio_day_screen.dart';
 import 'package:kiddo/teacher_repo/teacher_info_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
@@ -178,10 +180,26 @@ class _BaoCaoScreenState extends State<BaoCaoScreen> {
                         ],
                       ),
                     ),
-                    _buildClassItem(
-                        "Lớp Orca 56", "Học trực tiếp tại trung tâm"),
-                    Divider(color: Colors.grey.shade300, height: 1),
-                    _buildClassItem("Lớp couple", "Lớp học Zoom"),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount:
+                          report.cntToday, // Specifies the number of items
+                      itemBuilder: (context, index) {
+                        TeacherClassModel? model;
+                        try {
+                          model = listTeacherClass.firstWhere((e) =>
+                              e.courseScheduleId ==
+                              report
+                                  .teachingHourReport[index].courseScheduleId);
+                        } catch (e) {
+                          model = null;
+                        }
+                        return _buildClassItem(
+                          model?.name ?? '',
+                          model?.typeTeacher ?? '',
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
