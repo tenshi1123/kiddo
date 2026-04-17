@@ -345,11 +345,9 @@ class _LessonItemState extends State<LessonItem> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => VideoSecurityWrapper(
-                                child: DetailVideo(
-                                  videoId: model.streamingUrl,
-                                  libraryId: model.idBunny,
-                                ),
+                              builder: (context) => DetailVideo(
+                                videoId: model.streamingUrl,
+                                libraryId: model.idBunny,
                               ),
                             ),
                           );
