@@ -30,7 +30,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
 
   /// 📁 Pick file (pdf, doc, svg, ...)
   Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       allowMultiple: false,
       type: FileType.custom,
       allowedExtensions: ['pdf', 'doc', 'docx', 'svg', 'png', 'jpg'],

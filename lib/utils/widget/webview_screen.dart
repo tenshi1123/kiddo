@@ -7,6 +7,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Import for iOS/macOS features.
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:screen_protector/screen_protector.dart';
 
 class WebViewScreen extends StatefulWidget {
   const WebViewScreen(
@@ -48,10 +49,13 @@ class _WebViewScreenState extends State<WebViewScreen> {
     return pathSegments.last;
   }
 
+  void _preventScreenshotOn() async =>
+      await ScreenProtector.preventScreenshotOn();
+
   @override
   void initState() {
     super.initState();
-
+    _preventScreenshotOn();
     final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(

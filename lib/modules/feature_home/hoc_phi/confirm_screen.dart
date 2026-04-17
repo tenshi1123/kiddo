@@ -138,11 +138,6 @@ class _ComfirmScreenState extends State<ComfirmScreen> {
             GestureDetector(
               onTap: _pickImage,
               child: DottedBorder(
-                color: Colors.blue,
-                strokeWidth: 1.5,
-                borderType: BorderType.RRect,
-                radius: const Radius.circular(8),
-                dashPattern: const [6, 3],
                 child: Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(vertical: 12.h),

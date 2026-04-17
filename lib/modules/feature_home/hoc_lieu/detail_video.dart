@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class DetailVideo extends StatefulWidget {
@@ -14,6 +15,15 @@ class DetailVideo extends StatefulWidget {
 }
 
 class _DetailVideoState extends State<DetailVideo> {
+  void _preventScreenshotOn() async =>
+      await ScreenProtector.preventScreenshotOn();
+  @override
+  void initState() {
+    super.initState();
+    // Kích hoạt bảo vệ
+    _preventScreenshotOn();
+  }
+
   @override
   Widget build(BuildContext context) {
     final url =
