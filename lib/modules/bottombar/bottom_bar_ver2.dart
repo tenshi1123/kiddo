@@ -29,7 +29,7 @@ class Bottombar2 extends StatefulWidget {
 class _Bottombar2State extends State<Bottombar2> {
   int _selectedIndex = 0;
   bool isLoading = true;
-  late ProfileModel profileModel;
+  ProfileModel? profileModel;
   @override
   void initState() {
     super.initState();
@@ -91,7 +91,7 @@ class _Bottombar2State extends State<Bottombar2> {
       {"icon": 'info.svg', "label": "Thông tin"},
       {"icon": 'personal.svg', "label": "Tài khoản"},
     ];
-    return isLoading
+    return (isLoading || profileModel == null)
         ? Image.asset(
             "assets/images/splash.gif",
             height: 844.h,

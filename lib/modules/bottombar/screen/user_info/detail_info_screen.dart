@@ -13,7 +13,7 @@ import 'package:kiddo/utils/widget/app_image.dart';
 
 class DetailInfoScreen extends StatefulWidget {
   const DetailInfoScreen({super.key, required this.model});
-  final ProfileModel model;
+  final ProfileModel? model;
   @override
   State<DetailInfoScreen> createState() => _DetailInfoScreenState();
 }
@@ -25,8 +25,8 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
   @override
   void initState() {
     super.initState();
-    fullNameController = TextEditingController(text: widget.model.fullName);
-    emailController = TextEditingController(text: widget.model.email);
+    fullNameController = TextEditingController(text: widget.model?.fullName);
+    emailController = TextEditingController(text: widget.model?.email);
   }
 
   @override
@@ -117,7 +117,7 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
                         shape: BoxShape.circle,
                       ),
                       child: AppImage(
-                        url: widget.model.avatar,
+                        url: widget.model?.avatar ?? '',
                         width: 80.w,
                         height: 80.h,
                         fit: BoxFit.fill,
@@ -200,7 +200,8 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
             ),
             MyTextFormField(
               labelText: L10n.of(context).phone,
-              controller: TextEditingController(text: widget.model.phone),
+              controller:
+                  TextEditingController(text: widget.model?.phone ?? ''),
               keyboardType: TextInputType.phone,
               onChanged: (value) {},
               hasIcon: false,
@@ -224,7 +225,7 @@ class _DetailInfoScreenState extends State<DetailInfoScreen> {
                       CustomerRepo().changeInfo(
                           name: fullNameController.text,
                           email: emailController.text,
-                          dob: widget.model.birthday);
+                          dob: widget.model?.birthday ?? '');
 
                       showDialog(
                         context: context,

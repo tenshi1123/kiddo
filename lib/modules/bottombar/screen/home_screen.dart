@@ -37,7 +37,7 @@ class HomeScreen extends StatefulWidget {
     super.key,
     required this.model,
   });
-  final ProfileModel model;
+  final ProfileModel? model;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: List.generate(
                             listChild.length,
                             (index) {
-                              final isSelected = widget.model.fullName ==
+                              final isSelected = widget.model?.fullName ==
                                   listChild[index].nameChild;
                               return GestureDetector(
                                 onTap: () {
@@ -633,7 +633,7 @@ Widget feedbackItem(bool value, String title) {
 class _Header extends StatelessWidget {
   const _Header({required this.model});
 
-  final ProfileModel model;
+  final ProfileModel? model;
 
   @override
   Widget build(BuildContext context) {
@@ -646,7 +646,7 @@ class _Header extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           child: AppImage(
-            url: model.avatar,
+            url: model?.avatar ?? '',
             width: 50.w,
             height: 50.h,
             fit: BoxFit.fill,
@@ -659,7 +659,7 @@ class _Header extends StatelessWidget {
             SizedBox(
               width: 220.w,
               child: Text(
-                'Hi! ${model.fullName}',
+                'Hi! ${model?.fullName ?? ''}',
                 style: defaultText18B.copyWith(color: colorText),
               ),
             ),

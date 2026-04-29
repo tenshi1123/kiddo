@@ -4,11 +4,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/modules/bottombar/screen/user_info/change_pass_screen.dart';
 import 'package:kiddo/modules/bottombar/screen/user_info/detail_info_screen.dart';
-import 'package:kiddo/modules/bottombar/screen/user_info/pronuce_test.dart';
-import 'package:kiddo/modules/bottombar/screen/user_info/speech_to_text_widget.dart';
 import 'package:kiddo/modules/splash/onboarding.dart';
 import 'package:kiddo/student_models/profile_model.dart';
-import 'package:kiddo/student_repo/customer_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:kiddo/utils/widget/app_image.dart';
@@ -20,7 +17,7 @@ class AccountScreen extends StatefulWidget {
     super.key,
     required this.model,
   });
-  final ProfileModel model;
+  final ProfileModel? model;
 
   @override
   State<AccountScreen> createState() => _AccountScreenState();
@@ -104,7 +101,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             shape: BoxShape.circle,
                           ),
                           child: AppImage(
-                            url: widget.model.avatar,
+                            url: widget.model?.avatar ?? '',
                             width: 80.w,
                             height: 80.h,
                             fit: BoxFit.fill,
@@ -114,18 +111,18 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  widget.model.fullName,
+                  widget.model?.fullName ?? '',
                   style: defaultText18B,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  widget.model.phone,
+                  widget.model?.phone ?? '',
                   style: defaultText14M.copyWith(
                       color: colorText.withValues(alpha: 0.6)),
                 ),
                 Text(
-                  widget.model.email,
+                  widget.model?.email ?? '',
                   style: defaultText14M.copyWith(
                       color: colorText.withValues(alpha: 0.6)),
                 ),

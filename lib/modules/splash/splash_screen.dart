@@ -29,90 +29,68 @@ class _SplshscreenState extends State<Splshscreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 0), () async {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? token = prefs.getString('token');
-      final String? type = prefs.getString(ConstString.type);
-      checked = (token != null && token != '');
-      if (!mounted) return;
-      if (checked) {
-        if (type != null) {
-          if (type == 'student') {
-            listClass = await LoginRepo().getListClass();
-            listCategory = await HomeRepo().getCategories();
-            if (!mounted) return;
-            if (listCategory.isNotEmpty) {
-              AppRouter.toPage(
-                context,
-                AppPages.BottomNavBarPage,
-              );
-            } else {
-              // remove token chỗ này
-              await removeToken();
-              if (!mounted) return;
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Onbonding(),
-                ),
-              );
-            }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('token');
+        final type = prefs.getString(ConstString.type);
+
+        if (token == null || token.isEmpty) {
+          await _goToOnboarding();
+          return;
+        }
+
+        if (type == 'student') {
+          listClass = await LoginRepo()
+              .getListClass()
+              .timeout(const Duration(seconds: 3));
+
+          listCategory = await HomeRepo()
+              .getCategories()
+              .timeout(const Duration(seconds: 3));
+
+          if (!mounted) return;
+
+          if (listCategory.isNotEmpty) {
+            AppRouter.toPage(context, AppPages.BottomNavBarPage);
           } else {
-            listTeacherClass = await TeacherClassRepo().getTeacherClass();
-            listCategory = await HomeRepo().getCategories();
-            if (!mounted) return;
-            if (listTeacherClass.isNotEmpty) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BottombarTeacher(
-                    index: 0,
-                  ),
-                ),
-              );
-            } else {
-              // remove token chỗ này
-              await removeToken();
-              if (!mounted) return;
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Onbonding(),
-                ),
-              );
-            }
+            await _goToOnboarding();
           }
         } else {
-          await removeToken();
+          listTeacherClass = await TeacherClassRepo().getTeacherClass();
+          listCategory = await HomeRepo().getCategories();
+
           if (!mounted) return;
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const Onbonding(),
-            ),
-          );
+
+          if (listTeacherClass.isNotEmpty) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BottombarTeacher(index: 0),
+              ),
+            );
+          } else {
+            await _goToOnboarding();
+          }
         }
-      } else {
-        await removeToken();
-        if (!mounted) return;
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Onbonding(),
-          ),
-        );
+      } catch (e) {
+        // BẤT KỲ lỗi nào cũng về onboarding
+        await _goToOnboarding();
       }
     });
+  }
 
-    // Timer(
-    //   const Duration(seconds: 2),
-    //   () => Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => const Onbonding(),
-    //     ),
-    //   ),
-    // );
+  Future<void> _goToOnboarding() async {
+    await removeToken();
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const Onbonding(),
+      ),
+    );
   }
 
   @override
