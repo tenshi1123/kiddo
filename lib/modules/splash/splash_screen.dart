@@ -40,7 +40,10 @@ class _SplshscreenState extends State<Splshscreen> {
           await _goToOnboarding();
           return;
         }
-
+        if (type == null) {
+          await _goToOnboarding();
+          return;
+        }
         if (type == 'student') {
           listClass = await LoginRepo()
               .getListClass()
