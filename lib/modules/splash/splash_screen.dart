@@ -25,60 +25,85 @@ class Splshscreen extends StatefulWidget {
 }
 
 class _SplshscreenState extends State<Splshscreen> {
-  bool checked = false;
   @override
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    Timer(const Duration(milliseconds: 300), () async {
       try {
         final prefs = await SharedPreferences.getInstance();
-        final token = prefs.getString('token');
-        final type = prefs.getString(ConstString.type);
 
+        final String? token = prefs.getString('token');
+        final String? type = prefs.getString(ConstString.type);
+
+        /// chưa login
         if (token == null || token.isEmpty) {
           await _goToOnboarding();
           return;
         }
-        if (type == null) {
+
+        /// thiếu type
+        if (type == null || type.isEmpty) {
           await _goToOnboarding();
           return;
         }
+
+        /// STUDENT
         if (type == 'student') {
-          listClass = await LoginRepo()
-              .getListClass()
-              .timeout(const Duration(seconds: 3));
+          try {
+            listClass = await LoginRepo()
+                .getListClass()
+                .timeout(const Duration(seconds: 5));
 
-          listCategory = await HomeRepo()
-              .getCategories()
-              .timeout(const Duration(seconds: 3));
+            listCategory = await HomeRepo()
+                .getCategories()
+                .timeout(const Duration(seconds: 5));
 
-          if (!mounted) return;
+            if (!mounted) return;
 
-          if (listCategory.isNotEmpty) {
-            AppRouter.toPage(context, AppPages.BottomNavBarPage);
-          } else {
+            if (listCategory.isNotEmpty) {
+              AppRouter.toPage(
+                context,
+                AppPages.BottomNavBarPage,
+              );
+            } else {
+              await _goToOnboarding();
+            }
+          } catch (e) {
             await _goToOnboarding();
           }
-        } else {
-          listTeacherClass = await TeacherClassRepo().getTeacherClass();
-          listCategory = await HomeRepo().getCategories();
+        }
 
-          if (!mounted) return;
+        /// TEACHER
+        else {
+          try {
+            listTeacherClass = await TeacherClassRepo()
+                .getTeacherClass()
+                .timeout(const Duration(seconds: 5));
 
-          if (listTeacherClass.isNotEmpty) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => BottombarTeacher(index: 0),
-              ),
-            );
-          } else {
+            listCategory = await HomeRepo()
+                .getCategories()
+                .timeout(const Duration(seconds: 5));
+
+            if (!mounted) return;
+
+            if (listTeacherClass.isNotEmpty) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BottombarTeacher(
+                    index: 0,
+                  ),
+                ),
+              );
+            } else {
+              await _goToOnboarding();
+            }
+          } catch (e) {
             await _goToOnboarding();
           }
         }
       } catch (e) {
-        // BẤT KỲ lỗi nào cũng về onboarding
         await _goToOnboarding();
       }
     });
@@ -86,6 +111,7 @@ class _SplshscreenState extends State<Splshscreen> {
 
   Future<void> _goToOnboarding() async {
     await removeToken();
+
     if (!mounted) return;
 
     Navigator.pushReplacement(
