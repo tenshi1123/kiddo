@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kiddo/main.dart';
 import 'package:kiddo/modules/bottombar/bottom_bar_screen.dart';
+import 'package:kiddo/modules/bottombar/bottom_bar_ver2.dart';
 import 'package:kiddo/modules/splash/onboarding.dart';
-import 'package:kiddo/router/app_pages.dart';
-import 'package:kiddo/router/app_router.dart';
 import 'package:kiddo/student_repo/home_repo.dart';
 import 'package:kiddo/student_repo/login_repo.dart';
 import 'package:kiddo/teacher_repo/teacher_class_repo.dart';
@@ -15,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> removeToken() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.remove('token');
+  await prefs.remove(ConstString.type);
 }
 
 class Splshscreen extends StatefulWidget {
@@ -62,9 +62,13 @@ class _SplshscreenState extends State<Splshscreen> {
             if (!mounted) return;
 
             if (listCategory.isNotEmpty) {
-              AppRouter.toPage(
+              Navigator.pushReplacement(
                 context,
-                AppPages.BottomNavBarPage,
+                MaterialPageRoute(
+                  builder: (_) => Bottombar2(
+                    index: 0,
+                  ),
+                ),
               );
             } else {
               await _goToOnboarding();
