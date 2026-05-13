@@ -28,89 +28,68 @@ class _SplshscreenState extends State<Splshscreen> {
   @override
   void initState() {
     super.initState();
+    _checkAuthAndNavigate(); // bỏ Timer, gọi thẳng
+  }
 
-    Timer(const Duration(milliseconds: 300), () async {
-      try {
-        final prefs = await SharedPreferences.getInstance();
+  Future<void> _checkAuthAndNavigate() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? token = prefs.getString('token');
+      final String? type = prefs.getString(ConstString.type);
 
-        final String? token = prefs.getString('token');
-        final String? type = prefs.getString(ConstString.type);
-
-        /// chưa login
-        if (token == null || token.isEmpty) {
-          await _goToOnboarding();
-          return;
-        }
-
-        /// thiếu type
-        if (type == null || type.isEmpty) {
-          await _goToOnboarding();
-          return;
-        }
-
-        /// STUDENT
-        if (type == 'student') {
-          try {
-            listClass = await LoginRepo()
-                .getListClass()
-                .timeout(const Duration(seconds: 5));
-
-            listCategory = await HomeRepo()
-                .getCategories()
-                .timeout(const Duration(seconds: 5));
-
-            if (!mounted) return;
-
-            if (listCategory.isNotEmpty) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => Bottombar2(
-                    index: 0,
-                  ),
-                ),
-              );
-            } else {
-              await _goToOnboarding();
-            }
-          } catch (e) {
-            await _goToOnboarding();
-          }
-        }
-
-        /// TEACHER
-        else {
-          try {
-            listTeacherClass = await TeacherClassRepo()
-                .getTeacherClass()
-                .timeout(const Duration(seconds: 5));
-
-            listCategory = await HomeRepo()
-                .getCategories()
-                .timeout(const Duration(seconds: 5));
-
-            if (!mounted) return;
-
-            if (listTeacherClass.isNotEmpty) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => BottombarTeacher(
-                    index: 0,
-                  ),
-                ),
-              );
-            } else {
-              await _goToOnboarding();
-            }
-          } catch (e) {
-            await _goToOnboarding();
-          }
-        }
-      } catch (e) {
+      if (token == null || token.isEmpty || type == null || type.isEmpty) {
         await _goToOnboarding();
+        return;
       }
-    });
+
+      if (type == 'student') {
+        try {
+          listClass = await LoginRepo()
+              .getListClass()
+              .timeout(const Duration(seconds: 5));
+          listCategory = await HomeRepo()
+              .getCategories()
+              .timeout(const Duration(seconds: 5));
+
+          if (!mounted) return;
+
+          if (listCategory.isNotEmpty) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => Bottombar2(index: 0)),
+            );
+          } else {
+            await _goToOnboarding();
+          }
+        } catch (e) {
+          await _goToOnboarding();
+        }
+      } else {
+        try {
+          listTeacherClass = await TeacherClassRepo()
+              .getTeacherClass()
+              .timeout(const Duration(seconds: 5));
+          listCategory = await HomeRepo()
+              .getCategories()
+              .timeout(const Duration(seconds: 5));
+
+          if (!mounted) return;
+
+          if (listTeacherClass.isNotEmpty) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => BottombarTeacher(index: 0)),
+            );
+          } else {
+            await _goToOnboarding();
+          }
+        } catch (e) {
+          await _goToOnboarding();
+        }
+      }
+    } catch (e) {
+      await _goToOnboarding(); // safety net
+    }
   }
 
   Future<void> _goToOnboarding() async {
