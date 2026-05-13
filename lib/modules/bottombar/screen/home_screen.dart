@@ -153,7 +153,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                               listCategory = await HomeRepo()
                                                   .getCategories();
                                               if (!mounted) return;
-                                              AppRouter.toPage(
+                                              // ✅ FIX: Dùng replaceAllWithPage để clear toàn bộ stack
+                                              // tránh Bottombar2 bị chồng chung khi switch account
+                                              AppRouter.replaceAllWithPage(
                                                 context,
                                                 AppPages.BottomNavBarPage,
                                               );

@@ -30,6 +30,7 @@ class _Bottombar2State extends State<Bottombar2> {
   int _selectedIndex = 0;
   bool isLoading = true;
   ProfileModel? profileModel;
+
   @override
   void initState() {
     super.initState();
@@ -38,14 +39,23 @@ class _Bottombar2State extends State<Bottombar2> {
   }
 
   Future<void> fetchData() async {
+    debugPrint('[Bottombar2] 📡 fetchData bắt đầu...');
     try {
-      final response = await CustomerRepo().getCustomerProfile();
+      // ✅ FIX: Thêm timeout để không block UI vô hạn
+      final response = await CustomerRepo()
+          .getCustomerProfile()
+          .timeout(const Duration(seconds: 10));
+      if (!mounted) return;
       setState(() {
         profileModel = response;
         isLoading = false;
       });
+      debugPrint('[Bottombar2] ✅ fetchData thành công');
     } catch (e) {
-      debugPrint('Lỗi khi gọi API: $e');
+      debugPrint('[Bottombar2] ❌ fetchData lỗi: $e');
+      if (!mounted) return;
+      // ✅ FIX: Dù lỗi vẫn set isLoading=false để không block UI vô hạn
+      // profileModel sẽ là null, UI phải xử lý null-safe
       setState(() {
         isLoading = false;
       });
@@ -91,12 +101,12 @@ class _Bottombar2State extends State<Bottombar2> {
       {"icon": 'info.svg', "label": "Thông tin"},
       {"icon": 'personal.svg', "label": "Tài khoản"},
     ];
-    return (isLoading || profileModel == null)
-        ? Image.asset(
-            "assets/images/splash.gif",
-            height: 844.h,
-            width: 390.w,
-            fit: BoxFit.fill,
+    // ✅ FIX: Chỉ block bằng loading spinner khi đang load
+    // Không dùng splash.gif lần 2, không block khi profileModel==null
+    return isLoading
+        ? const Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(child: CircularProgressIndicator()),
           )
         : Scaffold(
             extendBody: true,

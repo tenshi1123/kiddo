@@ -29,7 +29,10 @@ class BottombarTeacher extends StatefulWidget {
 class _BottombarTeacherState extends State<BottombarTeacher> {
   int _selectedIndex = 0;
   bool isLoading = true;
-  late ProfileModel profileModel;
+  // ✅ FIX: Đổi late ProfileModel → ProfileModel? để tránh LateInitializationError
+  // khi fetchData thất bại trước khi profileModel được gán giá trị
+  ProfileModel? profileModel;
+
   @override
   void initState() {
     super.initState();
@@ -38,14 +41,22 @@ class _BottombarTeacherState extends State<BottombarTeacher> {
   }
 
   Future<void> fetchData() async {
+    debugPrint('[BottombarTeacher] 📡 fetchData bắt đầu...');
     try {
-      final response = await TeacherInfoRepo().getCustomerProfile();
+      // ✅ FIX: Thêm timeout để không block UI vô hạn
+      final response = await TeacherInfoRepo()
+          .getCustomerProfile()
+          .timeout(const Duration(seconds: 10));
+      if (!mounted) return;
       setState(() {
         profileModel = response;
         isLoading = false;
       });
+      debugPrint('[BottombarTeacher] ✅ fetchData thành công');
     } catch (e) {
-      debugPrint('Lỗi khi gọi API: $e');
+      debugPrint('[BottombarTeacher] ❌ lỗi khi gọi API: $e');
+      if (!mounted) return;
+      // ✅ FIX: Dù lỗi vẫn set isLoading=false, không để UI bị treo
       setState(() {
         isLoading = false;
       });
@@ -92,12 +103,12 @@ class _BottombarTeacherState extends State<BottombarTeacher> {
       {"icon": 'chat.svg', "label": 'Chat'},
       {"icon": 'personal.svg', "label": L10n.of(context).profile},
     ];
+    // ✅ FIX: Chỉ block bằng loading spinner khi đang load
+    // Không dùng splash.gif lần 2
     return isLoading
-        ? Image.asset(
-            "assets/images/splash.gif",
-            height: 844.h,
-            width: 390.w,
-            fit: BoxFit.fill,
+        ? const Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(child: CircularProgressIndicator()),
           )
         : Scaffold(
             extendBody: true,

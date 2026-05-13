@@ -223,12 +223,14 @@ Future<void> _dialogBuilder(BuildContext context) {
             onPressed: () async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
               await prefs.remove('token');
+              await prefs.remove('type');
               if (!context.mounted) return;
-              Navigator.push(
+              // ✅ FIX: Dùng pushAndRemoveUntil để clear toàn bộ navigation stack
+              // tránh người dùng có thể back về màn đã đăng xuất
+              Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                  builder: ((context) => Onbonding()),
-                ),
+                MaterialPageRoute(builder: (_) => Onbonding()),
+                (route) => false,
               );
             },
           ),

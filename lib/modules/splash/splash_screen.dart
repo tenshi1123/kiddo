@@ -28,75 +28,126 @@ class _SplshscreenState extends State<Splshscreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuthAndNavigate(); // bỏ Timer, gọi thẳng
+    // ✅ FIX: Dùng addPostFrameCallback để đảm bảo widget đã mounted hoàn toàn
+    // trước khi bắt đầu async flow, tránh navigate trên context chưa sẵn sàng
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAuthAndNavigate();
+    });
   }
 
   Future<void> _checkAuthAndNavigate() async {
+    debugPrint('[Splash] 🚀 Bắt đầu kiểm tra auth...');
     try {
       final prefs = await SharedPreferences.getInstance();
       final String? token = prefs.getString('token');
       final String? type = prefs.getString(ConstString.type);
 
+      debugPrint(
+          '[Splash] 🔑 token: ${token != null ? "có" : "null"} | type: $type');
+
       if (token == null || token.isEmpty || type == null || type.isEmpty) {
+        debugPrint('[Splash] ➡️ Không có token → onboarding');
         await _goToOnboarding();
         return;
       }
 
       if (type == 'student') {
-        try {
-          listClass = await LoginRepo()
-              .getListClass()
-              .timeout(const Duration(seconds: 5));
-          listCategory = await HomeRepo()
-              .getCategories()
-              .timeout(const Duration(seconds: 5));
-
-          if (!mounted) return;
-
-          if (listCategory.isNotEmpty) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => Bottombar2(index: 0)),
-            );
-          } else {
-            await _goToOnboarding();
-          }
-        } catch (e) {
-          await _goToOnboarding();
-        }
+        await _handleStudentFlow(token);
       } else {
-        try {
-          listTeacherClass = await TeacherClassRepo()
-              .getTeacherClass()
-              .timeout(const Duration(seconds: 5));
-          listCategory = await HomeRepo()
-              .getCategories()
-              .timeout(const Duration(seconds: 5));
-
-          if (!mounted) return;
-
-          if (listTeacherClass.isNotEmpty) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => BottombarTeacher(index: 0)),
-            );
-          } else {
-            await _goToOnboarding();
-          }
-        } catch (e) {
-          await _goToOnboarding();
-        }
+        await _handleTeacherFlow(token);
       }
     } catch (e) {
-      await _goToOnboarding(); // safety net
+      debugPrint('[Splash] ❌ Lỗi ngoài cùng: $e → onboarding');
+      await _goToOnboarding();
+    }
+  }
+
+  Future<void> _handleStudentFlow(String token) async {
+    debugPrint('[Splash] 👤 Student flow...');
+    try {
+      // ✅ FIX: Khởi động 2 Future song song giữ đúng kiểu dữ liệu
+      // (Future.wait trả về List<dynamic> gây lỗi type assignment)
+      debugPrint('[Splash] 📡 Gọi getListClass + getCategories...');
+      final classFuture =
+          LoginRepo().getListClass().timeout(const Duration(seconds: 8));
+      final categoryFuture =
+          HomeRepo().getCategories().timeout(const Duration(seconds: 8));
+
+      listClass = await classFuture;
+      listCategory = await categoryFuture;
+
+      debugPrint(
+          '[Splash] ✅ Student: ${listClass.length} lớp | ${listCategory.length} category');
+
+      if (!mounted) {
+        debugPrint('[Splash] ⚠️ Widget unmounted sau student API – bỏ navigate');
+        return;
+      }
+
+      // ✅ FIX: Bỏ điều kiện listCategory.isNotEmpty
+      // Category rỗng là hợp lệ (học viên mới chưa có danh mục) – token vẫn valid
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => Bottombar2(index: 0)),
+      );
+      debugPrint('[Splash] ✅ Navigate → Bottombar2 (student)');
+    } on TimeoutException {
+      debugPrint('[Splash] ⏱️ Student API timeout → onboarding');
+      await _goToOnboarding();
+    } catch (e) {
+      debugPrint('[Splash] ❌ Student API lỗi: $e → onboarding');
+      await _goToOnboarding();
+    }
+  }
+
+
+  Future<void> _handleTeacherFlow(String token) async {
+    debugPrint('[Splash] 👨‍🏫 Teacher flow...');
+    try {
+      // ✅ FIX: Khởi động 2 Future song song giữ đúng kiểu dữ liệu
+      debugPrint('[Splash] 📡 Gọi getTeacherClass + getCategories...');
+      final teacherClassFuture = TeacherClassRepo()
+          .getTeacherClass()
+          .timeout(const Duration(seconds: 8));
+      final categoryFuture =
+          HomeRepo().getCategories().timeout(const Duration(seconds: 8));
+
+      listTeacherClass = await teacherClassFuture;
+      listCategory = await categoryFuture;
+
+      debugPrint(
+          '[Splash] ✅ Teacher: ${listTeacherClass.length} lớp | ${listCategory.length} category');
+
+      if (!mounted) {
+        debugPrint(
+            '[Splash] ⚠️ Widget unmounted sau teacher API – bỏ navigate');
+        return;
+      }
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => BottombarTeacher(index: 0)),
+      );
+      debugPrint('[Splash] ✅ Navigate → BottombarTeacher');
+    } on TimeoutException {
+      debugPrint('[Splash] ⏱️ Teacher API timeout → onboarding');
+      await _goToOnboarding();
+    } catch (e) {
+      debugPrint('[Splash] ❌ Teacher API lỗi: $e → onboarding');
+      await _goToOnboarding();
     }
   }
 
   Future<void> _goToOnboarding() async {
+    debugPrint('[Splash] 🗑️ Xóa token...');
     await removeToken();
 
-    if (!mounted) return;
+    if (!mounted) {
+      debugPrint('[Splash] ⚠️ Widget unmounted – không navigate onboarding');
+      return;
+    }
 
+    debugPrint('[Splash] ➡️ Navigate → Onboarding');
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

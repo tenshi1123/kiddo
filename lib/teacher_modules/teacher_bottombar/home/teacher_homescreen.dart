@@ -27,7 +27,9 @@ class TeacherHomeScreen extends StatefulWidget {
     super.key,
     required this.model,
   });
-  final ProfileModel model;
+  // ✅ FIX: ProfileModel? nullable – teacher home screen phải chấp nhận null
+  // khi fetchData trong BottombarTeacher thất bại
+  final ProfileModel? model;
   @override
   State<TeacherHomeScreen> createState() => _TeacherHomeScreenState();
 }
@@ -96,7 +98,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: AppImage(
-                    url: widget.model.avatar,
+                    url: widget.model?.avatar ?? '',
                     width: 50.w,
                     height: 50.h,
                     fit: BoxFit.fill,
@@ -111,7 +113,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     SizedBox(
                       width: 200.w,
                       child: Text(
-                        'Hi! ${widget.model.fullName}',
+                        'Hi! ${widget.model?.fullName ?? ''}',
                         style: defaultText18B.copyWith(color: Colors.white),
                       ),
                     ),
