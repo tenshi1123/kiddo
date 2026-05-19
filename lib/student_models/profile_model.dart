@@ -20,12 +20,12 @@ class ProfileModel {
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
       avatar: json['avatar'] ?? '',
-      fullName: json['full_name'] ?? '',
-      id: json['id'] ?? '',
-      email: json['email'] ?? 'Chưa có thông tin email',
-      phone: json['phone'] ?? 'Chưa có thông tin SDT',
-      gender: json['gender'] ?? 'Không xác định',
-      birthday: json['birthday'] ?? 'Chưa có thông tin sinh nhật',
+      fullName: json['full_name'] ?? 'Không có dữ liệu',
+      id: json['id'] ?? 'Không có dữ liệu',
+      email: json['email'] ?? 'Không có dữ liệu',
+      phone: json['phone'] ?? 'Không có dữ liệu',
+      gender: json['gender'] ?? 'Không có dữ liệu',
+      birthday: json['birthday'] ?? 'Không có dữ liệu',
     );
   }
 }

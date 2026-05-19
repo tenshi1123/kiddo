@@ -111,18 +111,18 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  widget.model?.fullName ?? '',
+                  widget.model?.fullName ?? 'Không có dữ liệu',
                   style: defaultText18B,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  widget.model?.phone ?? '',
+                  widget.model?.phone ?? 'Không có dữ liệu',
                   style: defaultText14M.copyWith(
                       color: colorText.withValues(alpha: 0.6)),
                 ),
                 Text(
-                  widget.model?.email ?? '',
+                  widget.model?.email ?? 'Không có dữ liệu',
                   style: defaultText14M.copyWith(
                       color: colorText.withValues(alpha: 0.6)),
                 ),

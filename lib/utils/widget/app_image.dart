@@ -23,28 +23,46 @@ class AppImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget defaultPlaceholder() {
+      return Container(
+        width: width,
+        height: height,
+        color: Colors.grey.shade200,
+        alignment: Alignment.center,
+        child: Icon(
+          Icons.image_outlined,
+          color: Colors.grey.shade400,
+          size: 32,
+        ),
+      );
+    }
+
     final image = CachedNetworkImage(
       imageUrl: url,
       width: width,
       height: height,
-      fit: fit,
-      placeholder: (context, url) =>
-          placeholder ??
-          const Center(
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-      errorWidget: (context, url, error) =>
-          errorWidget ??
-          const Icon(
-            Icons.error_outline,
-            color: Colors.grey,
-          ),
+      fit: fit ?? BoxFit.cover,
+      placeholder: (context, url) {
+        return placeholder ?? defaultPlaceholder();
+      },
+      errorWidget: (context, url, error) {
+        return errorWidget ??
+            Container(
+              width: width,
+              height: height,
+              color: Colors.grey.shade200,
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.broken_image_outlined,
+                color: Colors.grey.shade400,
+              ),
+            );
+      },
     );
 
-    final br = borderRadius;
-    if (br != null) {
+    if (borderRadius != null) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(br),
+        borderRadius: BorderRadius.circular(borderRadius!),
         child: image,
       );
     }
