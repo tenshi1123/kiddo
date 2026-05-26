@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:screen_protector/screen_protector.dart';
@@ -13,10 +14,12 @@ class DetailVideo extends StatefulWidget {
     super.key,
     required this.videoId,
     required this.libraryId,
+    required this.model,
   });
 
   final String videoId;
   final int libraryId;
+  final ProfileModel? model;
 
   @override
   State<DetailVideo> createState() => _DetailVideoState();
@@ -59,6 +62,9 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
 
   /// 🌐 WebView setup + detect fullscreen
   void _initWebView() {
+    String watermarkText = widget.model != null
+        ? "${widget.model?.fullName} - ${widget.model?.phone}"
+        : "Bản quyền thuộc về Kiido";
     final url =
         "https://iframe.mediadelivery.net/embed/${widget.libraryId}/${widget.videoId}";
 
@@ -99,7 +105,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
             var wm = document.createElement("div");
             wm.id = "flutter-watermark";
             // Nội dung theo yêu cầu của bạn
-            wm.innerHTML = "Nguyễn Huỳnh Hải Yến - 0972018810"; 
+            wm.innerHTML = "$watermarkText";
             
             // CSS cơ bản cho watermark
             wm.style.position = "fixed";

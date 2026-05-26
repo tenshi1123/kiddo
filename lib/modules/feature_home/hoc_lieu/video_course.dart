@@ -199,6 +199,7 @@ class VideoCourse extends StatelessWidget {
                     return LessonItem(
                       index: index,
                       topicModel: courseVideoModel.listTopical[index],
+                      infoModel: model,
                     );
                   }),
               SizedBox(
@@ -213,9 +214,14 @@ class VideoCourse extends StatelessWidget {
 }
 
 class LessonItem extends StatefulWidget {
-  const LessonItem({super.key, required this.index, required this.topicModel});
+  const LessonItem(
+      {super.key,
+      required this.index,
+      required this.topicModel,
+      this.infoModel});
   final int index;
   final TopicalModel topicModel;
+  final ProfileModel? infoModel;
   @override
   State<LessonItem> createState() => _LessonItemState();
 }
@@ -351,6 +357,7 @@ class _LessonItemState extends State<LessonItem> {
                               builder: (context) => DetailVideo(
                                 videoId: model.streamingUrl,
                                 libraryId: model.idBunny,
+                                model: widget.infoModel,
                               ),
                             ),
                           );

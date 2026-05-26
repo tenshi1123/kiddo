@@ -97,7 +97,7 @@ class _ListDocumentsState extends State<ListDocuments> {
                       MaterialPageRoute(
                         builder: ((context) => VideoCourse(
                               courseVideoModel: detailClassModel,
-                              model: null,
+                              model: widget.model,
                             )),
                       ),
                     );
