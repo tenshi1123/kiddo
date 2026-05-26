@@ -268,7 +268,7 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
                                 color: Color(0xffF6F6F6),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Html(data: lesson.content)
+                              child: Html(data: cleanHtml(lesson.content))
                               // Text(
                               //   ,
                               //   style: defaultText14M.copyWith(
@@ -285,4 +285,26 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
       ],
     );
   }
+}
+
+String cleanHtml(String rawHtml) {
+  String result = rawHtml;
+
+  // 1. Xóa bỏ thẻ <div> bọc ngoài cùng (nếu có) để dễ xử lý cấu trúc bên trong
+  result = result.replaceAll('<div>', '').replaceAll('</div>', '');
+
+  // 2. Chuyển đổi: Tìm đoạn text thường nằm giữa các thẻ <b>
+  // Thần chú Regex này sẽ tìm dạng: </b> [khoảng trống/thẻ lỗi] TÊN_CHỮ <b>
+  // Và bọc chữ đó lại trong thẻ <div> riêng để ép xuống dòng
+  result = result.replaceAllMapped(
+      RegExp(r'</b>\s*(?:</br>|<br\s*/>)?\s*([^<]+)\s*<b>'),
+      (match) => '</b><div>${match.group(1)?.trim()}</div><b>');
+
+  // 3. Xử lý đoạn text thừa dính ở cuối chuỗi (nếu có) trước khi đóng tag
+  result = result.replaceAllMapped(
+      RegExp(r'</b>\s*(?:</br>|<br\s*/>)?\s*([^<]+)$'),
+      (match) => '</b><div>${match.group(1)?.trim()}</div>');
+
+  // 4. Bọc lại bằng một thẻ div tổng cho an toàn
+  return '<div>$result</div>';
 }

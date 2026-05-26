@@ -435,11 +435,9 @@ class TeacherClassRepo {
     });
     Response response;
     response = await dio.post(
-      // type == 'gk'
-      //     ? ApiPathTeacher.feedbackmidterm
-      //     :
-      ApiPathTeacher.feedbackendterm,
-
+      type == 'gk'
+          ? ApiPathTeacher.feedbackmidterm
+          : ApiPathTeacher.feedbackendterm,
       data: formData,
     );
     List<FeedbackTermModel> result = [];

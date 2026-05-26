@@ -5,6 +5,7 @@ import 'package:kiddo/main.dart';
 import 'package:kiddo/modules/feature_home/hoc_lieu/video_course.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/student_models/info_class_model.dart';
+import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/video_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
@@ -13,8 +14,9 @@ import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 class ListDocuments extends StatefulWidget {
   const ListDocuments({
     super.key,
+    this.model,
   });
-
+  final ProfileModel? model;
   @override
   State<ListDocuments> createState() => _ListDocumentsState();
 }
@@ -79,21 +81,50 @@ class _ListDocumentsState extends State<ListDocuments> {
               final item = listClass[index];
               return GestureDetector(
                 onTap: () async {
-                  CourseVideoModel detailClassModel =
-                      await VideoRepository().getListTopical(
-                    typeId: listClass[index].settingCourseTypeId,
-                    scheduleId: listClass[index].courseScheduleId,
-                    courseId: listClass[index].courseId,
-                  );
-                  if (!context.mounted) return;
-                  pushWithoutNavBar(
-                    context,
-                    MaterialPageRoute(
-                      builder: ((context) => VideoCourse(
-                            courseVideoModel: detailClassModel,
-                          )),
-                    ),
-                  );
+                  try {
+                    // 1. Gọi API lấy dữ liệu video
+                    CourseVideoModel detailClassModel =
+                        await VideoRepository().getListTopical(
+                      typeId: listClass[index].settingCourseTypeId,
+                      scheduleId: listClass[index].courseScheduleId,
+                      courseId: listClass[index].courseId,
+                    );
+
+                    // Kiểm tra xem BuildContext còn tồn tại hay không trước khi điều hướng
+                    if (!context.mounted) return;
+                    pushWithoutNavBar(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => VideoCourse(
+                              courseVideoModel: detailClassModel,
+                              model: null,
+                            )),
+                      ),
+                    );
+                  } catch (error) {
+                    // Kiểm tra xem BuildContext còn tồn tại không trước khi hiển thị Dialog
+                    if (!context.mounted) return;
+
+                    // 3. Nếu gọi API bị lỗi, hiển thị thông báo
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Thông báo'),
+                          content:
+                              const Text('Bạn đã hết thời gian xem video.'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('Đóng'),
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Đóng dialog
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 child: Container(
                   margin: EdgeInsets.only(bottom: 12.h),

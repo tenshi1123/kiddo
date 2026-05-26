@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kiddo/modules/feature_home/hoc_lieu/detail_video.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/student_models/info_class_model.dart';
+import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/video_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/widget/webview_screen.dart';
@@ -12,8 +13,10 @@ import 'package:kiddo/utils/widget/app_image.dart';
 import '../../../utils/constants/styles.dart';
 
 class VideoCourse extends StatelessWidget {
-  const VideoCourse({super.key, required this.courseVideoModel});
+  const VideoCourse(
+      {super.key, required this.courseVideoModel, required this.model});
   final CourseVideoModel courseVideoModel;
+  final ProfileModel? model;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

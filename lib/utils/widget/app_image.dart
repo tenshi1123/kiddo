@@ -27,8 +27,11 @@ class AppImage extends StatelessWidget {
       return Container(
         width: width,
         height: height,
-        color: Colors.grey.shade200,
         alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.grey.shade200,
+        ),
         child: Icon(
           Icons.image_outlined,
           color: Colors.grey.shade400,

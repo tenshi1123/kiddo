@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 30.h,
             ),
-            SmoothHorizontalMenu(),
+            SmoothHorizontalMenu(model: widget.model),
             SizedBox(
               height: 30.h,
             ),
@@ -465,8 +465,8 @@ Widget dateTimeDisplayWidget() {
 }
 
 class SmoothHorizontalMenu extends StatefulWidget {
-  const SmoothHorizontalMenu({super.key});
-
+  const SmoothHorizontalMenu({super.key, this.model});
+  final ProfileModel? model;
   @override
   State<SmoothHorizontalMenu> createState() => _SmoothHorizontalMenuState();
 }
@@ -475,52 +475,43 @@ class _SmoothHorizontalMenuState extends State<SmoothHorizontalMenu> {
   final ScrollController _scrollController = ScrollController();
   double _currentPage = 0;
   int pageCount = 0;
-  final List<Map<String, dynamic>> menuItems = [
-    {
-      "icon": 'assets/images/lich_thi.png',
-      "title": "Điểm danh",
-      'screen': DiemDanhScreen(),
-    },
-    {
-      "icon": 'assets/images/bai_tap.png',
-      "title": "Bài tập",
-      'screen': ListExcerciseScreen(),
-    },
-    {
-      "icon": 'assets/images/bao_cao_diem.png',
-      "title": "Đánh giá",
-      'screen': ListEvalueteScreen(),
-    },
-    {
-      "icon": 'assets/images/danh_gia.png',
-      "title": "Học phí",
-      'screen': HocPhiScreen(),
-    },
-    {
-      "icon": 'assets/images/hoc_lieu.png',
-      "title": "Học liệu",
-      'screen': ListDocuments(),
-    },
-    // {
-    //   "icon": 'assets/images/lo_trinh.png',
-    //   "title": "Lộ trình",
-    //   'screen': DiemDanhScreen(),
-    // },
-    {
-      "icon": 'assets/images/chinh_sach.png',
-      "title": "Chính sách",
-      'screen': ListCsachScreen(),
-    },
-    // {
-    //   "icon": 'assets/images/chung_nhan.png',
-    //   "title": "Chứng nhận",
-    //   'screen': DiemDanhScreen(),
-    // },
-  ];
+  List<Map<String, dynamic>> menuItems = [];
 
   @override
   void initState() {
     super.initState();
+    menuItems = [
+      {
+        "icon": 'assets/images/lich_thi.png',
+        "title": "Điểm danh",
+        'screen': DiemDanhScreen(),
+      },
+      {
+        "icon": 'assets/images/bai_tap.png',
+        "title": "Bài tập",
+        'screen': ListExcerciseScreen(),
+      },
+      {
+        "icon": 'assets/images/bao_cao_diem.png',
+        "title": "Đánh giá",
+        'screen': ListEvalueteScreen(),
+      },
+      {
+        "icon": 'assets/images/danh_gia.png',
+        "title": "Học phí",
+        'screen': HocPhiScreen(),
+      },
+      {
+        "icon": 'assets/images/hoc_lieu.png',
+        "title": "Học liệu",
+        'screen': ListDocuments(model: widget.model),
+      },
+      {
+        "icon": 'assets/images/chinh_sach.png',
+        "title": "Chính sách",
+        'screen': ListCsachScreen(),
+      },
+    ];
     pageCount = (menuItems.length / 4).ceil();
     _scrollController.addListener(() {
       final maxScroll = _scrollController.position.maxScrollExtent;

@@ -28,8 +28,6 @@ class _SplshscreenState extends State<Splshscreen> {
   @override
   void initState() {
     super.initState();
-    // ✅ FIX: Dùng addPostFrameCallback để đảm bảo widget đã mounted hoàn toàn
-    // trước khi bắt đầu async flow, tránh navigate trên context chưa sẵn sàng
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAuthAndNavigate();
     });
@@ -78,14 +76,17 @@ class _SplshscreenState extends State<Splshscreen> {
 
       debugPrint(
           '[Splash] ✅ Student: ${listClass.length} lớp | ${listCategory.length} category');
-
+      if (listClass.isEmpty || listCategory.isEmpty) {
+        debugPrint('[Splash] ⚠️ listClass hoặc listCategory rỗng → onboarding');
+        await _goToOnboarding();
+        return;
+      }
       if (!mounted) {
-        debugPrint('[Splash] ⚠️ Widget unmounted sau student API – bỏ navigate');
+        debugPrint(
+            '[Splash] ⚠️ Widget unmounted sau student API – bỏ navigate');
         return;
       }
 
-      // ✅ FIX: Bỏ điều kiện listCategory.isNotEmpty
-      // Category rỗng là hợp lệ (học viên mới chưa có danh mục) – token vẫn valid
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => Bottombar2(index: 0)),
@@ -99,7 +100,6 @@ class _SplshscreenState extends State<Splshscreen> {
       await _goToOnboarding();
     }
   }
-
 
   Future<void> _handleTeacherFlow(String token) async {
     debugPrint('[Splash] 👨‍🏫 Teacher flow...');
