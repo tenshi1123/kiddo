@@ -231,6 +231,7 @@ class _LessonItemState extends State<LessonItem> {
   List<LessonVideoModel> listLessonVideoModels = [];
 
   Future<void> playVideoAtIndex(int index) async {
+    if (!mounted) return;
     if (index >= listLessonVideoModels.length) return;
     final e = listLessonVideoModels[index];
 
@@ -260,7 +261,9 @@ class _LessonItemState extends State<LessonItem> {
         );
 
         if (result == true) {
-          playVideoAtIndex(index + 1);
+          if (mounted) {
+            playVideoAtIndex(index + 1);
+          }
         }
       } catch (error) {
         print("Lỗi khi tải video: $error");

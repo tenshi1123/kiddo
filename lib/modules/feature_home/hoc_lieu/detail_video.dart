@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:kiddo/student_models/info_class_model.dart';
 import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/video_repo.dart';
@@ -29,6 +30,7 @@ class DetailVideo extends StatefulWidget {
 class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   bool _isRecording = false;
   final bool _isFullscreen = false;
+  bool _isLandscape = false;
   StreamSubscription? _recordingSub;
 
   late final WebViewController _controller;
@@ -154,18 +156,61 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
           videoContainer.appendChild(wm);
           var currentIndex = 0;
           function updatePosition() {
-          // Khoảng cách an toàn so với mép video
-            var padding = "10px"; 
-          // Reset lại toàn bộ CSS vị trí
-            wm.style.top = "auto";
-            wm.style.bottom = "auto";
-            wm.style.left = "auto";
+            var video = document.querySelector('video');
+            var wm = document.getElementById("flutter-watermark");
+            if (!video || !wm) return;
+
+            var rect = video.getBoundingClientRect();
+            var vw = video.videoWidth;
+            var vh = video.videoHeight;
+
+            // Đợi đến khi video tải xong metadata mới có kích thước thực
+            if (!vw || !vh) return;
+
+            var videoRatio = vw / vh;
+            var containerRatio = rect.width / rect.height;
+
+            var actualWidth = rect.width;
+            var actualHeight = rect.height;
+            var startX = rect.left;
+            var startY = rect.top;
+
+            // BƯỚC QUAN TRỌNG: Loại bỏ khoảng viền đen (Black bars)
+            if (containerRatio > videoRatio) {
+              // Viền đen ở 2 bên trái/phải (Ví dụ: Video dọc xem trên màn hình ngang)
+              actualWidth = rect.height * videoRatio;
+              startX = rect.left + (rect.width - actualWidth) / 2;
+            } else {
+              // Viền đen ở trên/dưới (Ví dụ: Video ngang xem trên màn hình đứng)
+              actualHeight = rect.width / videoRatio;
+              startY = rect.top + (rect.height - actualHeight) / 2;
+            }
+
+            var padding = 15;
+            var bottomOffset = 50; // Tránh thanh điều khiển video
+            var wmWidth = wm.offsetWidth || 150; 
+            var wmHeight = wm.offsetHeight || 20;
+
+            // Reset toàn bộ CSS vị trí
+            wm.style.top = "auto"; 
+            wm.style.bottom = "auto"; 
+            wm.style.left = "auto"; 
             wm.style.right = "auto";
-    // Set vị trí theo góc
-          if (currentIndex === 0) { wm.style.top = padding; wm.style.left = padding; } // Trên trái
-          else if (currentIndex === 1) { wm.style.top = padding; wm.style.right = padding; } // Trên phải
-          else if (currentIndex === 2) { wm.style.bottom = "50px"; wm.style.right = padding; } // Dưới phải (né thanh điều khiển)
-          else if (currentIndex === 3) { wm.style.bottom = "50px"; wm.style.left = padding; } // Dưới trái (né thanh điều khiển)
+
+            // Gắn tọa độ theo góc của VÙNG HÌNH ẢNH THỰC TẾ
+            if (currentIndex === 0) { // Góc trên trái
+              wm.style.top = (startY + padding) + "px";
+              wm.style.left = (startX + padding) + "px";
+            } else if (currentIndex === 1) { // Góc trên phải
+              wm.style.top = (startY + padding) + "px";
+              wm.style.left = (startX + actualWidth - wmWidth - padding) + "px";
+            } else if (currentIndex === 2) { // Góc dưới phải
+              wm.style.top = (startY + actualHeight - wmHeight - bottomOffset) + "px";
+              wm.style.left = (startX + actualWidth - wmWidth - padding) + "px";
+            } else if (currentIndex === 3) { // Góc dưới trái
+              wm.style.top = (startY + actualHeight - wmHeight - bottomOffset) + "px";
+              wm.style.left = (startX + padding) + "px";
+            }
           }
 
           updatePosition();
@@ -175,18 +220,20 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
             updatePosition();
           }, 3000); 
 
-          // Lắng nghe sự kiện kết thúc video
-          var videoCheckInterval = setInterval(function() {
-            var v = document.querySelector('video');
-            if (v) {
-              clearInterval(videoCheckInterval);
-              v.addEventListener('ended', function() {
-                if (window.VideoChannel) {
+          // Sử dụng Event Capturing để bắt sự kiện ended kể cả khi video được tạo động (ended không bubble)
+          document.addEventListener('ended', function(e) {
+            if (e.target && e.target.tagName && e.target.tagName.toLowerCase() === 'video') {
+              try {
+                if (typeof VideoChannel !== 'undefined') {
+                  VideoChannel.postMessage('video_ended');
+                } else if (window.VideoChannel) {
                   window.VideoChannel.postMessage('video_ended');
                 }
-              });
+              } catch(err) {
+                console.error(err);
+              }
             }
-          }, 1000);
+          }, true);
         }
         ''');
           },
@@ -197,6 +244,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WidgetsBinding.instance.removeObserver(this);
     _recordingSub?.cancel();
     if (Platform.isAndroid) {
@@ -221,9 +269,35 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
               style: defaultText16B.copyWith(color: Colors.white),
             ),
             leading: IconButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                Navigator.pop(context);
+              },
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
             ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _isLandscape = !_isLandscape;
+                  });
+                  if (_isLandscape) {
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.landscapeLeft,
+                      DeviceOrientation.landscapeRight,
+                    ]);
+                  } else {
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                    ]);
+                  }
+                },
+                icon: Icon(
+                  _isLandscape ? Icons.screen_lock_portrait : Icons.screen_rotation,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
           body: WebViewWidget(controller: _controller),
         ),
