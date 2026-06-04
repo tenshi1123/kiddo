@@ -398,7 +398,7 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                                 title: Text(
                                                     L10n.of(context).success),
                                                 content: const Text(
-                                                    "Đã cập nhật điểm danh cho tất cả học sinh."),
+                                                    "Đã cập nhật điểm danh cho  học sinh."),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () =>
@@ -478,7 +478,7 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                         bool? result = await showConfirmDialog(
                                           context: context,
                                           content:
-                                              "Bạn chắc chắn muốn cập nhật trạng thái điểm danh",
+                                              "Bạn chắc chắn muốn cập nhật thái độ học sinh",
                                         );
                                         if (result == true) {
                                           for (final student in listAttitude) {
@@ -502,7 +502,7 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                                     title: const Text(
                                                         "Thành công"),
                                                     content: const Text(
-                                                        "Đã cập nhật điểm danh cho tất cả học sinh."),
+                                                        "Đã cập nhật thái độ cho học sinh."),
                                                     actions: [
                                                       TextButton(
                                                         onPressed: () =>
@@ -585,7 +585,7 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                         bool? result = await showConfirmDialog(
                                           context: context,
                                           content:
-                                              "Bạn chắc chắn muốn cập nhật trạng thái điểm danh",
+                                              "Bạn chắc chắn muốn cập nhật tình hình",
                                         );
                                         if (result == true) {
                                           for (final student in listSituation) {
@@ -609,7 +609,7 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                                     title: const Text(
                                                         "Thành công"),
                                                     content: const Text(
-                                                        "Đã cập nhật điểm danh cho tất cả học sinh."),
+                                                        "Đã cập nhật tình hình cho học sinh."),
                                                     actions: [
                                                       TextButton(
                                                         onPressed: () =>

@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:kiddo/student_models/info_class_model.dart';
 import 'package:kiddo/student_models/profile_model.dart';
+import 'package:kiddo/student_repo/video_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:screen_protector/screen_protector.dart';
@@ -12,15 +14,14 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 class DetailVideo extends StatefulWidget {
   const DetailVideo({
     super.key,
-    required this.videoId,
-    required this.libraryId,
     required this.model,
+    required this.bunnyModel,
+    required this.name,
   });
 
-  final String videoId;
-  final int libraryId;
   final ProfileModel? model;
-
+  final BunnyModel bunnyModel;
+  final String name;
   @override
   State<DetailVideo> createState() => _DetailVideoState();
 }
@@ -31,13 +32,35 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   StreamSubscription? _recordingSub;
 
   late final WebViewController _controller;
-
+  Timer? _trackingTimer;
+  int _totalSecondsWatched = 0;
+  int? _videoId;
   @override
   void initState() {
     super.initState();
+    _videoId = widget.bunnyModel.customerTrackWithVideoId;
     WidgetsBinding.instance.addObserver(this);
     _initSecurity();
     _initWebView();
+    _startTrackingTime();
+  }
+
+  void _startTrackingTime() {
+    _trackingTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      _totalSecondsWatched += 10;
+      _sendTimeTrackingApi(_totalSecondsWatched);
+    });
+  }
+
+  Future<void> _sendTimeTrackingApi(int totalTime) async {
+    try {
+      VideoRepository().updateTime(
+        customerTrackWithVideoId: _videoId ?? 0,
+        time: totalTime,
+      );
+    } catch (e) {
+      print('Lỗi khi gửi API tracking: $e');
+    }
   }
 
   /// 🔐 Security setup
@@ -66,7 +89,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
         ? "${widget.model?.fullName} - ${widget.model?.phone}"
         : "Bản quyền thuộc về Kiido";
     final url =
-        "https://iframe.mediadelivery.net/embed/${widget.libraryId}/${widget.videoId}";
+        "https://iframe.mediadelivery.net/embed/${widget.bunnyModel.idBunny}/${widget.bunnyModel.streamingUrl}?autoplay=true&muted=false";
 
     late final PlatformWebViewControllerCreationParams params;
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
@@ -76,10 +99,18 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     } else {
       params = const PlatformWebViewControllerCreationParams();
     }
-
-// Khởi tạo controller với params vừa cấu hình
     _controller = WebViewController.fromPlatformCreationParams(params)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel(
+        'VideoChannel',
+        onMessageReceived: (JavaScriptMessage message) {
+          if (message.message == 'video_ended') {
+            if (mounted) {
+              Navigator.pop(context, true);
+            }
+          }
+        },
+      )
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageFinished: (String url) async {
@@ -100,59 +131,67 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
           Element.prototype.mozRequestFullScreen = function() { return Promise.reject(); };
           Element.prototype.msRequestFullscreen = function() { return Promise.reject(); };
           
-          // Bước C: Chèn watermark màu cam, di chuyển 4 góc mỗi 30s
+          // Bước C: Chèn watermark giới hạn TRONG KHUNG VIDEO
           if (!document.getElementById("flutter-watermark")) {
-            var wm = document.createElement("div");
-            wm.id = "flutter-watermark";
-            // Nội dung theo yêu cầu của bạn
-            wm.innerHTML = "$watermarkText";
-            
-            // CSS cơ bản cho watermark
-            wm.style.position = "fixed";
-            wm.style.color = "rgba(255, 165, 0, 0.8)"; // Màu cam, mờ 80%
-            wm.style.fontSize = "14px";
-            wm.style.fontWeight = "bold";
-            wm.style.zIndex = "999999"; 
-            wm.style.pointerEvents = "none"; // Không cản trở click video
-            // Thêm viền đen nhẹ để chữ cam không bị chìm nếu video có phông nền sáng
-            wm.style.textShadow = "1px 1px 2px rgba(0, 0, 0, 0.8)"; 
-            wm.style.transition = "opacity 0.3s"; // Hiệu ứng mờ nhẹ khi đổi góc
-
-            // Danh sách tọa độ 4 góc
-            var corners = [
-              { top: '10px', left: '10px', bottom: 'auto', right: 'auto' },   // Góc trên trái
-              { top: '10px', right: '10px', bottom: 'auto', left: 'auto' },   // Góc trên phải
-              { bottom: '10px', right: '10px', top: 'auto', left: 'auto' }, // Góc dưới phải
-              { bottom: '10px', left: '10px', top: 'auto', right: 'auto' }  // Góc dưới trái
-            ];
-
-            var currentIndex = 0;
-
-            // Hàm áp dụng tọa độ
-            function updatePosition() {
-              var pos = corners[currentIndex];
-              wm.style.top = pos.top;
-              wm.style.left = pos.left;
-              wm.style.bottom = pos.bottom;
-              wm.style.right = pos.right;
-            }
-
-            // Gắn vị trí ban đầu (Góc trên trái)
-            updatePosition();
-            document.body.appendChild(wm);
-
-            // Chạy vòng lặp đổi vị trí mỗi 30 giây (30000ms)
-            setInterval(function() {
-              currentIndex = (currentIndex + 1) % 4; // Quay vòng 0, 1, 2, 3
-              updatePosition();
-            }, 3000); 
+          var wm = document.createElement("div");
+          wm.id = "flutter-watermark";
+          wm.innerHTML = "$watermarkText";
+          wm.style.position = "absolute"; // Đổi thành absolute
+          wm.style.color = "rgba(255, 165, 0, 0.8)";
+          wm.style.fontSize = "14px";
+          wm.style.fontWeight = "bold";
+          wm.style.zIndex = "999999"; 
+          wm.style.pointerEvents = "none";
+          wm.style.textShadow = "1px 1px 2px rgba(0, 0, 0, 0.8)"; 
+          wm.style.transition = "all 0.3s ease"; // Cho phép mượt mà khi đổi góc
+          // Tìm thẻ chứa video (Thường BunnyCDN dùng Plyr player)
+          var videoElement = document.querySelector('video');
+          var videoContainer = videoElement ? videoElement.parentElement : document.body;
+          // Đảm bảo container chứa video có position relative để watermark neo theo
+          if (getComputedStyle(videoContainer).position === "static") {
+          videoContainer.style.position = "relative";
           }
+          videoContainer.appendChild(wm);
+          var currentIndex = 0;
+          function updatePosition() {
+          // Khoảng cách an toàn so với mép video
+            var padding = "10px"; 
+          // Reset lại toàn bộ CSS vị trí
+            wm.style.top = "auto";
+            wm.style.bottom = "auto";
+            wm.style.left = "auto";
+            wm.style.right = "auto";
+    // Set vị trí theo góc
+          if (currentIndex === 0) { wm.style.top = padding; wm.style.left = padding; } // Trên trái
+          else if (currentIndex === 1) { wm.style.top = padding; wm.style.right = padding; } // Trên phải
+          else if (currentIndex === 2) { wm.style.bottom = "50px"; wm.style.right = padding; } // Dưới phải (né thanh điều khiển)
+          else if (currentIndex === 3) { wm.style.bottom = "50px"; wm.style.left = padding; } // Dưới trái (né thanh điều khiển)
+          }
+
+          updatePosition();
+
+          setInterval(function() {
+            currentIndex = (currentIndex + 1) % 4;
+            updatePosition();
+          }, 3000); 
+
+          // Lắng nghe sự kiện kết thúc video
+          var videoCheckInterval = setInterval(function() {
+            var v = document.querySelector('video');
+            if (v) {
+              clearInterval(videoCheckInterval);
+              v.addEventListener('ended', function() {
+                if (window.VideoChannel) {
+                  window.VideoChannel.postMessage('video_ended');
+                }
+              });
+            }
+          }, 1000);
+        }
         ''');
           },
         ),
       );
-
-// Load trang web video của bạn
     _controller.loadRequest(Uri.parse(url));
   }
 
@@ -160,10 +199,10 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _recordingSub?.cancel();
-
     if (Platform.isAndroid) {
       ScreenProtector.preventScreenshotOff();
     }
+    _trackingTimer?.cancel();
 
     super.dispose();
   }
@@ -172,14 +211,13 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        /// 👉 Wrap toàn màn hình ở đây
         Scaffold(
           appBar: AppBar(
             backgroundColor: mainOrange,
             elevation: 0,
             centerTitle: true,
             title: Text(
-              'Video',
+              widget.name,
               style: defaultText16B.copyWith(color: Colors.white),
             ),
             leading: IconButton(
@@ -188,51 +226,8 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
             ),
           ),
           body: WebViewWidget(controller: _controller),
-          // Stack(
-          //   children: [
-          //     // 1. WebView chiếm toàn bộ không gian
-          //     Positioned.fill(
-          //       child: WebViewWidget(controller: _controller),
-          //     ),
-
-          //     Positioned.fill(
-          //       child: Center(
-          //         child: IgnorePointer(
-          //           child: Opacity(
-          //             opacity: 0.4,
-          //             child: Column(
-          //               mainAxisSize: MainAxisSize.min,
-          //               children: [
-          //                 const SizedBox(height: 8),
-          //                 Text(
-          //                   "Bản quyền thuộc về Kiido của bạn",
-          //                   style: TextStyle(
-          //                     color: Colors.white.withOpacity(0.8),
-          //                     fontSize: 14,
-          //                     fontWeight: FontWeight.w500,
-          //                     shadows: const [
-          //                       Shadow(
-          //                         blurRadius: 4.0,
-          //                         color: Colors.black,
-          //                         offset: Offset(1, 1),
-          //                       ),
-          //                     ],
-          //                   ),
-          //                 ),
-          //               ],
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
         ),
-
-        /// 🔥 Overlay khi quay màn hình (iOS)
         if (_isRecording) _buildBlockOverlay("Screen recording is not allowed"),
-
-        /// 🔥 Overlay khi fullscreen (fix case bạn gặp)
         if (_isFullscreen && Platform.isIOS)
           _buildBlockOverlay("Fullscreen is restricted"),
       ],

@@ -240,8 +240,7 @@ class _DetailTeacherClassState extends State<DetailTeacherClass> {
                                       SizedBox(
                                         height: 10.h,
                                       ),
-                                      SizedBox(
-                                        height: 520.h,
+                                      Expanded(
                                         child: ListView.builder(
                                           // ListView.builder sẽ tự cuộn
                                           itemCount: documents.length,
@@ -257,7 +256,6 @@ class _DetailTeacherClassState extends State<DetailTeacherClass> {
                                           },
                                         ),
                                       ),
-                                      Spacer(),
                                       Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 16.w),

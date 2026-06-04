@@ -76,7 +76,6 @@ class VideoCourse extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.only(bottom: 12.h),
                 padding: EdgeInsets.all(12.w),
                 child: Row(
                   children: [
@@ -105,14 +104,14 @@ class VideoCourse extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 16.h, left: 16.w, right: 16.w),
+                margin: EdgeInsets.only(left: 16.w, right: 16.w),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(16.r)),
                   color: Colors.white,
                 ),
                 child: AppImage(
                   url: courseVideoModel.detailClassModel.courseImg,
-                  width: 200.w,
+                  width: 120.w,
                   //height: 160.h,
                   fit: BoxFit.fitWidth,
                 ),
@@ -120,7 +119,7 @@ class VideoCourse extends StatelessWidget {
               Container(
                 //height: 32.h,
                 //width: 142.w,
-                margin: EdgeInsets.only(top: 16.h, left: 16.w),
+                margin: EdgeInsets.only(left: 16.w),
                 padding: EdgeInsets.all(8.h),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.r),
@@ -228,7 +227,63 @@ class LessonItem extends StatefulWidget {
 
 class _LessonItemState extends State<LessonItem> {
   bool isExpanded = false;
+  bool _isLoading = false;
   List<LessonVideoModel> listLessonVideoModels = [];
+
+  Future<void> playVideoAtIndex(int index) async {
+    if (index >= listLessonVideoModels.length) return;
+    final e = listLessonVideoModels[index];
+
+    if (e.lessonType == '3') {
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        BunnyModel model = await VideoRepository().getBunny(
+          lessonId: e.lessonsId,
+          settingCoureTypeId: e.settingCourseTypeId,
+          lessonType: e.lessonType,
+        );
+
+        if (!mounted) return;
+
+        // Tiến hành điều hướng sang màn hình mới
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailVideo(
+              bunnyModel: model,
+              model: widget.infoModel,
+              name: e.name,
+            ),
+          ),
+        );
+
+        if (result == true) {
+          playVideoAtIndex(index + 1);
+        }
+      } catch (error) {
+        print("Lỗi khi tải video: $error");
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    } else {
+      String link = await VideoRepository().getLinkVideo(
+        lessonId: e.lessonsId,
+        settingCoureTypeId: e.settingCourseTypeId,
+        lessonType: e.lessonType,
+      );
+      if (!mounted) return;
+      if (!await launchUrl(Uri.parse(link))) {
+        throw Exception('Could not launch ');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -309,76 +364,57 @@ class _LessonItemState extends State<LessonItem> {
         const Divider(),
         if (isExpanded)
           Column(
-            children: listLessonVideoModels
-                .map((e) => GestureDetector(
-                      // onTap: () async {
-                      //   String link = await VideoRepository().getLinkVideo(
-                      //       lessonId: e.lessonsId,
-                      //       settingCoureTypeId: e.settingCourseTypeId,
-                      //       lessonType: e.lessonType);
-                      //   pushWithoutNavBar(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: ((context) => WebViewScreen(
-                      //                 link: link,
-                      //                 title: e.name,
-                      //               )
-                      //           // AnimationPlayer(
-                      //           //       link: link,
-                      //           //     )
-                      //           ),
-                      //     ),
-                      //   );
-                      // },
-                      onTap: () async {
-                        if (e.type == 'document') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WebViewScreen(
-                                link: e.link,
-                                title: 'Tài liệu',
-                                type: 0,
-                              ),
+            children: listLessonVideoModels.asMap().entries.map((entry) {
+              int index = entry.key;
+              var e = entry.value;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: _isLoading
+                        ? null
+                        : () => playVideoAtIndex(index),
+                    child: DetailItem(
+                      title: e.name,
+                      type: e.type,
+                    ),
+                  ),
+                  if (e.document.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, top: 4.0, bottom: 8.0),
+                      child: Column(
+                        children: e.document.map((doc) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WebViewScreen(
+                                    link: doc.linkWebView.isNotEmpty
+                                        ? doc.linkWebView
+                                        : doc.link,
+                                    title: doc.name.isNotEmpty
+                                        ? doc.name
+                                        : 'Tài liệu',
+                                    type: 0,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: DetailItem(
+                              title: doc.name,
+                              type: doc.type, // Sẽ truyền vào 'document'
                             ),
                           );
-                          // if (!await launchUrl(Uri.parse(e.link))) {
-                          //   throw Exception('Could not launch ');
-                          // }
-                        } else if (e.lessonType == '3') {
-                          BunnyModel model = await VideoRepository().getBunny(
-                              lessonId: e.lessonsId,
-                              settingCoureTypeId: e.settingCourseTypeId,
-                              lessonType: e.lessonType);
-                          if (!context.mounted) return;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailVideo(
-                                videoId: model.streamingUrl,
-                                libraryId: model.idBunny,
-                                model: widget.infoModel,
-                              ),
-                            ),
-                          );
-                        } else {
-                          String link = await VideoRepository().getLinkVideo(
-                              lessonId: e.lessonsId,
-                              settingCoureTypeId: e.settingCourseTypeId,
-                              lessonType: e.lessonType);
-                          if (!context.mounted) return;
-                          if (!await launchUrl(Uri.parse(link))) {
-                            throw Exception('Could not launch ');
-                          }
-                        }
-                      },
-                      child: DetailItem(
-                        title: e.name,
-                        type: e.type,
+                        }).toList(),
                       ),
-                    ))
-                .toList(),
-          ),
+                    ),
+                  const Divider(),
+                ],
+              );
+            }).toList(),
+          )
       ],
     );
   }
@@ -446,13 +482,6 @@ class DetailItem extends StatelessWidget {
                       color: const Color(0xff3C3C3C).withValues(alpha: 0.6),
                     ),
                   ),
-                  // Text(
-                  //   '10 Phút',
-                  //   style: defaultText12M.copyWith(
-                  //     fontWeight: FontWeight.w500,
-                  //     color: const Color(0xff3C3C3C).withValues(alpha: 0.6),
-                  //   ),
-                  // ),
                 ],
               ),
             ),

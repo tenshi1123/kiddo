@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:kiddo/teacher_model/teacher_class_model.dart';
 import 'package:kiddo/teacher_repo/teacher_class_repo.dart';
 import 'package:kiddo/utils/constants/styles.dart';
@@ -24,7 +25,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
-
+  String timeDeadline = '';
   int selectedType = 0;
   DetailBuoiHocExtendedModel? selectedSession; // buổi học đã chọn
 
@@ -103,7 +104,19 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
                     _buildSessionDropdown(),
                     const SizedBox(height: 12),
                     _buildTypeDropdown(),
-                    const SizedBox(height: 12),
+                    if (selectedType == 1) ...[
+                      const SizedBox(height: 12),
+                      _buildLabel('Deadline'),
+                      DateTimePickerField(
+                        onChanged: (value) {
+                          print(value);
+                          // 18:50 25-12-2025
+                          timeDeadline = value;
+                        },
+                      ),
+                    ],
+
+                    const SizedBox(height: 16),
                     _buildTextField(
                       hint: 'Ghi chú',
                       maxLines: 4,
@@ -257,18 +270,28 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
           ),
           onPressed: pickedFile == null
               ? null
-              : () {
+              : () async {
                   final pf = pickedFile;
                   final session = selectedSession;
                   if (pf == null || session == null) return;
-                  // TODO: upload file lên server
-                  print('Upload: ${pf.path}');
-                  TeacherClassRepo().uploadDocument(
+
+                  String message = await TeacherClassRepo().uploadDocument(
                     id: session.eventCheckinOffId,
                     type: selectedType.toString(),
                     name: _nameController.text,
                     note: _noteController.text,
                     photo: File(pf.path),
+                    timeDeadline: timeDeadline,
+                  );
+                  print(context.mounted);
+                  showDialog(
+                    context: context,
+                    useRootNavigator: true,
+                    builder: (_) => AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: const Text('Thông báo'),
+                      content: Text(message),
+                    ),
                   );
                 },
           child: Text(
@@ -287,6 +310,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
     int maxLines = 1,
   }) {
     return TextField(
+      controller: controller,
       enabled: enabled,
       maxLines: maxLines,
       decoration: InputDecoration(
@@ -331,6 +355,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
   void _showTypeBottomSheet() {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.white,
       builder: (_) {
         return SafeArea(
           child: Column(
@@ -375,6 +400,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
   void _showSessionBottomSheet() {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.white,
       builder: (_) {
         return SafeArea(
           child: ListView.builder(
@@ -383,7 +409,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
             itemBuilder: (_, index) {
               final item = widget.sessions[index];
               return ListTile(
-                title: Text(item.name),
+                title: Text('${item.name} - ${item.createdDate}'),
                 onTap: () {
                   setState(() {
                     selectedSession = item;
@@ -438,4 +464,84 @@ class PickedFileModel {
     required this.path,
     this.size,
   });
+}
+
+class DateTimePickerField extends StatefulWidget {
+  final Function(String value)? onChanged;
+
+  const DateTimePickerField({
+    super.key,
+    this.onChanged,
+  });
+
+  @override
+  State<DateTimePickerField> createState() => _DateTimePickerFieldState();
+}
+
+class _DateTimePickerFieldState extends State<DateTimePickerField> {
+  String? selectedValue;
+
+  Future<void> _pickDateTime() async {
+    final DateTime? date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (date == null) return;
+
+    final TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (time == null) return;
+
+    final dateTime = DateTime(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.minute,
+    );
+
+    final value = DateFormat('HH:mm dd-MM-yyyy').format(dateTime);
+
+    setState(() {
+      selectedValue = value;
+    });
+
+    widget.onChanged?.call(value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: _pickDateTime,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        height: 52,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                selectedValue ?? 'Deadline',
+                style: TextStyle(
+                  color: selectedValue == null ? Colors.grey : Colors.black,
+                ),
+              ),
+            ),
+            const Icon(Icons.access_time),
+          ],
+        ),
+      ),
+    );
+  }
 }

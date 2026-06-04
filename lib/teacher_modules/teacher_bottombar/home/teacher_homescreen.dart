@@ -530,18 +530,18 @@ class _Upcoming extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () async {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: ((context) => DetailLessonScreen(
-                  typeLearn: model.typeLearn,
-                  checkinOffId: model.checkinOffId ?? '',
-                  meetingId: model.meetingId ?? '',
-                )),
-          ),
-        );
-      },
+      // onTap: () async {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: ((context) => DetailLessonScreen(
+      //             typeLearn: model.typeLearn,
+      //             checkinOffId: model.checkinOffId ?? '',
+      //             meetingId: model.meetingId ?? '',
+      //           )),
+      //     ),
+      //   );
+      // },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
@@ -604,35 +604,35 @@ class _Upcoming extends StatelessWidget {
                     DateFormat('EEEE').format(model.createdDate),
                     style: defaultText14M,
                   ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              decoration: BoxDecoration(
-                color: mainGreen,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(12.r),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Vào lớp  ',
-                    style: defaultText14B.copyWith(
-                      color: Colors.white,
-                    ),
-                  ),
-                  SvgPicture.asset(
-                    'assets/icons/sign_out.svg',
-                    width: 16.w,
-                    height: 16.h,
-                    colorFilter: ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   padding: EdgeInsets.symmetric(vertical: 8.h),
+            //   decoration: BoxDecoration(
+            //     color: mainGreen,
+            //     borderRadius: BorderRadius.all(
+            //       Radius.circular(12.r),
+            //     ),
+            //   ),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Text(
+            //         'Vào lớp  ',
+            //         style: defaultText14B.copyWith(
+            //           color: Colors.white,
+            //         ),
+            //       ),
+            //       SvgPicture.asset(
+            //         'assets/icons/sign_out.svg',
+            //         width: 16.w,
+            //         height: 16.h,
+            //         colorFilter: ColorFilter.mode(
+            //           Colors.white,
+            //           BlendMode.srcIn,
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),

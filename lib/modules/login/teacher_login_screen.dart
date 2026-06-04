@@ -156,7 +156,7 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                               return CupertinoAlertDialog(
                                 title: const Text('Vui lòng thử lại'),
                                 content: const Text(
-                                    'Vui lòng kiểm tra lại mã học sinh và mật khẩu của bạn'),
+                                    'Vui lòng kiểm tra lại sdt và mật khẩu của bạn'),
                                 actions: <Widget>[
                                   CupertinoDialogAction(
                                     isDefaultAction: true,

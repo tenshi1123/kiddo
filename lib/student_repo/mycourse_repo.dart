@@ -68,11 +68,11 @@ class MycourseRepo {
     Response response;
     response = await dio.post(
       ApiPath.detailBuoihoc,
-      data: {
+      data: FormData.fromMap({
         'type_learn': typeLearn,
         'checkin_off_id': checkinOffId,
         'meeting_id': meetingId,
-      },
+      }),
     );
     return exc.DetailBuoiHocModel.fromJson(response.data['data']);
   }

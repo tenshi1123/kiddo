@@ -139,40 +139,6 @@ class _ListTeacherClassScreenState extends State<ListTeacherClassScreen> {
                     ),
                     child: Column(
                       children: [
-                        // Padding(
-                        //   padding: EdgeInsetsGeometry.only(
-                        //     right: 16.w,
-                        //     left: 16.w,
-                        //   ),
-                        //   child: SizedBox(
-                        //     width: double.infinity,
-                        //     height: 50.h,
-                        //     child: ElevatedButton(
-                        //       style: ElevatedButton.styleFrom(
-                        //         backgroundColor: mainOrange,
-                        //         shape: RoundedRectangleBorder(
-                        //           borderRadius: BorderRadius.circular(12),
-                        //         ),
-                        //       ),
-                        //       onPressed: () async {
-                        //         bool? result = await showConfirmDialog(
-                        //           context: context,
-                        //           content:
-                        //               "Bạn chắc chắn muốn cập nhật trạng thái điểm danh",
-                        //         );
-                        //         if (result == true) {
-                        //           print("User chọn: Có");
-                        //         } else {
-                        //           print("User chọn: Không");
-                        //         }
-                        //         //showSuccessDialog(context);
-                        //       },
-                        //       child: Text('Cập nhật',
-                        //           style: defaultText18B.copyWith(
-                        //               color: Colors.white)),
-                        //     ),
-                        //   ),
-                        // ),
                         Expanded(
                           child: ListView.builder(
                             shrinkWrap: true,
@@ -221,14 +187,17 @@ class _ListTeacherClassScreenState extends State<ListTeacherClassScreen> {
                               borderRadius: BorderRadius.circular(16.r),
                               color: Colors.white,
                             ),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              //physics: const NeverScrollableScrollPhysics(),
-                              itemCount: offClasses.length,
-                              itemBuilder: (context, index) {
-                                return _buildClassCard(offClasses[index]);
-                              },
-                            ),
+                            child: isLoading
+                                ? const Center(
+                                    child: CircularProgressIndicator())
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    //physics: const NeverScrollableScrollPhysics(),
+                                    itemCount: offClasses.length,
+                                    itemBuilder: (context, index) {
+                                      return _buildClassCard(offClasses[index]);
+                                    },
+                                  ),
                           ),
                         )
                       : Expanded(

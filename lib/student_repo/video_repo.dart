@@ -100,4 +100,20 @@ class VideoRepository {
     );
     return BunnyModel.fromJson(response.data['data']);
   }
+
+  Future<void> updateTime({
+    required int customerTrackWithVideoId,
+    required int time,
+  }) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    await dio.post(
+      ApiPath.updateTime,
+      data: FormData.fromMap({
+        'customer_track_with_video_id': customerTrackWithVideoId.toString(),
+        'total_time': time.toString(),
+      }),
+    );
+  }
 }

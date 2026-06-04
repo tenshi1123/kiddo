@@ -74,91 +74,96 @@ class _ListDocumentsState extends State<ListDocuments> {
               topRight: Radius.circular(26.r),
             ),
           ),
-          child: ListView.builder(
-            padding: EdgeInsets.all(16.w),
-            itemCount: listClass.length,
-            itemBuilder: (context, index) {
-              final item = listClass[index];
-              return GestureDetector(
-                onTap: () async {
-                  try {
-                    // 1. Gọi API lấy dữ liệu video
-                    CourseVideoModel detailClassModel =
-                        await VideoRepository().getListTopical(
-                      typeId: listClass[index].settingCourseTypeId,
-                      scheduleId: listClass[index].courseScheduleId,
-                      courseId: listClass[index].courseId,
-                    );
+          child: listClass.isEmpty
+              ? const Center(
+                  child: Text('Không có học liệu nào'),
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.all(16.w),
+                  itemCount: listClass.length,
+                  itemBuilder: (context, index) {
+                    final item = listClass[index];
+                    return GestureDetector(
+                      onTap: () async {
+                        try {
+                          // 1. Gọi API lấy dữ liệu video
+                          CourseVideoModel detailClassModel =
+                              await VideoRepository().getListTopical(
+                            typeId: listClass[index].settingCourseTypeId,
+                            scheduleId: listClass[index].courseScheduleId,
+                            courseId: listClass[index].courseId,
+                          );
 
-                    // Kiểm tra xem BuildContext còn tồn tại hay không trước khi điều hướng
-                    if (!context.mounted) return;
-                    pushWithoutNavBar(
-                      context,
-                      MaterialPageRoute(
-                        builder: ((context) => VideoCourse(
-                              courseVideoModel: detailClassModel,
-                              model: widget.model,
-                            )),
-                      ),
-                    );
-                  } catch (error) {
-                    // Kiểm tra xem BuildContext còn tồn tại không trước khi hiển thị Dialog
-                    if (!context.mounted) return;
+                          // Kiểm tra xem BuildContext còn tồn tại hay không trước khi điều hướng
+                          if (!context.mounted) return;
+                          pushWithoutNavBar(
+                            context,
+                            MaterialPageRoute(
+                              builder: ((context) => VideoCourse(
+                                    courseVideoModel: detailClassModel,
+                                    model: widget.model,
+                                  )),
+                            ),
+                          );
+                        } catch (error) {
+                          // Kiểm tra xem BuildContext còn tồn tại không trước khi hiển thị Dialog
+                          if (!context.mounted) return;
 
-                    // 3. Nếu gọi API bị lỗi, hiển thị thông báo
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Thông báo'),
-                          content:
-                              const Text('Bạn đã hết thời gian xem video.'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('Đóng'),
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Đóng dialog
-                              },
+                          // 3. Nếu gọi API bị lỗi, hiển thị thông báo
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Thông báo'),
+                                content: const Text(
+                                    'Bạn đã hết thời gian xem video.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('Đóng'),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Đóng dialog
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 12.h),
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(color: Colors.blue.shade100),
+                        ),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/computer.png',
+                              width: 40.w,
+                              height: 40.h,
+                            ),
+                            SizedBox(width: 12.w),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(item.courseName, style: defaultText16B),
+                                SizedBox(height: 4.h),
+                                Text(item.settingCourseTypeName,
+                                    style: defaultText14M.copyWith(
+                                      color: Colors.grey.shade600,
+                                    )),
+                              ],
                             ),
                           ],
-                        );
-                      },
+                        ),
+                      ),
                     );
-                  }
-                },
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 12.h),
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.blue.shade100),
-                  ),
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        'assets/images/computer.png',
-                        width: 40.w,
-                        height: 40.h,
-                      ),
-                      SizedBox(width: 12.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(item.courseName, style: defaultText16B),
-                          SizedBox(height: 4.h),
-                          Text(item.settingCourseTypeName,
-                              style: defaultText14M.copyWith(
-                                color: Colors.grey.shade600,
-                              )),
-                        ],
-                      ),
-                    ],
-                  ),
+                  },
                 ),
-              );
-            },
-          ),
         ));
   }
 }

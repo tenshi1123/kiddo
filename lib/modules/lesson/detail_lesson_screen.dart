@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/student_models/excercise_model.dart';
 import 'package:kiddo/student_repo/mycourse_repo.dart';
@@ -104,7 +105,7 @@ class _DetailLessonScreenState extends State<DetailLessonScreen> {
         backgroundColor: mainOrange,
         elevation: 0,
         centerTitle: true,
-        title: Text("Chi tiết buổi học",
+        title: Text(L10n.of(context).detailLesson,
             style: defaultText18B.copyWith(color: Colors.white)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
@@ -160,24 +161,6 @@ class _DetailLessonScreenState extends State<DetailLessonScreen> {
                               '${detailBuoiHocModel!.infoLesson.namePhonghoc} ${detailBuoiHocModel!.infoLesson.cosoName}',
                               style: defaultText14B,
                             ),
-                            // GestureDetector(
-                            //   onTap: () {
-                            //     showLeaveReasonDialog(context, typeLearn: detailBuoiHocModel.infoLesson., checkinOffId: '', meetingId: '');
-                            //   },
-                            //   child: Container(
-                            //     padding: EdgeInsets.symmetric(
-                            //         horizontal: 8.w, vertical: 4.h),
-                            //     decoration: BoxDecoration(
-                            //       color: Colors.white,
-                            //       borderRadius: BorderRadius.circular(8.r),
-                            //       border: Border.all(color: mainRed, width: 1),
-                            //     ),
-                            //     child: Text("Xin nghỉ",
-                            //         style: defaultText14SB.copyWith(
-                            //           color: mainRed,
-                            //         )),
-                            //   ),
-                            // ),
                           ],
                         ),
                         SizedBox(height: 10.h),
@@ -188,7 +171,7 @@ class _DetailLessonScreenState extends State<DetailLessonScreen> {
                         SizedBox(height: 6.h),
 
                         Text(
-                            "Nội dung buổi học: ${detailBuoiHocModel!.infoLesson.lessonContent}",
+                            "Nội dung buổi học: ${detailBuoiHocModel!.infoLesson.lessonContent} + anksdasodjsdksadkasjdkasdjkasBước ngoặt đến với Lamborghini khi ông phát hiện bộ ly hợp trên chiếc Ferrari của mình bị hỏng, ông thấy nó giống với bộ ly hợp mà ông thường sử dụng trên những chiếc máy kéo, ông đến công ty Ferrari và yêu cầu họ thay thế bộ ly hợp tốt hơn. Tuy nhiên, Enzo Ferrari nói rằng: Ông chỉ là người sản xuất máy kéo và không biết gì về những chiếc xe thể thao. Ngay lập tức Lamborghin Bước ngoặt đến với Lamborghini khi ông phát hiện bộ ly hợp trên chiếc Ferrari của mình bị hỏng, ông thấy nó giống với bộ ly hợp mà ông thường sử dụng trên những chiếc máy kéo, ông đến công ty Ferrari và yêu cầu họ thay thế bộ ly hợp tốt hơn. Tuy nhiên, Enzo Ferrari nói rằng: Ông chỉ là người sản xuất máy kéo và không biết gì về những chiếc xe thể thao. Ngay lập tức Lamborghin Bước ngoặt đến với Lamborghini khi ông phát hiện bộ ly hợp trên chiếc Ferrari của mình bị hỏng, ông thấy nó giống với bộ ly hợp mà ông thường sử dụng trên những chiếc máy kéo, ông đến công ty Ferrari và yêu cầu họ thay thế bộ ly hợp tốt hơn. Tuy nhiên, Enzo Ferrari nói rằng: Ông chỉ là người sản xuất máy kéo và không biết gì về những chiếc xe thể thao. Ngay lập tức Lamborghin",
                             style: defaultText14M),
                         SizedBox(height: 20.h),
 

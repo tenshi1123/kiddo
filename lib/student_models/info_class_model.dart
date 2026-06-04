@@ -222,7 +222,8 @@ class LessonVideoModel {
   final String documentFilesActive;
   final String type;
   final String link;
-  //final String document;
+  final List<DocumentModel> document;
+
   LessonVideoModel({
     required this.lessonsId,
     required this.lessonType,
@@ -233,9 +234,17 @@ class LessonVideoModel {
     required this.documentFilesActive,
     required this.type,
     required this.link,
-    //required this.document,
+    required this.document,
   });
+
   factory LessonVideoModel.fromJson(Map<String, dynamic> json) {
+    // 2. Ép kiểu và map danh sách document an toàn
+    var documentList = json['document'] as List? ?? [];
+    List<DocumentModel> parsedDocuments = documentList
+        .map((docJson) =>
+            DocumentModel.fromJson(docJson as Map<String, dynamic>))
+        .toList();
+
     return LessonVideoModel(
       lessonsId: json['lessons_id'] ?? '',
       lessonType: json['lesson_type'] ?? '',
@@ -245,8 +254,35 @@ class LessonVideoModel {
       isTrial: json['is_trial'] ?? '',
       documentFilesActive: json['document_files_active'] ?? '',
       type: json['type'] ?? '',
-      link: json['link_webview'] ?? '',
-      //document: json['document'] ?? '',
+      link: json['link_webview'] ??
+          '', // Lưu ý: JSON của bạn không có 'link_webview' ở tầng này, nếu bị null nó sẽ lấy ''
+      document: parsedDocuments,
+    );
+  }
+}
+
+class DocumentModel {
+  final String id;
+  final String type;
+  final String link;
+  final String name;
+  final String linkWebView;
+
+  DocumentModel({
+    required this.id,
+    required this.type,
+    required this.link,
+    required this.name,
+    required this.linkWebView,
+  });
+
+  factory DocumentModel.fromJson(Map<String, dynamic> json) {
+    return DocumentModel(
+      id: json['id'] ?? '',
+      type: json['type'] ?? '',
+      link: json['link'] ?? '',
+      name: json['name'] ?? '',
+      linkWebView: json['link_webview'] ?? '',
     );
   }
 }
@@ -255,16 +291,19 @@ class BunnyModel {
   final String lessonsId;
   final int idBunny;
   final String streamingUrl;
+  final int customerTrackWithVideoId;
   BunnyModel({
     required this.lessonsId,
     required this.idBunny,
     required this.streamingUrl,
+    required this.customerTrackWithVideoId,
   });
   factory BunnyModel.fromJson(Map<String, dynamic> json) {
     return BunnyModel(
       lessonsId: json['lessons_id'] ?? '',
       idBunny: int.parse(json['id_bunny'] ?? 0),
       streamingUrl: json['streaming_url'] ?? '',
+      customerTrackWithVideoId: json['customer_track_with_video_id'] ?? '',
     );
   }
 }

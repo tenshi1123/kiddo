@@ -138,10 +138,11 @@ class TeacherClassRepo {
     return response.data['data'];
   }
 
-  Future<void> uploadDocument({
+  Future<String> uploadDocument({
     required String name,
     required String id,
     required String type,
+    required String? timeDeadline,
     required String note,
     required File photo,
   }) async {
@@ -154,11 +155,12 @@ class TeacherClassRepo {
           'name': name,
           'event_checkin_off_id': id,
           'type': type,
+          'time_deadline': timeDeadline,
           'note': note,
-          'files[]': await MultipartFile.fromFile(photo.path,
+          'file': await MultipartFile.fromFile(photo.path,
               filename: photo.path.split('/').last),
         }));
-    return response.data['data'];
+    return response.data['message'];
   }
 
   Future<void> deleteDocument({
