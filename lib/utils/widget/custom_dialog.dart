@@ -220,7 +220,7 @@ Future<void> showInviteDialog(BuildContext context) {
                         email: emailController.text,
                         content: noteController.text,
                       );
-                      showSuccessDialog(context);
+                      showSuccessDialog(context, 1);
                     } else {
                       showDialog(
                         context: context,

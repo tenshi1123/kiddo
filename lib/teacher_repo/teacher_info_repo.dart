@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:kiddo/student_models/profile_model.dart';
@@ -35,6 +37,40 @@ class TeacherInfoRepo {
         .map((e) => GopYModel.fromJson(e))
         .toList();
     return result;
+  }
+
+  Future<dynamic> addGopY(
+      {required String topic, required String content}) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? token = prefs.getString('token');
+
+      // 1. Kiểm tra token trước khi gắn vào header
+      if (token == null || token.isEmpty) {
+        print("Lỗi: Token bị null hoặc trống. Vui lòng đăng nhập lại.");
+        throw Exception("Chưa xác thực người dùng");
+      }
+
+      dio.options.headers['Authorization'] = 'Bearer $token';
+
+      // 2. Gửi Request
+      final Response response = await dio.post(ApiPathTeacher.addGopY,
+          data: FormData.fromMap({
+            'topic': topic,
+            'content': content,
+          }));
+
+      return response.data;
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw Exception(
+            "Lỗi máy chủ (${e.response?.statusCode}). Vui lòng thử lại sau.");
+      } else {
+        throw Exception("Không thể kết nối đến máy chủ.");
+      }
+    } catch (e) {
+      throw Exception("Đã xảy ra lỗi hệ thống.");
+    }
   }
 
   Future<DataBaoCaoModel> getInfoReport() async {

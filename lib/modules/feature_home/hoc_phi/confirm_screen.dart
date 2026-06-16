@@ -165,7 +165,7 @@ class _ComfirmScreenState extends State<ComfirmScreen> {
                       paymentId: widget.pendingPaymentId,
                       orderId: widget.orderId,
                       photo: _images.first);
-                  showSuccessDialog(context);
+                  showSuccessDialog(context, 1);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: mainOrange,
@@ -185,7 +185,7 @@ class _ComfirmScreenState extends State<ComfirmScreen> {
   }
 }
 
-void showSuccessDialog(BuildContext context) {
+void showSuccessDialog(BuildContext context, int type) {
   showDialog(
     context: context,
     barrierDismissible: false, // bấm ngoài không tắt
@@ -217,6 +217,7 @@ void showSuccessDialog(BuildContext context) {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop(); // tắt dialog
+                    if (type == 2) Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: mainOrange,

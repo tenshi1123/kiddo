@@ -101,32 +101,13 @@ class InfoLearingScreen extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    listClass[index].courseScheduleName,
+                                    '${listClass[index].courseScheduleName} - ${listClass[index].courseName}',
                                     style: defaultText14M.copyWith(
                                         color: mainOrange),
                                   ),
                                   Text(
                                     "Thông tin khoá học:",
                                     style: defaultText14B,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/icons/clock.svg',
-                                        width: 16.w,
-                                        height: 16.h,
-                                      ),
-                                      SizedBox(width: 12.h),
-                                      Text(
-                                        "12/06/2025 - 06/12/2025",
-                                        style: defaultText14M.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -147,28 +128,8 @@ class InfoLearingScreen extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/icons/place.svg',
-                                        width: 16.w,
-                                        height: 16.h,
-                                      ),
-                                      SizedBox(width: 12.h),
-                                      SizedBox(
-                                        width: 266.w,
-                                        child: Text(
-                                          "24 đường 1, Phú Hữu, Thành phố Thủ Đức, Ho Chi Minh City, Vietnam",
-                                          style: defaultText14M.copyWith(
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  Image.network(listClass[index].courseImg,
+                                      height: 100.h, fit: BoxFit.fitHeight)
                                 ],
                               ),
                             ),

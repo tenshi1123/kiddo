@@ -66,6 +66,8 @@ class ApiPathTeacher {
   static String detailsClass = '$teachersUrl/lop-hoc/detail';
   static String feedBack = '$teachersUrl/class/feedback';
   static String gopY = '$teachersUrl/class/gop_y';
+  static String addGopY = '$teachersUrl/class/add_gop_y';
+
   //api chi tiet bai tap, de thi
   static String detailsExam =
       '$teachersUrl/lop-hoc/detail/buoi_hoc/detail_bai_tap_de_thi';

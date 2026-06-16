@@ -191,8 +191,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                     children: [
                                       CircleAvatar(
                                         radius: 24.r,
-                                        backgroundImage: AssetImage(
-                                            'assets/images/avatar1.png'),
+                                        backgroundImage: listChild[index].img !=
+                                                ''
+                                            ? NetworkImage(listChild[index].img)
+                                            : AssetImage(
+                                                'assets/images/avatar1.png'),
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
@@ -642,7 +645,7 @@ class _Header extends StatelessWidget {
             url: model?.avatar ?? '',
             width: 50.w,
             height: 50.h,
-            fit: BoxFit.fill,
+            fit: BoxFit.cover,
           ),
         ),
         SizedBox(width: 12.w),

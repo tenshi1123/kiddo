@@ -51,42 +51,42 @@ class _DetailCourseScreenState extends State<DetailCourseScreen> {
   Widget build(BuildContext context) {
     final filtered =
         selectedTab == 0 ? data?.daXayRa ?? [] : data?.chuaXayRa ?? [];
-    return isLoading
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : Scaffold(
-            backgroundColor: mainOrange,
-            appBar: AppBar(
-              backgroundColor: mainOrange,
-              elevation: 0,
-              centerTitle: true,
-              title: Text(
-                'Chi tiết lớp học',
-                style: defaultText16B.copyWith(color: Colors.white),
-              ),
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            body: Container(
-              width: double.infinity,
-              height: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(26.r),
-                  topRight: Radius.circular(26.r),
-                ),
-              ),
-              child: Column(
+    return Scaffold(
+      backgroundColor: mainOrange,
+      appBar: AppBar(
+        backgroundColor: mainOrange,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          'Chi tiết lớp học',
+          style: defaultText16B.copyWith(color: Colors.white),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(26.r),
+            topRight: Radius.circular(26.r),
+          ),
+        ),
+        child: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
                 children: [
                   Row(
                     children: [
@@ -302,7 +302,7 @@ class _DetailCourseScreenState extends State<DetailCourseScreen> {
                         ),
                 ],
               ),
-            ),
-          );
+      ),
+    );
   }
 }

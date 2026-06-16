@@ -24,7 +24,6 @@ class _FeedbackUserScreenState extends State<FeedbackUserScreen> {
   @override
   void initState() {
     super.initState();
-
     fetchData();
   }
 
@@ -121,8 +120,8 @@ class _FeedbackUserScreenState extends State<FeedbackUserScreen> {
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16.w, vertical: 12.h),
+                            padding:
+                                EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 22.h),
                             child: GestureDetector(
                               onTap: () {
                                 showFeedbackDialog(context);
@@ -384,10 +383,33 @@ void showFeedbackDialog(BuildContext context) {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: xử lý lưu góp ý
+                        onPressed: () async {
+                          print("--- BƯỚC 1: Bắt đầu bấm nút ---");
+                          try {
+                            print("--- BƯỚC 2: Đang gọi API addGopY... ---");
+                            await TeacherInfoRepo().addGopY(
+                              topic: titleController.text,
+                              content: contentController.text,
+                            );
 
-                          showSuccessDialog(context);
+                            // Thêm 'await' ở đây. Ứng dụng sẽ TẠM DỪNG ở dòng này cho đến khi Dialog bị đóng
+                            showSuccessDialog(context, 2);
+                          } catch (e) {
+                            if (!context.mounted) {
+                              print(
+                                  "--- LỖI: Có Exception nhưng context không còn mounted nên không thể hiện SnackBar ---");
+                              return;
+                            }
+
+                            print("--- BƯỚC 6: Hiển thị SnackBar báo lỗi ---");
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    e.toString().replaceAll("Exception: ", "")),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: mainOrange,

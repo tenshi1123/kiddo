@@ -76,11 +76,11 @@ class _SplshscreenState extends State<Splshscreen> {
 
       debugPrint(
           '[Splash] ✅ Student: ${listClass.length} lớp | ${listCategory.length} category');
-      if (listClass.isEmpty || listCategory.isEmpty) {
-        debugPrint('[Splash] ⚠️ listClass hoặc listCategory rỗng → onboarding');
-        await _goToOnboarding();
-        return;
-      }
+      // if (listClass.isEmpty || listCategory.isEmpty) {
+      //   debugPrint('[Splash] ⚠️ listClass hoặc listCategory rỗng → onboarding');
+      //   await _goToOnboarding();
+      //   return;
+      // }
       if (!mounted) {
         debugPrint(
             '[Splash] ⚠️ Widget unmounted sau student API – bỏ navigate');

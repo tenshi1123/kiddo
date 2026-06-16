@@ -18,33 +18,38 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     final locale = context.watch<LanguageCubit>().state;
+
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, __) {
-        return UpgradeAlert(
+        return MaterialApp(
+          locale: Locale(locale.languageCode),
+          supportedLocales: const [
+            Locale('vi'),
+            Locale('en'),
+          ],
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          debugShowCheckedModeBanner: false,
+          title: 'K-Nest',
+          theme: ThemeData.light(),
+          // Bọc UpgradeAlert ở đây, bên trong MaterialApp
+          home: UpgradeAlert(
             upgrader: Upgrader(
               durationUntilAlertAgain: const Duration(hours: 6),
+              // Thêm dòng này khi đang code/test để ép Dialog luôn hiện ra
+              // Hãy comment hoặc xóa dòng này đi khi build release (phát hành)
+              // debugDisplayAlways: true,
             ),
-            child: MaterialApp(
-              locale: Locale(locale.languageCode),
-              supportedLocales: const [
-                Locale('vi'),
-                Locale('en'),
-              ],
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              debugShowCheckedModeBanner: false,
-              title: 'K-Nest',
-              theme: ThemeData.light(),
-              home: const Splshscreen(),
-            ));
-        //return const _AppContent();
+            child: const Splshscreen(),
+          ),
+        );
       },
     );
   }

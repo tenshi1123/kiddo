@@ -101,7 +101,7 @@ class _TeacherHomeScreenState extends State<TeacherHomeScreen> {
                     url: widget.model?.avatar ?? '',
                     width: 50.w,
                     height: 50.h,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 SizedBox(
@@ -838,7 +838,7 @@ Widget feedbackItem(bool value, String title) {
       ),
     ),
     child: Center(
-        child: Text(title,
+        child: Text(title.replaceAll("&amp;", "&"),
             style: defaultText14M.copyWith(
               fontWeight: value ? FontWeight.bold : FontWeight.w500,
               fontSize: 14.sp,

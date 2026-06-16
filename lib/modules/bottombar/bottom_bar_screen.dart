@@ -92,6 +92,7 @@ class _BottombarTeacherState extends State<BottombarTeacher> {
       const ListTeacherClassScreen(),
       const ListConversationScreen(
         title: 'Chat',
+        type: 'teacher',
       ),
       AccountScreen(
         model: profileModel,

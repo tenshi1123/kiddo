@@ -7,6 +7,10 @@ class ApiPath {
   static String refreshToken = '$hocvienUrl/refresh_token/';
   static String login = '$hocvienUrl/login';
 
+  //chat admin
+  static String listAdminStudent = '$hocvienUrl/chat/user/customer';
+  static String listAdminTeacher = '$hocvienUrl/chat/user/teacher';
+
   //Thông tin và đổi thông tin học viên
   static String profile = '$hocvienUrl/user/info';
   static String changePassword = '$hocvienUrl/profile/change_password';
@@ -20,8 +24,10 @@ class ApiPath {
 
   //danh sách giáo viên
   static String lecture = '$hocvienUrl/chat/lecture';
-  static String listMessage = '$hocvienUrl/chat/lecture/message';
-  static String sendMessage = '$hocvienUrl/chat/lecture/message/send';
+  static String listMessage = '$hocvienUrl/chat/customer_user/message/list';
+  static String sendMessage = '$hocvienUrl/chat/customer_user/message/send';
+  static String listMessage2 = '$hocvienUrl/chat/lecturer_user/message/list';
+  static String sendMessage2 = '$hocvienUrl/chat/lecturer_user/message/send';
   //Ưu đãi
   static String discount = '$hocvienUrl/discount';
   static String detailDiscount = '$hocvienUrl/discount/detail';

@@ -12,33 +12,42 @@ class ListConversationScreen extends StatefulWidget {
   const ListConversationScreen({
     super.key,
     required this.title,
+    required this.type,
   });
   final String title;
+  final String type;
   @override
   State<ListConversationScreen> createState() => _ListConversationScreenState();
 }
 
 class _ListConversationScreenState extends State<ListConversationScreen> {
   bool isLoading = true;
-  late List<ConverastionModel> listConversation;
+  //late List<ConverastionModel> listConversation;
+  late List<UserModel> listAdmin;
+
   @override
   void initState() {
     super.initState();
     fetchData();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future<void> fetchData() async {
     try {
-      final response = await ChatRepo().getListConversation();
+      final response = await ChatRepo().getlistAdmin(widget.type);
       setState(() {
-        listConversation = response;
+        listAdmin = response;
         isLoading = false;
       });
     } catch (e) {
       // Xử lý lỗi nếu cần
       debugPrint('Lỗi khi gọi API: $e');
       setState(() {
-        listConversation = [];
+        listAdmin = [];
         isLoading = false;
       });
     }
@@ -86,7 +95,7 @@ class _ListConversationScreenState extends State<ListConversationScreen> {
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : listConversation.isEmpty
+            : listAdmin.isEmpty
                 ? Center(
                     child: Text(
                       L10n.of(context).noConversation,
@@ -97,16 +106,17 @@ class _ListConversationScreenState extends State<ListConversationScreen> {
                     padding: EdgeInsets.only(
                       left: 20.w,
                       right: 20.w,
-                      bottom: 20.w,
+                      bottom: 80.w,
                       top: 10.h, // Added top padding replacing SizedBox
                     ),
                     physics: const ClampingScrollPhysics(),
-                    itemCount: listConversation.length,
+                    itemCount: listAdmin.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding: EdgeInsets.only(bottom: 10.h),
                         child: ConversationItem(
-                          model: listConversation[index],
+                          model: listAdmin[index],
+                          type: widget.type,
                         ),
                       );
                     },

@@ -88,6 +88,7 @@ class _Bottombar2State extends State<Bottombar2> {
       const OfferScreen(),
       const ListConversationScreen(
         title: 'Liên lạc',
+        type: 'student',
       ),
       const InfoLearingScreen(),
       AccountScreen(

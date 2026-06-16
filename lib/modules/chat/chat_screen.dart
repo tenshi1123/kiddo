@@ -10,7 +10,6 @@ import 'package:kiddo/student_repo/chat_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:camera_camera/camera_camera.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -18,8 +17,10 @@ class ChatScreen extends StatefulWidget {
   const ChatScreen({
     super.key,
     required this.model,
+    required this.type,
   });
-  final ConverastionModel model;
+  final UserModel model;
+  final String type;
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
@@ -28,14 +29,6 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageController = TextEditingController();
   List<File> photos = <File>[];
   String id = '';
-
-  Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
-    await launchUrl(launchUri);
-  }
 
   void openCamera() {
     Navigator.push(
@@ -123,8 +116,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> fetchData() async {
     try {
-      final response =
-          await ChatRepo().getListMessage(lectureId: widget.model.id);
+      final response = await ChatRepo().getListMessage(
+          lectureId: widget.model.userId ?? '', type: widget.type);
       setState(() {
         listMessage = response;
         isLoading = false;
@@ -155,7 +148,7 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               CircleAvatar(
                 radius: 21.r,
-                backgroundImage: AssetImage('assets/images/avatar1.png'),
+                backgroundImage: NetworkImage(widget.model.avatar ?? ''),
                 backgroundColor: Colors.transparent,
               ),
               SizedBox(
@@ -164,7 +157,7 @@ class _ChatScreenState extends State<ChatScreen> {
               SizedBox(
                 width: 230.w,
                 child: Text(
-                  widget.model.fullName,
+                  widget.model.fullName ?? 'Không xác định',
                   style: defaultText18B.copyWith(
                     color: Colors.white,
                   ),
@@ -255,26 +248,29 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         // 💬 Tin nhắn
                         Align(
-                          alignment: (current.type == "0")
-                              ? Alignment.topRight
-                              : Alignment.topLeft,
+                          alignment:
+                              (current.type == "0" || current.type == '1')
+                                  ? Alignment.topRight
+                                  : Alignment.topLeft,
                           child: Container(
                             margin: EdgeInsets.only(bottom: 6.h),
                             constraints: BoxConstraints(maxWidth: 300.w),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20.r),
-                              color: (current.type == "0")
-                                  ? mainOrange
-                                  : Colors.grey.shade200,
+                              color:
+                                  (current.type == "0" || current.type == '1')
+                                      ? mainOrange
+                                      : Colors.grey.shade200,
                             ),
                             padding: EdgeInsets.all(16.r),
                             child: Text(
                               current.content,
                               style: TextStyle(
                                 fontSize: 14.sp,
-                                color: (current.type == "0")
-                                    ? Colors.white
-                                    : Colors.black87,
+                                color:
+                                    (current.type == "0" || current.type == '1')
+                                        ? Colors.white
+                                        : Colors.black87,
                               ),
                             ),
                           ),
@@ -337,8 +333,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     GestureDetector(
                         onTap: () async {
                           if (messageController.text.isNotEmpty) {
-                            ChatRepo().sendMessage(
-                                widget.model.id, messageController.text);
+                            ChatRepo().sendMessage(widget.model.userId ?? '',
+                                messageController.text, widget.type);
                             setState(() {
                               listMessage.insert(
                                 listMessage.length,

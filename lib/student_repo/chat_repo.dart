@@ -23,23 +23,50 @@ class ChatRepo {
     return list;
   }
 
-  Future<List<MessageModel>> getListMessage({required String lectureId}) async {
+  Future<List<UserModel>> getlistAdmin(String type) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
     dio.options.headers['Authorization'] = 'Bearer $token';
     Response response;
-    response = await dio.post(
-      ApiPath.listMessage,
-      data: FormData.fromMap(
-        {
-          'lecturer_id': lectureId,
-        },
-      ),
-    );
+    if (type == 'student') {
+      response = await dio.post(
+        ApiPath.listAdminStudent,
+      );
+    } else {
+      response = await dio.post(
+        ApiPath.listAdminTeacher,
+      );
+    }
+
+    UserResponse responseData = UserResponse.fromJson(response.data);
+
+    List<UserModel> users = responseData.data;
+
+    return users;
+  }
+
+  Future<List<MessageModel>> getListMessage(
+      {required String lectureId, required String type}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    Response response;
+    if (type == 'student') {
+      response = await dio.get(
+        ApiPath.listMessage,
+        queryParameters: {'user_id': lectureId, 'page': '1'},
+      );
+    } else {
+      response = await dio.get(
+        ApiPath.listMessage2,
+        queryParameters: {'user_id': lectureId, 'page': '1'},
+      );
+    }
     List<MessageModel> list = [];
-    for (var item in response.data['data']['message']) {
+    for (var item in response.data['data']) {
       list.add(MessageModel.fromJson(item));
     }
+    list = list.reversed.toList();
     return list;
   }
 
@@ -92,16 +119,24 @@ class ChatRepo {
     return ConverastionModel.fromJson(response.data['data']);
   }
 
-  Future<bool> sendMessage(String chatId, String message) async {
+  Future<bool> sendMessage(String chatId, String message, String type) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
     dio.options.headers['Authorization'] = 'Bearer $token';
     Response response;
-    response = await dio.post(ApiPath.sendMessage,
-        data: FormData.fromMap({
-          'lecturer_id': int.parse(chatId),
-          'content': message,
-        }));
+    if (type == 'student') {
+      response = await dio.post(ApiPath.sendMessage,
+          data: FormData.fromMap({
+            'user_id': int.parse(chatId),
+            'content': message,
+          }));
+    } else {
+      response = await dio.post(ApiPath.sendMessage2,
+          data: FormData.fromMap({
+            'user_id': int.parse(chatId),
+            'content': message,
+          }));
+    }
     return response.data['status'] == 200;
   }
 

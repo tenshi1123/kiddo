@@ -309,8 +309,10 @@ class ConversationItem extends StatelessWidget {
   const ConversationItem({
     super.key,
     required this.model,
+    required this.type,
   });
-  final ConverastionModel model;
+  final UserModel model;
+  final String type;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -320,6 +322,7 @@ class ConversationItem extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => ChatScreen(
               model: model,
+              type: type,
             ),
           ),
         );
@@ -346,8 +349,8 @@ class ConversationItem extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 21.r,
-              backgroundImage: AssetImage('assets/images/avatar1.png'),
-              backgroundColor: Colors.transparent,
+              backgroundImage: NetworkImage(model.avatar ?? ''),
+              backgroundColor: Colors.white,
             ),
             SizedBox(
               width: 220.w,
@@ -356,13 +359,13 @@ class ConversationItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    model.fullName,
+                    model.fullName ?? 'Không xác định',
                     style: defaultText14B,
                   ),
-                  Text(
-                    model.message,
-                    style: defaultText12M,
-                  ),
+                  // Text(
+                  //   model.message,
+                  //   style: defaultText12M,
+                  // ),
                 ],
               ),
             ),

@@ -96,7 +96,7 @@ class MessageModel {
       id: json['id'] ?? '',
       chatMessageId: json['chat_message_id'] ?? '',
       customerId: json['customer_id'] ?? '',
-      lectureId: json['lecturers_id'] ?? '',
+      lectureId: json['user_id'] ?? '',
       type: json['type'] ?? '',
     );
   }
@@ -120,6 +120,41 @@ class ConverastionModel {
       fullName: json['full_name'] ?? '',
       email: json['email'] ?? '',
       message: json['message'] ?? '',
+    );
+  }
+}
+
+class UserResponse {
+  final List<UserModel> data;
+
+  UserResponse({required this.data});
+
+  factory UserResponse.fromJson(Map<String, dynamic> json) {
+    return UserResponse(
+      data: (json['data'] as List).map((i) => UserModel.fromJson(i)).toList(),
+    );
+  }
+}
+
+class UserModel {
+  final String? avatar;
+  final String? userId;
+  final String? fullName;
+  final String? email;
+
+  UserModel({
+    this.avatar,
+    this.userId,
+    this.fullName,
+    this.email,
+  });
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      avatar: json['avatar'] as String?,
+      userId: json['user_id'] as String?,
+      fullName: json['full_name'] as String?,
+      email: json['email'] as String?,
     );
   }
 }

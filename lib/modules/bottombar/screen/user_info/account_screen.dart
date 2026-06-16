@@ -104,7 +104,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             url: widget.model?.avatar ?? '',
                             width: 80.w,
                             height: 80.h,
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                           ),
                         )),
                   ]),
