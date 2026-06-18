@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:kiddo/modules/feature_home/hoc_lieu/detail_video.dart';
+import 'package:kiddo/modules/feature_home/hoc_lieu/detail_webview_video.dart';
+import 'package:kiddo/modules/feature_home/hoc_lieu/detail_youtube_video.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/student_models/info_class_model.dart';
 import 'package:kiddo/student_models/profile_model.dart';
@@ -275,14 +277,53 @@ class _LessonItemState extends State<LessonItem> {
         }
       }
     } else {
-      String link = await VideoRepository().getLinkVideo(
-        lessonId: e.lessonsId,
-        settingCoureTypeId: e.settingCourseTypeId,
-        lessonType: e.lessonType,
-      );
-      if (!mounted) return;
-      if (!await launchUrl(Uri.parse(link))) {
-        throw Exception('Could not launch ');
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        String link = await VideoRepository().getLinkVideo(
+          lessonId: e.lessonsId,
+          settingCoureTypeId: e.settingCourseTypeId,
+          lessonType: e.lessonType,
+        );
+        if (!mounted) return;
+
+        bool isYoutube = link.contains('youtube.com') || link.contains('youtu.be');
+
+        final result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              if (isYoutube) {
+                return DetailYoutubeVideo(
+                  url: link,
+                  name: e.name,
+                  model: widget.infoModel,
+                );
+              } else {
+                return DetailWebViewVideo(
+                  url: link,
+                  name: e.name,
+                  model: widget.infoModel,
+                );
+              }
+            },
+          ),
+        );
+
+        if (result == true) {
+          if (mounted) {
+            playVideoAtIndex(index + 1);
+          }
+        }
+      } catch (error) {
+        print("Lỗi khi tải video: $error");
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }

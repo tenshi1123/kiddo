@@ -11,6 +11,7 @@ import 'package:kiddo/utils/constants/styles.dart';
 import 'package:screen_protector/screen_protector.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class DetailVideo extends StatefulWidget {
   const DetailVideo({
@@ -67,9 +68,10 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
 
   /// 🔐 Security setup
   Future<void> _initSecurity() async {
-    if (Platform.isAndroid) {
-      await ScreenProtector.preventScreenshotOn();
-    } else if (Platform.isIOS) {
+    // Bật chặn chụp và quay màn hình cho CẢ Android và iOS
+    await ScreenProtector.preventScreenshotOn();
+
+    if (Platform.isIOS) {
       await ScreenProtector.protectDataLeakageWithBlur();
 
       bool isRecording = await ScreenProtector.isRecording();
@@ -97,6 +99,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(
         allowsInlineMediaPlayback: true, // Khóa inline cho iOS
+        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{}, // Bật tự động phát cho iOS
       );
     } else {
       params = const PlatformWebViewControllerCreationParams();
@@ -239,6 +242,12 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
           },
         ),
       );
+
+    if (_controller.platform is AndroidWebViewController) {
+      (_controller.platform as AndroidWebViewController)
+          .setMediaPlaybackRequiresUserGesture(false); // Bật tự động phát cho Android
+    }
+
     _controller.loadRequest(Uri.parse(url));
   }
 
@@ -247,9 +256,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WidgetsBinding.instance.removeObserver(this);
     _recordingSub?.cancel();
-    if (Platform.isAndroid) {
-      ScreenProtector.preventScreenshotOff();
-    }
+    ScreenProtector.preventScreenshotOff();
     _trackingTimer?.cancel();
 
     super.dispose();
