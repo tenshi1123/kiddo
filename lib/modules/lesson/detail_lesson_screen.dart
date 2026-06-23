@@ -171,7 +171,7 @@ class _DetailLessonScreenState extends State<DetailLessonScreen> {
                         SizedBox(height: 6.h),
 
                         Text(
-                            "Nội dung buổi học: ${detailBuoiHocModel!.infoLesson.lessonContent} + anksdasodjsdksadkasjdkasdjkasBước ngoặt đến với Lamborghini khi ông phát hiện bộ ly hợp trên chiếc Ferrari của mình bị hỏng, ông thấy nó giống với bộ ly hợp mà ông thường sử dụng trên những chiếc máy kéo, ông đến công ty Ferrari và yêu cầu họ thay thế bộ ly hợp tốt hơn. Tuy nhiên, Enzo Ferrari nói rằng: Ông chỉ là người sản xuất máy kéo và không biết gì về những chiếc xe thể thao. Ngay lập tức Lamborghin Bước ngoặt đến với Lamborghini khi ông phát hiện bộ ly hợp trên chiếc Ferrari của mình bị hỏng, ông thấy nó giống với bộ ly hợp mà ông thường sử dụng trên những chiếc máy kéo, ông đến công ty Ferrari và yêu cầu họ thay thế bộ ly hợp tốt hơn. Tuy nhiên, Enzo Ferrari nói rằng: Ông chỉ là người sản xuất máy kéo và không biết gì về những chiếc xe thể thao. Ngay lập tức Lamborghin Bước ngoặt đến với Lamborghini khi ông phát hiện bộ ly hợp trên chiếc Ferrari của mình bị hỏng, ông thấy nó giống với bộ ly hợp mà ông thường sử dụng trên những chiếc máy kéo, ông đến công ty Ferrari và yêu cầu họ thay thế bộ ly hợp tốt hơn. Tuy nhiên, Enzo Ferrari nói rằng: Ông chỉ là người sản xuất máy kéo và không biết gì về những chiếc xe thể thao. Ngay lập tức Lamborghin",
+                            "Nội dung buổi học: ${detailBuoiHocModel!.infoLesson.lessonContent}",
                             style: defaultText14M),
                         SizedBox(height: 20.h),
 

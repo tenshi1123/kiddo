@@ -7,6 +7,7 @@ import 'package:kiddo/student_models/excercise_model.dart';
 import 'package:kiddo/student_repo/home_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailExcerciseScreen extends StatefulWidget {
   const DetailExcerciseScreen({
@@ -142,160 +143,170 @@ class _DetailExcerciseScreenState extends State<DetailExcerciseScreen> {
                           separatorBuilder: (_, __) => SizedBox(height: 12.h),
                           itemCount: listBaiTap.length,
                           itemBuilder: (context, index) {
-                            return Container(
-                              width: 343.w,
-                              margin: EdgeInsets.symmetric(horizontal: 16.w),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 16.h, horizontal: 16.w),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16.r),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: colorText
-                                        .withValues(alpha: 0.8)
-                                        .withOpacity(0.2),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    listBaiTap[index].name,
-                                    style: defaultText16B,
-                                  ),
-                                  SizedBox(
-                                    height: 20.h,
-                                  ),
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 100.w,
-                                        child: Text(
-                                          'Deadline:',
-                                          style: defaultText14M.copyWith(
-                                              color: colorText.withValues(
-                                                  alpha: 0.8)),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        listBaiTap[index].timeDeadline,
-                                        style: defaultText14SB,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 100.w,
-                                        child: Text(
-                                          'Ngày nộp:',
-                                          style: defaultText14M.copyWith(
-                                              color: colorText.withValues(
-                                                  alpha: 0.8)),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        listBaiTap[index].daySubmit,
-                                        style: defaultText14SB,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 100.w,
-                                        child: Text(
-                                          'Trạng thái:',
-                                          style: defaultText14M.copyWith(
-                                              color: colorText.withValues(
-                                                  alpha: 0.8)),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 8.w),
-                                        height: 24.h,
-                                        decoration: BoxDecoration(
-                                          color: mainGreen,
-                                          borderRadius:
-                                              BorderRadius.circular(6.r),
-                                        ),
-                                        child: Center(
+                            return GestureDetector(
+                              onTap: () async {
+                                if (!await launchUrl(Uri.parse(
+                                    listBaiTap[index].urlFileLesson))) {
+                                  throw Exception('Could not launch ');
+                                }
+                              },
+                              child: Container(
+                                width: 343.w,
+                                margin: EdgeInsets.symmetric(horizontal: 16.w),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16.h, horizontal: 16.w),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16.r),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: colorText
+                                          .withValues(alpha: 0.8)
+                                          .withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      listBaiTap[index].name,
+                                      style: defaultText16B,
+                                    ),
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 100.w,
                                           child: Text(
-                                            listBaiTap[index]
-                                                        .isSubmitHomework ==
-                                                    '1'
-                                                ? 'Đã nộp'
-                                                : 'Chưa nộp',
-                                            style: defaultText12B.copyWith(
-                                                color: Colors.white),
+                                            'Deadline:',
+                                            style: defaultText14M.copyWith(
+                                                color: colorText.withValues(
+                                                    alpha: 0.8)),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 100.w,
-                                        child: Text(
-                                          'Điểm:',
-                                          style: defaultText14M.copyWith(
-                                            color: colorText.withValues(
-                                                alpha: 0.8),
+                                        SizedBox(width: 8.w),
+                                        Text(
+                                          listBaiTap[index].timeDeadline,
+                                          style: defaultText14SB,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 12.h,
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 100.w,
+                                          child: Text(
+                                            'Ngày nộp:',
+                                            style: defaultText14M.copyWith(
+                                                color: colorText.withValues(
+                                                    alpha: 0.8)),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        listBaiTap[index].finalMark,
-                                        style: defaultText14SB,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 12.h,
-                                  ),
-                                  Text(
-                                    'Nhận xét:',
-                                    style: defaultText14M.copyWith(
-                                      color: colorText.withValues(alpha: 0.8),
+                                        SizedBox(width: 8.w),
+                                        Text(
+                                          listBaiTap[index].daySubmit,
+                                          style: defaultText14SB,
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  Container(
-                                    width: double.infinity,
-                                    margin: EdgeInsets.only(top: 8.h),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 12.h, horizontal: 12.w),
-                                    decoration: BoxDecoration(
-                                      color: state2,
-                                      borderRadius: BorderRadius.circular(8.r),
+                                    SizedBox(
+                                      height: 12.h,
                                     ),
-                                    child: Text(
-                                      listBaiTap[index].note,
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 100.w,
+                                          child: Text(
+                                            'Trạng thái:',
+                                            style: defaultText14M.copyWith(
+                                                color: colorText.withValues(
+                                                    alpha: 0.8)),
+                                          ),
+                                        ),
+                                        SizedBox(width: 8.w),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 8.w),
+                                          height: 24.h,
+                                          decoration: BoxDecoration(
+                                            color: mainGreen,
+                                            borderRadius:
+                                                BorderRadius.circular(6.r),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              listBaiTap[index]
+                                                          .isSubmitHomework ==
+                                                      '1'
+                                                  ? 'Đã nộp'
+                                                  : 'Chưa nộp',
+                                              style: defaultText12B.copyWith(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 12.h,
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 100.w,
+                                          child: Text(
+                                            'Điểm:',
+                                            style: defaultText14M.copyWith(
+                                              color: colorText.withValues(
+                                                  alpha: 0.8),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 8.w),
+                                        Text(
+                                          listBaiTap[index].finalMark,
+                                          style: defaultText14SB,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 12.h,
+                                    ),
+                                    Text(
+                                      'Nhận xét:',
                                       style: defaultText14M.copyWith(
-                                        color: colorText.withValues(alpha: 0.6),
+                                        color: colorText.withValues(alpha: 0.8),
                                       ),
                                     ),
-                                  )
-                                ],
+                                    Container(
+                                      width: double.infinity,
+                                      margin: EdgeInsets.only(top: 8.h),
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 12.h, horizontal: 12.w),
+                                      decoration: BoxDecoration(
+                                        color: state2,
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                      ),
+                                      child: Text(
+                                        listBaiTap[index].note,
+                                        style: defaultText14M.copyWith(
+                                          color:
+                                              colorText.withValues(alpha: 0.6),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             );
                           },

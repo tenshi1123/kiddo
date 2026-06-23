@@ -10,7 +10,6 @@ import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/video_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/widget/webview_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:kiddo/utils/widget/app_image.dart';
 import '../../../utils/constants/styles.dart';
 
@@ -276,6 +275,18 @@ class _LessonItemState extends State<LessonItem> {
           });
         }
       }
+    } else if (e.lessonType == '') {
+      setState(() {
+        _isLoading = true;
+      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            return WebViewScreen(link: e.link, title: e.name, type: 0);
+          },
+        ),
+      );
     } else {
       setState(() {
         _isLoading = true;
@@ -288,7 +299,8 @@ class _LessonItemState extends State<LessonItem> {
         );
         if (!mounted) return;
 
-        bool isYoutube = link.contains('youtube.com') || link.contains('youtu.be');
+        bool isYoutube =
+            link.contains('youtube.com') || link.contains('youtu.be');
 
         final result = await Navigator.push(
           context,
@@ -415,9 +427,7 @@ class _LessonItemState extends State<LessonItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   InkWell(
-                    onTap: _isLoading
-                        ? null
-                        : () => playVideoAtIndex(index),
+                    onTap: _isLoading ? null : () => playVideoAtIndex(index),
                     child: DetailItem(
                       title: e.name,
                       type: e.type,
