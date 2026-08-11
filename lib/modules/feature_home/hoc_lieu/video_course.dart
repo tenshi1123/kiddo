@@ -13,11 +13,61 @@ import 'package:kiddo/utils/widget/webview_screen.dart';
 import 'package:kiddo/utils/widget/app_image.dart';
 import '../../../utils/constants/styles.dart';
 
-class VideoCourse extends StatelessWidget {
-  const VideoCourse(
-      {super.key, required this.courseVideoModel, required this.model});
+class VideoCourse extends StatefulWidget {
+  const VideoCourse({
+    super.key,
+    required this.courseVideoModel,
+    required this.model,
+    required this.typeId,
+    required this.scheduleId,
+    required this.courseId,
+  });
   final CourseVideoModel courseVideoModel;
   final ProfileModel? model;
+  final String typeId;
+  final String scheduleId;
+  final String courseId;
+
+  @override
+  State<VideoCourse> createState() => _VideoCourseState();
+}
+
+class _VideoCourseState extends State<VideoCourse> {
+  late CourseVideoModel courseVideoModel;
+  bool _isReloading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    courseVideoModel = widget.courseVideoModel;
+  }
+
+  Future<void> _fetchData() async {
+    setState(() {
+      _isReloading = true;
+    });
+    try {
+      final newData = await VideoRepository().getListTopical(
+        typeId: widget.typeId,
+        scheduleId: widget.scheduleId,
+        courseId: widget.courseId,
+      );
+      if (mounted) {
+        setState(() {
+          courseVideoModel = newData;
+        });
+      }
+    } catch (e) {
+      print("Error reloading data: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isReloading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,23 +91,22 @@ class VideoCourse extends StatelessWidget {
         ),
         actions: [
           GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NotificationScreen(),
-                ),
-              );
-            },
-            child: SvgPicture.asset(
-              'assets/icons/bell.svg',
-              width: 20.w,
-              height: 20.h,
-              colorFilter: ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
-            ),
+            onTap: _isReloading ? null : _fetchData,
+            child: _isReloading
+                ? Container(
+                    width: 20.w,
+                    height: 20.h,
+                    padding: const EdgeInsets.all(2),
+                    child: const CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                    size: 24.w,
+                  ),
           ),
           SizedBox(width: 16.w),
         ],
@@ -199,7 +248,7 @@ class VideoCourse extends StatelessWidget {
                     return LessonItem(
                       index: index,
                       topicModel: courseVideoModel.listTopical[index],
-                      infoModel: model,
+                      infoModel: widget.model,
                     );
                   }),
               SizedBox(
@@ -279,7 +328,7 @@ class _LessonItemState extends State<LessonItem> {
       setState(() {
         _isLoading = true;
       });
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) {
@@ -287,6 +336,11 @@ class _LessonItemState extends State<LessonItem> {
           },
         ),
       );
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } else {
       setState(() {
         _isLoading = true;

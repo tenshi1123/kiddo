@@ -4,6 +4,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:kiddo/modules/notification/detail_notification.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:kiddo/student_repo/customer_repo.dart';
+import 'package:kiddo/teacher_repo/teacher_repo.dart';
+import 'package:kiddo/student_models/profile_model.dart';
+import 'package:kiddo/utils/constants/const_string.dart';
 
 class NotificationModel {
   final String title;
@@ -34,71 +39,51 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  late List<NotificationGroup> notifications;
+  List<NotificationModel> notifications = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    notifications = [
-      NotificationGroup(
-        dateTitle: "Hôm nay",
-        items: [
-          NotificationModel(
-            title: "Đến giờ học rồi bạn ơi!",
-            message:
-                "Xin chào Hải, Buổi học ôn luyện nâng cao sắp diễn ra. Tham gia ngay bạn nhé?",
-            time: "2 phút trước",
+    _fetchNotifications();
+  }
+
+  Future<void> _fetchNotifications() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? type = prefs.getString(ConstString.type);
+      List<NotiModel> data = [];
+      if (type == 'teacher') {
+        data = await TeacherRepo().getListNoti();
+      } else {
+        data = await CustomerRepo().getListNoti();
+      }
+      
+      if (mounted) {
+        setState(() {
+          notifications = data.map((noti) => NotificationModel(
+            title: noti.title,
+            message: noti.content,
+            time: noti.createdAt,
             isRead: true,
-          ),
-          NotificationModel(
-            title: "Ra mắt khóa học ôn luyện cấp tốc",
-            message:
-                "Khóa học sẽ mang đến cho bạn Kiến thức vững vàng để có thể tự tin bước vào kì kiểm tra đánh giá giữa tháng",
-            time: "15 phút trước",
-            isRead: false,
-          ),
-        ],
-      ),
-      NotificationGroup(
-        dateTitle: "Hôm qua",
-        items: [
-          NotificationModel(
-            title: "Học ngay thôi nào!",
-            message:
-                "Bạn Hải ơi! Đã đến giờ học Tiếng Anh rồi nè, ngồi vào bàn học ngay thôi!!!",
-            time: "20:05 - 28/10/2022",
-            isRead: true,
-          ),
-          NotificationModel(
-            title: "Đăng ký khóa học thành công",
-            message:
-                "Chào mừng bạn đến với khóa học TOEIC. Cảm ơn bạn đã tin tưởng lựa chọn khóa học Tiếng Anh cùng KIDDO nha",
-            time: "12:30 - 28/10/2022",
-            isRead: true,
-          ),
-        ],
-      ),
-      NotificationGroup(
-        dateTitle: "Thứ hai - 27/10/2022",
-        items: [
-          NotificationModel(
-            title: "Học cùng KIDDO ENGLISH",
-            message:
-                "Hi Hải. Giờ ôn thi môn toán đến rồi, một bài nữa bạn nhé. Cheer!",
-            time: "20:05 - 27/10/2022",
-            isRead: true,
-          ),
-        ],
-      ),
-    ];
+          )).toList();
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching notifications: $e');
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   void markAllAsRead() {
     setState(() {
-      for (var group in notifications) {
-        for (var item in group.items) {
-          item.isRead = true;
-        }
+      for (var item in notifications) {
+        item.isRead = true;
       }
     });
   }
@@ -137,21 +122,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                itemCount: notifications.length,
-                itemBuilder: (context, index) {
-                  final group = notifications[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(group.dateTitle, style: defaultText16B),
-                      SizedBox(height: 8.h),
-                      ...group.items.map((n) => NotificationItem(item: n)),
-                      SizedBox(height: 12.h),
-                    ],
-                  );
-                },
-              ),
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : notifications.isEmpty
+                      ? const Center(child: Text("Không có thông báo"))
+                      : ListView.builder(
+                          itemCount: notifications.length,
+                          itemBuilder: (context, index) {
+                            return NotificationItem(item: notifications[index]);
+                          },
+                        ),
             ),
             SizedBox(height: 12.h),
             Center(

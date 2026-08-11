@@ -129,6 +129,9 @@ class _ListDocumentsState extends State<ListDocuments> {
                                     builder: ((context) => VideoCourse(
                                           courseVideoModel: detailClassModel,
                                           model: widget.model,
+                                          typeId: listClass[index].typeId,
+                                          scheduleId: listClass[index].scheduleId,
+                                          courseId: listClass[index].courseId,
                                         )),
                                   ),
                                 );
