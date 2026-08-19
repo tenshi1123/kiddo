@@ -182,5 +182,15 @@
     "avatar": "Ảnh đại diện",
     "success": "Thành công",
     "close": "Đóng",
-    "notHaveTeachingSchedule": "Chưa có lịch dạy sắp tới"
+    "notHaveTeachingSchedule": "Chưa có lịch dạy sắp tới",
+    "account": "Tài khoản",
+    "offers": "Ưu đãi",
+    "info": "Thông tin",
+    "contact": "Liên lạc",
+    "menuAttendance": "Điểm danh",
+    "menuAssignments": "Bài tập",
+    "menuEvaluate": "Đánh giá",
+    "menuTuition": "Học phí",
+    "menuMaterials": "Học liệu",
+    "menuPolicy": "Chính sách"
 }

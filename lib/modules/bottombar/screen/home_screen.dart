@@ -483,39 +483,7 @@ class _SmoothHorizontalMenuState extends State<SmoothHorizontalMenu> {
   @override
   void initState() {
     super.initState();
-    menuItems = [
-      {
-        "icon": 'assets/images/lich_thi.png',
-        "title": "Điểm danh",
-        'screen': DiemDanhScreen(),
-      },
-      {
-        "icon": 'assets/images/bai_tap.png',
-        "title": "Bài tập",
-        'screen': ListExcerciseScreen(),
-      },
-      {
-        "icon": 'assets/images/bao_cao_diem.png',
-        "title": "Đánh giá",
-        'screen': ListEvalueteScreen(),
-      },
-      {
-        "icon": 'assets/images/danh_gia.png',
-        "title": "Học phí",
-        'screen': HocPhiScreen(),
-      },
-      {
-        "icon": 'assets/images/hoc_lieu.png',
-        "title": "Học liệu",
-        'screen': ListDocuments(model: widget.model),
-      },
-      {
-        "icon": 'assets/images/chinh_sach.png',
-        "title": "Chính sách",
-        'screen': ListCsachScreen(),
-      },
-    ];
-    pageCount = (menuItems.length / 4).ceil();
+
     _scrollController.addListener(() {
       final maxScroll = _scrollController.position.maxScrollExtent;
       final progress = (_scrollController.offset / maxScroll).clamp(0.0, 1.0);
@@ -524,6 +492,44 @@ class _SmoothHorizontalMenuState extends State<SmoothHorizontalMenu> {
         _currentPage = progress * (pageCount - 1);
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    menuItems = [
+      {
+        "icon": 'assets/images/lich_thi.png',
+        "title": L10n.of(context).menuAttendance,
+        'screen': DiemDanhScreen(),
+      },
+      {
+        "icon": 'assets/images/bai_tap.png',
+        "title": L10n.of(context).menuAssignments,
+        'screen': ListExcerciseScreen(),
+      },
+      {
+        "icon": 'assets/images/bao_cao_diem.png',
+        "title": L10n.of(context).menuEvaluate,
+        'screen': ListEvalueteScreen(),
+      },
+      {
+        "icon": 'assets/images/danh_gia.png',
+        "title": L10n.of(context).menuTuition,
+        'screen': HocPhiScreen(),
+      },
+      {
+        "icon": 'assets/images/hoc_lieu.png',
+        "title": L10n.of(context).menuMaterials,
+        'screen': ListDocuments(model: widget.model),
+      },
+      {
+        "icon": 'assets/images/chinh_sach.png',
+        "title": L10n.of(context).menuPolicy,
+        'screen': ListCsachScreen(),
+      },
+    ];
+    pageCount = (menuItems.length / 4).ceil();
   }
 
   @override

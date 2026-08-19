@@ -69,7 +69,28 @@ class _ListExcerciseScreenState extends State<ListExcerciseScreen> {
               topRight: Radius.circular(26.r),
             ),
           ),
-          child: ListView.builder(
+          child: listClass.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/empty2.png',
+                        width: 150.w,
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'Không có dữ liệu',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
             padding: EdgeInsets.all(16.w),
             itemCount: listClass.length,
             itemBuilder: (context, index) {

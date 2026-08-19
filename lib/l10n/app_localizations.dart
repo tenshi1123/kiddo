@@ -1177,6 +1177,66 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chưa có lịch dạy sắp tới'**
   String get notHaveTeachingSchedule;
+
+  /// No description provided for @account.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản'**
+  String get account;
+
+  /// No description provided for @offers.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ưu đãi'**
+  String get offers;
+
+  /// No description provided for @info.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông tin'**
+  String get info;
+
+  /// No description provided for @contact.
+  ///
+  /// In vi, this message translates to:
+  /// **'Liên lạc'**
+  String get contact;
+
+  /// No description provided for @menuAttendance.
+  ///
+  /// In vi, this message translates to:
+  /// **'Điểm danh'**
+  String get menuAttendance;
+
+  /// No description provided for @menuAssignments.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bài tập'**
+  String get menuAssignments;
+
+  /// No description provided for @menuEvaluate.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá'**
+  String get menuEvaluate;
+
+  /// No description provided for @menuTuition.
+  ///
+  /// In vi, this message translates to:
+  /// **'Học phí'**
+  String get menuTuition;
+
+  /// No description provided for @menuMaterials.
+  ///
+  /// In vi, this message translates to:
+  /// **'Học liệu'**
+  String get menuMaterials;
+
+  /// No description provided for @menuPolicy.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chính sách'**
+  String get menuPolicy;
 }
 
 class _AppLocalizationsDelegate

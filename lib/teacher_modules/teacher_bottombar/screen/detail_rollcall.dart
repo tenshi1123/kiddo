@@ -261,9 +261,23 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  student.fullName,
-                                                  style: defaultText14SB,
+                                                Text.rich(
+                                                  TextSpan(
+                                                    text: student.fullName,
+                                                    style: defaultText14SB,
+                                                    children: [
+                                                      if (student.fullNameAlias
+                                                          .isNotEmpty)
+                                                        TextSpan(
+                                                          text:
+                                                              ' - ${student.fullNameAlias}',
+                                                          style: defaultText14SB
+                                                              .copyWith(
+                                                                  color: Colors
+                                                                      .red),
+                                                        ),
+                                                    ],
+                                                  ),
                                                 ),
                                                 Text(
                                                   student.createdAt,

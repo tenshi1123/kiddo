@@ -172,9 +172,33 @@ class _DetailExcerciseScreenState extends State<DetailExcerciseScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      listBaiTap[index].name,
-                                      style: defaultText16B,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            listBaiTap[index].name,
+                                            style: defaultText16B,
+                                          ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              'Xem chi tiết',
+                                              style: defaultText14M.copyWith(
+                                                color: mainOrange,
+                                              ),
+                                            ),
+                                            SizedBox(width: 4.w),
+                                            Icon(
+                                              Icons.arrow_forward_ios,
+                                              size: 14.sp,
+                                              color: mainOrange,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                     SizedBox(
                                       height: 20.h,

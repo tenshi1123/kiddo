@@ -552,4 +552,34 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get notHaveTeachingSchedule =>
       'There is no upcoming teaching schedule yet.';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get offers => 'Offers';
+
+  @override
+  String get info => 'Information';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get menuAttendance => 'Attendance';
+
+  @override
+  String get menuAssignments => 'Assignments';
+
+  @override
+  String get menuEvaluate => 'Evaluation';
+
+  @override
+  String get menuTuition => 'Tuition';
+
+  @override
+  String get menuMaterials => 'Materials';
+
+  @override
+  String get menuPolicy => 'Policy';
 }

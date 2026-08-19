@@ -70,56 +70,75 @@ class _ListCourseScreenState extends State<ListCourseScreen> {
               topRight: Radius.circular(26.r),
             ),
           ),
-          child: ListView.builder(
-            padding: EdgeInsets.all(16.w),
-            itemCount: listClass.length,
-            itemBuilder: (context, index) {
-              final item = listClass[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailCourseScreen(
-                        courseScheduleId: item.courseScheduleId,
-                        settingCourseTypeId: item.settingCourseTypeId,
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 12.h),
-                  padding: EdgeInsets.all(12.w),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(12.r),
-                    border: Border.all(color: Colors.blue.shade100),
-                  ),
-                  child: Row(
+          child: listClass.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/images/computer.png',
-                        width: 40.w,
-                        height: 40.h,
+                        'assets/images/empty2.png',
+                        width: 150.w,
+                        height: 150.h,
+                        fit: BoxFit.contain,
                       ),
-                      SizedBox(width: 12.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(item.courseName, style: defaultText16B),
-                          SizedBox(height: 4.h),
-                          Text(item.settingCourseTypeName,
-                              style: defaultText14M.copyWith(
-                                color: Colors.grey.shade600,
-                              )),
-                        ],
+                      SizedBox(height: 16.h),
+                      Text(
+                        "Không có dữ liệu",
+                        style: defaultText16B.copyWith(color: Colors.grey),
                       ),
                     ],
                   ),
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.all(16.w),
+                  itemCount: listClass.length,
+                  itemBuilder: (context, index) {
+                    final item = listClass[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailCourseScreen(
+                              courseScheduleId: item.courseScheduleId,
+                              settingCourseTypeId: item.settingCourseTypeId,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 12.h),
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(color: Colors.blue.shade100),
+                        ),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/computer.png',
+                              width: 40.w,
+                              height: 40.h,
+                            ),
+                            SizedBox(width: 12.w),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(item.courseName, style: defaultText16B),
+                                SizedBox(height: 4.h),
+                                Text(item.settingCourseTypeName,
+                                    style: defaultText14M.copyWith(
+                                      color: Colors.grey.shade600,
+                                    )),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ));
   }
 }

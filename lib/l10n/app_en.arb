@@ -182,5 +182,15 @@
     "avatar": "Avatar",
     "success": "Success",
     "close": "Close",
-    "notHaveTeachingSchedule": "There is no upcoming teaching schedule yet."
+    "notHaveTeachingSchedule": "There is no upcoming teaching schedule yet.",
+    "account": "Account",
+    "offers": "Offers",
+    "info": "Information",
+    "contact": "Contact",
+    "menuAttendance": "Attendance",
+    "menuAssignments": "Assignments",
+    "menuEvaluate": "Evaluation",
+    "menuTuition": "Tuition",
+    "menuMaterials": "Materials",
+    "menuPolicy": "Policy"
 }

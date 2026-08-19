@@ -327,7 +327,12 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
                       ),
               )
             : Expanded(
-                child: ListView.builder(
+                child: widget.listPaymented.isEmpty
+                    ? Text(
+                        'Không có hóa đơn',
+                        style: defaultText16B,
+                      )
+                    : ListView.builder(
                   itemCount: widget.listPaymented.length,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

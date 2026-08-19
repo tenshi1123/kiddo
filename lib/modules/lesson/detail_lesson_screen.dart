@@ -606,7 +606,10 @@ class TaiLieuTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: taiLieu.isEmpty
-          ? Text('Không có tài liệu')
+          ? Text(
+              'Không có tài liệu',
+              style: defaultText16B,
+            )
           : ListView.separated(
               shrinkWrap: true,
               itemCount: taiLieu.length,

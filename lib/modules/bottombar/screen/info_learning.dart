@@ -5,6 +5,7 @@ import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/main.dart';
 import 'package:kiddo/modules/info_learning/detail_course_screen.dart';
 import 'package:kiddo/modules/info_learning/list_course.dart';
+import 'package:kiddo/modules/feature_home/hoc_lieu/list_hoc_lieu.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -65,9 +66,14 @@ class InfoLearingScreen extends StatelessWidget {
               ),
               SizedBox(height: 12.h),
               listClass.isEmpty
-                  ? Text(
-                      'Chưa có khóa học đã đăng kí',
-                      style: defaultText14M,
+                  ? SizedBox(
+                      height:
+                          400.h, // Giới hạn chiều cao để tránh lỗi giao diện
+                      child: const ListHocLieuBodyWidget(
+                        shrinkWrap: true,
+                        physics:
+                            AlwaysScrollableScrollPhysics(), // Đặt scroll physics để cuộn được bên trong fixed height
+                      ),
                     )
                   : SizedBox(
                       height: 190.h,
@@ -166,83 +172,144 @@ class InfoLearingScreen extends StatelessWidget {
               SizedBox(
                 height: 16.h,
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailCourseScreen(
-                        courseScheduleId:
-                            listClass[controller1.page?.round() ?? 0]
-                                .courseScheduleId,
-                        settingCourseTypeId:
-                            listClass[controller1.page?.round() ?? 0]
-                                .settingCourseTypeId,
+              if (listClass.isNotEmpty)
+                GestureDetector(
+                  onTap: () {
+                    if (listClass.isEmpty) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Scaffold(
+                            backgroundColor: mainOrange,
+                            appBar: AppBar(
+                              backgroundColor: mainOrange,
+                              elevation: 0,
+                              centerTitle: true,
+                              title: Text(
+                                L10n.of(context).detailCourse,
+                                style: defaultText16B.copyWith(
+                                    color: Colors.white),
+                              ),
+                              leading: IconButton(
+                                onPressed: () => Navigator.pop(context),
+                                icon: const Icon(
+                                  Icons.arrow_back_ios,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            body: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(26.r),
+                                  topRight: Radius.circular(26.r),
+                                ),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/empty2.png',
+                                      width: 150.w,
+                                      height: 150.h,
+                                      fit: BoxFit.contain,
+                                    ),
+                                    SizedBox(height: 16.h),
+                                    Text(
+                                      "Không có dữ liệu",
+                                      style: defaultText16B.copyWith(
+                                          color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+                    final pageIndex = controller1.hasClients
+                        ? (controller1.page?.round() ?? 0)
+                        : 0;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailCourseScreen(
+                          courseScheduleId:
+                              listClass[pageIndex].courseScheduleId,
+                          settingCourseTypeId:
+                              listClass[pageIndex].settingCourseTypeId,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16.w),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 12.h,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      color: const Color(0xffF5F7FA),
+                      border: Border.all(
+                        color: const Color(0xFF1D74FF).withValues(alpha: 0.2),
                       ),
                     ),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 12.h,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    color: const Color(0xffF5F7FA),
-                    border: Border.all(
-                      color: const Color(0xFF1D74FF).withValues(alpha: 0.2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(L10n.of(context).detailCourse,
+                            style: defaultText14B),
+                        Spacer(),
+                        Icon(Icons.arrow_forward_ios, size: 16.sp),
+                      ],
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(L10n.of(context).detailCourse,
-                          style: defaultText14B),
-                      Spacer(),
-                      Icon(Icons.arrow_forward_ios, size: 16.sp),
-                    ],
-                  ),
                 ),
-              ),
               SizedBox(
                 height: 16.h,
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ListCourseScreen(),
+              if (listClass.isNotEmpty)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ListCourseScreen(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16.w),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20.w,
+                      vertical: 12.h,
                     ),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.w),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
-                    vertical: 12.h,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    color: const Color(0xffF5F7FA),
-                    border: Border.all(
-                      color: const Color(0xFF1D74FF).withValues(alpha: 0.2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.r),
+                      color: const Color(0xffF5F7FA),
+                      border: Border.all(
+                        color: const Color(0xFF1D74FF).withValues(alpha: 0.2),
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(L10n.of(context).listCourse, style: defaultText14B),
-                      Spacer(),
-                      Icon(Icons.arrow_forward_ios, size: 16.sp),
-                    ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(L10n.of(context).listCourse,
+                            style: defaultText14B),
+                        Spacer(),
+                        Icon(Icons.arrow_forward_ios, size: 16.sp),
+                      ],
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

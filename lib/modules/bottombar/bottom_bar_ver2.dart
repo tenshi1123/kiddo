@@ -13,6 +13,7 @@ import 'package:kiddo/modules/bottombar/screen/user_info/account_screen.dart';
 import 'package:kiddo/modules/bottombar/screen/info_learning.dart';
 import 'screen/offer_screen.dart';
 import 'screen/home_screen.dart';
+import 'package:kiddo/l10n/l10n.dart';
 
 class Bottombar2 extends StatefulWidget {
   final int index;
@@ -86,8 +87,8 @@ class _Bottombar2State extends State<Bottombar2> {
         model: profileModel,
       ),
       const OfferScreen(),
-      const ListConversationScreen(
-        title: 'Liên lạc',
+      ListConversationScreen(
+        title: L10n.of(context).contact,
         type: 'student',
       ),
       const InfoLearingScreen(),
@@ -96,11 +97,11 @@ class _Bottombar2State extends State<Bottombar2> {
       ),
     ];
     final List<Map<String, String>> items = [
-      {"icon": 'home_icon.svg', "label": "Trang chủ"},
-      {"icon": 'offers.svg', "label": "Ưu đãi"},
+      {"icon": 'home_icon.svg', "label": L10n.of(context).home},
+      {"icon": 'offers.svg', "label": L10n.of(context).offers},
       {"icon": '', "label": ""},
-      {"icon": 'info.svg', "label": "Thông tin"},
-      {"icon": 'personal.svg', "label": "Tài khoản"},
+      {"icon": 'info.svg', "label": L10n.of(context).info},
+      {"icon": 'personal.svg', "label": L10n.of(context).account},
     ];
     // ✅ FIX: Chỉ block bằng loading spinner khi đang load
     // Không dùng splash.gif lần 2, không block khi profileModel==null
@@ -158,7 +159,7 @@ class _Bottombar2State extends State<Bottombar2> {
                           ),
                         ),
 
-                        Text("Liên lạc",
+                        Text(L10n.of(context).contact,
                             style: defaultText12M.copyWith(
                               color: _selectedIndex == 2
                                   ? mainOrange

@@ -550,4 +550,34 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get notHaveTeachingSchedule => 'Chưa có lịch dạy sắp tới';
+
+  @override
+  String get account => 'Tài khoản';
+
+  @override
+  String get offers => 'Ưu đãi';
+
+  @override
+  String get info => 'Thông tin';
+
+  @override
+  String get contact => 'Liên lạc';
+
+  @override
+  String get menuAttendance => 'Điểm danh';
+
+  @override
+  String get menuAssignments => 'Bài tập';
+
+  @override
+  String get menuEvaluate => 'Đánh giá';
+
+  @override
+  String get menuTuition => 'Học phí';
+
+  @override
+  String get menuMaterials => 'Học liệu';
+
+  @override
+  String get menuPolicy => 'Chính sách';
 }
