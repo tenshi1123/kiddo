@@ -3,6 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:kiddo/modules/notification/notification.dart';
 import 'package:kiddo/student_models/diem_danh_model.dart';
 import 'package:kiddo/student_models/review_models.dart';
@@ -22,7 +23,7 @@ class DetailEvaluateScreen extends StatefulWidget {
 
 class _DetailEvaluateScreenState extends State<DetailEvaluateScreen> {
   bool isLoading = true;
-  late ListFeedBackModel listLichHoc;
+  ListFeedBackModel? listLichHoc;
   @override
   void initState() {
     super.initState();
@@ -128,9 +129,19 @@ class _DetailEvaluateScreenState extends State<DetailEvaluateScreen> {
                 ),
               ),
               Expanded(
-                child: LessonHistoryBody(
-                  model: listLichHoc,
-                ),
+                child: isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: mainOrange,
+                        ),
+                      )
+                    : listLichHoc == null
+                        ? const Center(
+                            child: Text("Không có dữ liệu hoặc tải thất bại"),
+                          )
+                        : LessonHistoryBody(
+                            model: listLichHoc!,
+                          ),
               ),
             ],
           ),
@@ -257,7 +268,7 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${lesson.name} ${DateFormat('dd/MM//yyyy').format(lesson.createAt)}',
+                            '${lesson.name} ${DateFormat('dd/MM/yyyy').format(lesson.createAt)}',
                             style: defaultText16B,
                           ),
                           SizedBox(height: 16.h),
@@ -268,14 +279,17 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
                                 color: Color(0xffF6F6F6),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: Html(data: cleanHtml(lesson.content))
-                              // Text(
-                              //   ,
-                              //   style: defaultText14M.copyWith(
-                              //     color: colorText.withValues(alpha: 0.6),
-                              //   ),
-                              // ),
-                              ),
+                              child: Html(
+                                data: cleanHtml(lesson.content),
+                                onLinkTap: (url, attributes, element) async {
+                                  if (url != null) {
+                                    final Uri uri = Uri.parse(url);
+                                    if (await canLaunchUrl(uri)) {
+                                      await launchUrl(uri);
+                                    }
+                                  }
+                                },
+                              ))
                         ],
                       ),
                     );
@@ -293,18 +307,23 @@ String cleanHtml(String rawHtml) {
   // 1. Xóa bỏ thẻ <div> bọc ngoài cùng (nếu có) để dễ xử lý cấu trúc bên trong
   result = result.replaceAll('<div>', '').replaceAll('</div>', '');
 
-  // 2. Chuyển đổi: Tìm đoạn text thường nằm giữa các thẻ <b>
-  // Thần chú Regex này sẽ tìm dạng: </b> [khoảng trống/thẻ lỗi] TÊN_CHỮ <b>
-  // Và bọc chữ đó lại trong thẻ <div> riêng để ép xuống dòng
-  result = result.replaceAllMapped(
-      RegExp(r'</b>\s*(?:</br>|<br\s*/>)?\s*([^<]+)\s*<b>'),
-      (match) => '</b><div>${match.group(1)?.trim()}</div><b>');
+  // 2. Chuẩn hóa thẻ br
+  result = result.replaceAll(RegExp(r'</?br>'), '<br>');
 
-  // 3. Xử lý đoạn text thừa dính ở cuối chuỗi (nếu có) trước khi đóng tag
-  result = result.replaceAllMapped(
-      RegExp(r'</b>\s*(?:</br>|<br\s*/>)?\s*([^<]+)$'),
+  // 3. Biến các thẻ <li> thành chấm tròn đen (bullet point) để tránh lỗi hiển thị số 0
+  result = result.replaceAll('<li>', '<div>&#8226; ');
+  result = result.replaceAll('</li>', '</div>');
+
+  // 4. Tìm các link (http/https) dạng text thô và bọc vào thẻ <a> để bấm được
+  result = result.replaceAllMapped(RegExp(r'(https?:\/\/[^\s<]+)'),
+      (match) => '<a href="${match.group(1)}">${match.group(1)}</a>');
+
+  // 5. Tìm đoạn text thường nằm giữa các thẻ <b> (giữ lại logic cũ cho an toàn)
+  result = result.replaceAllMapped(RegExp(r'</b>\s*<br>\s*([^<]+)\s*<b>'),
+      (match) => '</b><div>${match.group(1)?.trim()}</div><b>');
+  result = result.replaceAllMapped(RegExp(r'</b>\s*<br>\s*([^<]+)$'),
       (match) => '</b><div>${match.group(1)?.trim()}</div>');
 
-  // 4. Bọc lại bằng một thẻ div tổng cho an toàn
+  // 6. Bọc lại bằng một thẻ div tổng cho an toàn
   return '<div>$result</div>';
 }

@@ -396,6 +396,8 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                           "Bạn chắc chắn muốn cập nhật trạng thái điểm danh",
                                     );
                                     if (result == true) {
+                                      bool hasError = false;
+                                      String errorMessage = "";
                                       for (final student in listDiemDanh) {
                                         try {
                                           await TeacherClassRepo()
@@ -404,45 +406,47 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                             checkinOffId: student.checkinOffId,
                                             status: student.status,
                                           );
-                                          // ✔ Gọi xong toàn bộ, hiện dialog thành công
-                                          if (context.mounted) {
-                                            showDialog(
-                                              context: context,
-                                              builder: (_) => AlertDialog(
-                                                title: Text(
-                                                    L10n.of(context).success),
-                                                content: const Text(
-                                                    "Đã cập nhật điểm danh cho  học sinh."),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                    child: const Text("OK"),
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          }
                                         } catch (e) {
-                                          // ❌ Nếu có lỗi, show dialog lỗi
-                                          if (context.mounted) {
-                                            showDialog(
-                                              context: context,
-                                              builder: (_) => AlertDialog(
-                                                title: const Text("Lỗi"),
-                                                content:
-                                                    Text("Có lỗi xảy ra: $e"),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                    child: Text(
-                                                        L10n.of(context).close),
-                                                  )
-                                                ],
-                                              ),
-                                            );
-                                          }
+                                          hasError = true;
+                                          errorMessage = e.toString();
+                                          break;
+                                        }
+                                      }
+                                      
+                                      if (context.mounted) {
+                                        if (hasError) {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              title: const Text("Lỗi"),
+                                              content: Text("Có lỗi xảy ra: $errorMessage"),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: Text(
+                                                      L10n.of(context).close),
+                                                )
+                                              ],
+                                            ),
+                                          );
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              title: Text(
+                                                  L10n.of(context).success),
+                                              content: const Text(
+                                                  "Đã cập nhật điểm danh cho học sinh."),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: const Text("OK"),
+                                                )
+                                              ],
+                                            ),
+                                          );
                                         }
                                       }
                                     } else {
@@ -495,6 +499,8 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                               "Bạn chắc chắn muốn cập nhật thái độ học sinh",
                                         );
                                         if (result == true) {
+                                          bool hasError = false;
+                                          String errorMessage = "";
                                           for (final student in listAttitude) {
                                             try {
                                               await TeacherClassRepo()
@@ -508,48 +514,46 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                                 content: student.content,
                                                 type: 1,
                                               );
-                                              // ✔ Gọi xong toàn bộ, hiện dialog thành công
-                                              if (context.mounted) {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (_) => AlertDialog(
-                                                    title: const Text(
-                                                        "Thành công"),
-                                                    content: const Text(
-                                                        "Đã cập nhật thái độ cho học sinh."),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                context),
-                                                        child: const Text("OK"),
-                                                      )
-                                                    ],
-                                                  ),
-                                                );
-                                              }
                                             } catch (e) {
-                                              // ❌ Nếu có lỗi, show dialog lỗi
-                                              if (context.mounted) {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (_) => AlertDialog(
-                                                    title: const Text("Lỗi"),
-                                                    content: Text(
-                                                        "Có lỗi xảy ra: $e"),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                context),
-                                                        child: Text(
-                                                            L10n.of(context)
-                                                                .close),
-                                                      )
-                                                    ],
-                                                  ),
-                                                );
-                                              }
+                                              hasError = true;
+                                              errorMessage = e.toString();
+                                              break;
+                                            }
+                                          }
+                                          
+                                          if (context.mounted) {
+                                            if (hasError) {
+                                              showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                  title: const Text("Lỗi"),
+                                                  content: Text("Có lỗi xảy ra: $errorMessage"),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(context),
+                                                      child: Text(
+                                                          L10n.of(context).close),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
+                                            } else {
+                                              showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                  title: const Text("Thành công"),
+                                                  content: const Text(
+                                                      "Đã cập nhật thái độ cho học sinh."),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(context),
+                                                      child: const Text("OK"),
+                                                    )
+                                                  ],
+                                                ),
+                                              );
                                             }
                                           }
                                         } else {

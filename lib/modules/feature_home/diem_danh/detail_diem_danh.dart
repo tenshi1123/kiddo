@@ -352,9 +352,11 @@ class _LessonItemState extends State<LessonItem> {
           SizedBox(height: 6.h),
           Row(
             children: [
-              Text("Ca học: ", style: defaultText14Re),
+              Text("Ca học:       ", style: defaultText12B),
               Text(
-                  '${lesson.timeStart.replaceRange(5, 8, '')} - ${lesson.timeEnd.replaceRange(5, 8, '')}  ${lesson.day}'),
+                '${lesson.timeStart.replaceRange(5, 8, '')} - ${lesson.timeEnd.replaceRange(5, 8, '')}  ${lesson.day}',
+                style: defaultText12M,
+              ),
             ],
           ),
 
@@ -372,37 +374,90 @@ class _LessonItemState extends State<LessonItem> {
                       itemBuilder: (BuildContext context, int index) {
                         return Row(
                           children: [
-                            Text("Giảng viên: ", style: defaultText14Re),
-                            Text(lesson.giaoVien[index].fullName),
+                            Text("Giảng viên: ", style: defaultText12B),
+                            Text(
+                              lesson.giaoVien[index].fullName,
+                              style: defaultText12M,
+                            ),
                           ],
                         );
                       }),
                 ),
                 SizedBox(height: 6.h),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: getStatusColor(lesson.gvStatusName),
-                      borderRadius: BorderRadius.circular(20),
+                Row(
+                  children: [
+                    Text("Điểm danh: ", style: defaultText12B),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: getStatusColor(lesson.gvStatusName),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        lesson.gvStatusName,
+                        style: defaultText12M.copyWith(color: Colors.white),
+                      ),
                     ),
-                    child: Text(
-                      lesson.gvStatusName,
-                      style: defaultText12M.copyWith(color: Colors.white),
-                    ),
-                  ),
+                  ],
                 ),
                 SizedBox(height: 6.h),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Nhận xét: ", style: defaultText14Re),
                     SizedBox(
                       width: 240.w,
                       child: Text(
                         lesson.content,
                         style: defaultText14B,
+                      ),
+                    ),
+                  ],
+                ),
+                // Bắt đầu phần Thái độ (Mock data)
+                SizedBox(height: 12.h),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Thái độ:  ", style: defaultText12B),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tích cực, chăm chỉ, hăng hái", // Dữ liệu mẫu (nhiều tag)
+                            style: defaultText12B,
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            "Học sinh ngoan ngoãn, chủ động giơ tay phát biểu và phối hợp rất tốt với các bạn trong nhóm.", // Dữ liệu mẫu
+                            style: defaultText12M,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                // Bắt đầu phần Tình hình học tập (Mock data)
+                SizedBox(height: 12.h),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Học tập: ", style: defaultText12B),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Tiến bộ, tiếp thu nhanh", // Dữ liệu mẫu (nhiều tag)
+                            style: defaultText14B,
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            "Đã thuộc hết từ vựng của bài, hoàn thành bài tập về nhà đầy đủ. Cần rèn thêm kỹ năng nghe.", // Dữ liệu mẫu
+                            style: defaultText14M,
+                          ),
+                        ],
                       ),
                     ),
                   ],
