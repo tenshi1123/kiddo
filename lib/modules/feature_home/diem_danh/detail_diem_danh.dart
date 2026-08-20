@@ -287,6 +287,7 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
               final lesson = filtered[index];
               return LessonItem(
                 lesson: lesson,
+                isPast: selectedTab == 0,
               );
             },
           ),
@@ -298,7 +299,8 @@ class _LessonHistoryBodyState extends State<LessonHistoryBody> {
 
 class LessonItem extends StatefulWidget {
   final DetailDiemDanh lesson;
-  const LessonItem({super.key, required this.lesson});
+  final bool isPast;
+  const LessonItem({super.key, required this.lesson, required this.isPast});
 
   @override
   State<LessonItem> createState() => _LessonItemState();
@@ -366,24 +368,24 @@ class _LessonItemState extends State<LessonItem> {
             secondChild: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 4.h),
-                SizedBox(
-                  height: lesson.giaoVien.length * 22.h,
-                  child: ListView.builder(
-                      itemCount: lesson.giaoVien.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Row(
-                          children: [
-                            Text("Giảng viên: ", style: defaultText12B),
-                            Text(
-                              lesson.giaoVien[index].fullName,
-                              style: defaultText12M,
-                            ),
-                          ],
-                        );
-                      }),
-                ),
-                SizedBox(height: 6.h),
+                //SizedBox(height: 4.h),
+                // SizedBox(
+                //   height: lesson.giaoVien.length * 22.h,
+                //   child: ListView.builder(
+                //       itemCount: lesson.giaoVien.length,
+                //       itemBuilder: (BuildContext context, int index) {
+                //         return Row(
+                //           children: [
+                //             Text("Giảng viên: ", style: defaultText12B),
+                //             Text(
+                //               lesson.giaoVien[index].fullName,
+                //               style: defaultText12M,
+                //             ),
+                //           ],
+                //         );
+                //       }),
+                // ),
+                //SizedBox(height: 6.h),
                 Row(
                   children: [
                     Text("Điểm danh: ", style: defaultText12B),
@@ -402,66 +404,69 @@ class _LessonItemState extends State<LessonItem> {
                   ],
                 ),
                 SizedBox(height: 6.h),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 240.w,
-                      child: Text(
-                        lesson.content,
-                        style: defaultText14B,
+                if (lesson.content != '')
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 240.w,
+                        child: Text(
+                          lesson.content,
+                          style: defaultText14B,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                // Bắt đầu phần Thái độ (Mock data)
-                SizedBox(height: 12.h),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Thái độ:  ", style: defaultText12B),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Tích cực, chăm chỉ, hăng hái", // Dữ liệu mẫu (nhiều tag)
-                            style: defaultText12B,
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            "Học sinh ngoan ngoãn, chủ động giơ tay phát biểu và phối hợp rất tốt với các bạn trong nhóm.", // Dữ liệu mẫu
-                            style: defaultText12M,
-                          ),
-                        ],
+                    ],
+                  ),
+                if (widget.isPast) ...[
+                  // Bắt đầu phần Thái độ (Mock data)
+                  SizedBox(height: 12.h),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Thái độ:  ", style: defaultText12B),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Tích cực, chăm chỉ, hăng hái", // Dữ liệu mẫu (nhiều tag)
+                              style: defaultText12B,
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              "Học sinh ngoan ngoãn, chủ động giơ tay phát biểu và phối hợp rất tốt với các bạn trong nhóm.", // Dữ liệu mẫu
+                              style: defaultText12M,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                // Bắt đầu phần Tình hình học tập (Mock data)
-                SizedBox(height: 12.h),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Học tập: ", style: defaultText12B),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Tiến bộ, tiếp thu nhanh", // Dữ liệu mẫu (nhiều tag)
-                            style: defaultText14B,
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            "Đã thuộc hết từ vựng của bài, hoàn thành bài tập về nhà đầy đủ. Cần rèn thêm kỹ năng nghe.", // Dữ liệu mẫu
-                            style: defaultText14M,
-                          ),
-                        ],
+                    ],
+                  ),
+                  // Bắt đầu phần Tình hình học tập (Mock data)
+                  SizedBox(height: 12.h),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Tình hình: ", style: defaultText12B),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Tiến bộ, tiếp thu nhanh", // Dữ liệu mẫu (nhiều tag)
+                              style: defaultText14B,
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              "Đã thuộc hết từ vựng của bài, hoàn thành bài tập về nhà đầy đủ. Cần rèn thêm kỹ năng nghe.", // Dữ liệu mẫu
+                              style: defaultText14M,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ],
             ),
             crossFadeState: isExpanded

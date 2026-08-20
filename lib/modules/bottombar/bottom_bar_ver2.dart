@@ -164,6 +164,8 @@ class _Bottombar2State extends State<Bottombar2> {
                               color: _selectedIndex == 2
                                   ? mainOrange
                                   : Colors.grey,
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.bold,
                             )),
                         const SizedBox(height: 4),
                       ],
@@ -212,6 +214,8 @@ class _Bottombar2State extends State<Bottombar2> {
                               Text(items[index]["label"]!,
                                   style: defaultText12M.copyWith(
                                     color: selected ? mainOrange : Colors.grey,
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.bold,
                                   )),
                             ],
                           ),

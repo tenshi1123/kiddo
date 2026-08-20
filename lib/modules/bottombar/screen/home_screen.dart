@@ -642,16 +642,15 @@ class _Header extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(12.dg),
+          padding: EdgeInsets.all(4.dg),
           decoration: const BoxDecoration(
             color: Colors.white,
-            shape: BoxShape.circle,
           ),
           child: AppImage(
             url: model?.avatar ?? '',
-            width: 50.w,
-            height: 50.h,
-            fit: BoxFit.cover,
+            width: 65.w,
+            height: 65.h,
+            fit: BoxFit.contain,
           ),
         ),
         SizedBox(width: 12.w),

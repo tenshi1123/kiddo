@@ -154,15 +154,15 @@ class _DetailLessonScreenState extends State<DetailLessonScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '${detailBuoiHocModel!.infoLesson.namePhonghoc} ${detailBuoiHocModel!.infoLesson.cosoName}',
-                              style: defaultText14B,
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Text(
+                        //       '${detailBuoiHocModel!.infoLesson.namePhonghoc} ${detailBuoiHocModel!.infoLesson.cosoName}',
+                        //       style: defaultText14B,
+                        //     ),
+                        //   ],
+                        // ),
                         SizedBox(height: 10.h),
 
                         Text(
@@ -608,7 +608,7 @@ class TaiLieuTab extends StatelessWidget {
       child: taiLieu.isEmpty
           ? Text(
               'Không có tài liệu',
-              style: defaultText16B,
+              style: defaultText16M,
             )
           : ListView.separated(
               shrinkWrap: true,
@@ -678,7 +678,7 @@ class DanhGiaTab extends StatelessWidget {
     return feedback.isEmpty
         ? Text(
             'Không có đánh giá',
-            style: defaultText14M,
+            style: defaultText16M,
           )
         : SingleChildScrollView(
             child: ListView.separated(

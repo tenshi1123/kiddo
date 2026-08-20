@@ -95,16 +95,15 @@ class _AccountScreenState extends State<AccountScreen> {
                         bottom: 0,
                         left: 138.w,
                         child: Container(
-                          padding: EdgeInsets.all(12.dg),
+                          padding: EdgeInsets.all(4.dg),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            shape: BoxShape.circle,
                           ),
                           child: AppImage(
                             url: widget.model?.avatar ?? '',
-                            width: 80.w,
-                            height: 80.h,
-                            fit: BoxFit.cover,
+                            width: 96.w,
+                            height: 96.h,
+                            fit: BoxFit.contain,
                           ),
                         )),
                   ]),

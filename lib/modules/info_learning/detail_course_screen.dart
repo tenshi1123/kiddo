@@ -105,13 +105,13 @@ class _DetailCourseScreenState extends State<DetailCourseScreen> {
                               style: defaultText14SB.copyWith(fontSize: 16.sp),
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 12.w, top: 4.h),
-                            child: Text(
-                              data?.info.settingCourseTypeName ?? '',
-                              style: defaultText14Re,
-                            ),
-                          ),
+                          // Padding(
+                          //   padding: EdgeInsets.only(left: 12.w, top: 4.h),
+                          //   child: Text(
+                          //     data?.info.settingCourseTypeName ?? '',
+                          //     style: defaultText14Re,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
