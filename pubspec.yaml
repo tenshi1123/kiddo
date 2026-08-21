@@ -83,3 +83,6 @@ flutter:
     - assets/fonts/
 
 
+
+dependency_overrides:
+  font_awesome_flutter: ^11.0.0
