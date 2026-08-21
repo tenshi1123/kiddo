@@ -10,7 +10,6 @@ import 'package:kiddo/student_repo/chat_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:camera_camera/camera_camera.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -29,42 +28,6 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageController = TextEditingController();
   List<File> photos = <File>[];
   String id = '';
-
-  void openCamera() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => CameraCamera(
-          onFile: (file) async {
-            //Navigator.pop(context);
-            // await ChatRepo().sendImageMessage(widget.model.id, file);
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CupertinoAlertDialog(
-                  title: const Text('Tin nhắn đã được gửi'),
-                  actions: <Widget>[
-                    CupertinoDialogAction(
-                      isDefaultAction: true,
-                      child: Text(
-                        'ok',
-                        style: TextStyle(fontSize: 20, color: mainOrange),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                    )
-                  ],
-                );
-              },
-            );
-            setState(() {});
-          },
-        ),
-      ),
-    );
-  }
 
   Future _pickImageFromGallery() async {
     final returnedImage = await ImagePicker().pickMultiImage();
