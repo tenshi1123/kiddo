@@ -142,7 +142,7 @@ class _StudentLoginState extends State<StudentLogin> {
                           listClass = await LoginRepo().getListClass();
                           listCategory = await HomeRepo().getCategories();
                           if (!mounted) return;
-                          AppRouter.toPage(
+                          AppRouter.replaceAllWithPage(
                             context,
                             AppPages.BottomNavBarPage,
                           );

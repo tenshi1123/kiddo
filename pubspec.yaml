@@ -41,7 +41,7 @@ dependencies:
   screenshot: ^3.0.0
   dotted_border: ^3.1.0
   permission_handler: ^12.0.1
-  gal: ^2.3.2
+  gal: ^2.3.3
   flutter_downloader: ^1.12.0
   firebase_core: ^4.2.0
   flutter_localizations:
@@ -50,6 +50,7 @@ dependencies:
   speech_to_text: ^7.3.0
   screen_protector: ^1.5.1
   youtube_player_flutter: ^9.1.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -81,5 +82,4 @@ flutter:
     - assets/icons/
     - assets/fonts/
 
-dependency_overrides:
-  font_awesome_flutter: ^11.0.0
+

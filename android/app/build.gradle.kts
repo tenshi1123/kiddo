@@ -19,11 +19,17 @@ if (keystorePropertiesFile.exists()) {
 android {
     namespace = "com.english.kiddo.kiddoEnglish.kiddo_hub"
     compileSdk = 36
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "28.0.13004108" // Updated for 16KB page size support
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 
     kotlinOptions {
@@ -36,7 +42,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

@@ -17,6 +17,17 @@ class DiemdanhRepo {
     return InfoDiemDanh.fromJson((response.data)['data']);
   }
 
+  Future<InfoTinhHinhThaiDo> getTinhHinhThaiDo(
+      String typeLearn, String id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+    dio.options.headers['Authorization'] = 'Bearer $token';
+    Response response;
+    response = await dio.post(ApiPath.thaiDo,
+        data: FormData.fromMap({'type_learn': typeLearn, 'buoi_hoc_id': id}));
+    return InfoTinhHinhThaiDo.fromJson((response.data)['data']);
+  }
+
   Future<List<ScheduleModel>> getScheduleList(
       String dayStart, String dayEnd) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

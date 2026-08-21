@@ -308,6 +308,43 @@ class LessonItem extends StatefulWidget {
 
 class _LessonItemState extends State<LessonItem> {
   bool isExpanded = false;
+  bool isLoading = false;
+  InfoTinhHinhThaiDo? infoTinhHinhThaiDo;
+
+  Future<void> fetchTinhHinhThaiDo() async {
+    if (isExpanded) {
+      setState(() => isExpanded = false);
+      return;
+    }
+    setState(() => isExpanded = true);
+
+    if (!widget.isPast) return;
+
+    if (infoTinhHinhThaiDo != null) return;
+
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      final response = await DiemdanhRepo().getTinhHinhThaiDo(
+        widget.lesson.typeLearn,
+        widget.lesson.id,
+      );
+      if (mounted) {
+        setState(() {
+          infoTinhHinhThaiDo = response;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      debugPrint('Lỗi khi tải tình hình thái độ: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -340,9 +377,7 @@ class _LessonItemState extends State<LessonItem> {
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  setState(() => isExpanded = !isExpanded);
-                },
+                onTap: fetchTinhHinhThaiDo,
                 child: AnimatedRotation(
                   turns: isExpanded ? 0.5 : 0.0,
                   duration: const Duration(milliseconds: 200),
@@ -354,10 +389,10 @@ class _LessonItemState extends State<LessonItem> {
           SizedBox(height: 6.h),
           Row(
             children: [
-              Text("Ca học:       ", style: defaultText12B),
+              Text("Ca học:       ", style: defaultText14B),
               Text(
                 '${lesson.timeStart.replaceRange(5, 8, '')} - ${lesson.timeEnd.replaceRange(5, 8, '')}  ${lesson.day}',
-                style: defaultText12M,
+                style: defaultText14M,
               ),
             ],
           ),
@@ -376,10 +411,10 @@ class _LessonItemState extends State<LessonItem> {
                 //       itemBuilder: (BuildContext context, int index) {
                 //         return Row(
                 //           children: [
-                //             Text("Giảng viên: ", style: defaultText12B),
+                //             Text("Giảng viên: ", style: defaultText14B),
                 //             Text(
                 //               lesson.giaoVien[index].fullName,
-                //               style: defaultText12M,
+                //               style: defaultText14M,
                 //             ),
                 //           ],
                 //         );
@@ -388,7 +423,7 @@ class _LessonItemState extends State<LessonItem> {
                 //SizedBox(height: 6.h),
                 Row(
                   children: [
-                    Text("Điểm danh: ", style: defaultText12B),
+                    Text("Điểm danh: ", style: defaultText14B),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
@@ -418,54 +453,70 @@ class _LessonItemState extends State<LessonItem> {
                     ],
                   ),
                 if (widget.isPast) ...[
-                  // Bắt đầu phần Thái độ (Mock data)
-                  SizedBox(height: 12.h),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Thái độ:  ", style: defaultText12B),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Tích cực, chăm chỉ, hăng hái", // Dữ liệu mẫu (nhiều tag)
-                              style: defaultText12B,
+                  if (isLoading)
+                    Padding(
+                      padding: EdgeInsets.only(top: 12.h),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else if (infoTinhHinhThaiDo != null) ...[
+                    // Bắt đầu phần Thái độ
+                    if (infoTinhHinhThaiDo!.thaiDo.content.isNotEmpty ||
+                        infoTinhHinhThaiDo!.thaiDo.type.isNotEmpty) ...[
+                      SizedBox(height: 12.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Thái độ: ", style: defaultText14B),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  infoTinhHinhThaiDo!.thaiDo.violationErrorName,
+                                  style: defaultText14B,
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  infoTinhHinhThaiDo!.thaiDo.content,
+                                  style: defaultText14M,
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 4.h),
-                            Text(
-                              "Học sinh ngoan ngoãn, chủ động giơ tay phát biểu và phối hợp rất tốt với các bạn trong nhóm.", // Dữ liệu mẫu
-                              style: defaultText12M,
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                  // Bắt đầu phần Tình hình học tập (Mock data)
-                  SizedBox(height: 12.h),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Tình hình: ", style: defaultText12B),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Tiến bộ, tiếp thu nhanh", // Dữ liệu mẫu (nhiều tag)
-                              style: defaultText14B,
+                    // Bắt đầu phần Tình hình học tập
+                    if (infoTinhHinhThaiDo!.tinhHinh.content.isNotEmpty ||
+                        infoTinhHinhThaiDo!.tinhHinh.type.isNotEmpty) ...[
+                      SizedBox(height: 12.h),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Tình hình: ", style: defaultText14B),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  infoTinhHinhThaiDo!
+                                      .tinhHinh.violationErrorName,
+                                  style: defaultText14B,
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  infoTinhHinhThaiDo!.tinhHinh.content,
+                                  style: defaultText14M,
+                                ),
+                              ],
                             ),
-                            SizedBox(height: 4.h),
-                            Text(
-                              "Đã thuộc hết từ vựng của bài, hoàn thành bài tập về nhà đầy đủ. Cần rèn thêm kỹ năng nghe.", // Dữ liệu mẫu
-                              style: defaultText14M,
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
+                  ],
                 ],
               ],
             ),

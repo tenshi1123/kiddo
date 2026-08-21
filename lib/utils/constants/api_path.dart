@@ -54,6 +54,7 @@ class ApiPath {
   static String updateTime = '$hocvienUrl/lesson/topical/video/update_time';
   //Diem danh
   static String diemDanh = '$hocvienUrl/checkin';
+  static String thaiDo = '$hocvienUrl/checkin/thai_do_tinh_hinh';
   static String detailDiemdanh = '$hocvienUrl/detail_diem_danh';
   static String notification = '$hocvienUrl/notification';
   static String chat = '$hocvienUrl/chat';

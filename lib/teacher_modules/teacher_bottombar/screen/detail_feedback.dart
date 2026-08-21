@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +8,7 @@ import 'package:kiddo/teacher_model/feed_back_model.dart';
 import 'package:kiddo/teacher_repo/teacher_class_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class DetailFeedbackScreen extends StatefulWidget {
   const DetailFeedbackScreen({
@@ -165,9 +167,22 @@ class _DetailFeedbackScreenState extends State<DetailFeedbackScreen> {
                             ),
                             SizedBox(
                               width: 200.w,
-                              child: Text(
-                                item.fullName,
-                                style: defaultText14SB,
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: item.fullName,
+                                      style: defaultText14SB,
+                                    ),
+                                    if (item.fullNameAlias.isNotEmpty)
+                                      TextSpan(
+                                        text: ' - ${item.fullNameAlias}',
+                                        style: defaultText14SB.copyWith(
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               ),
                             ),
                             const Spacer(),
@@ -259,10 +274,52 @@ class MidtermReviewDialog extends StatefulWidget {
 class _MidtermReviewDialogState extends State<MidtermReviewDialog> {
   bool isEditing = false;
   final TextEditingController _controller = TextEditingController();
+  late WebViewController _webViewController;
+
   @override
   void initState() {
     super.initState();
     _controller.text = widget.model.content;
+    _initWebView();
+  }
+
+  void _initWebView() {
+    String htmlContent = _controller.text
+        .replaceAll(RegExp(r'<p>\s*<li>'), '<ul><li>')
+        .replaceAll(RegExp(r'</li>\s*</p>'), '</li></ul>');
+
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..loadHtmlString('''
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+          <style>
+            body { 
+              font-family: -apple-system, sans-serif; 
+              padding: 0; 
+              margin: 0; 
+              font-size: 15px;
+              color: #333;
+            }
+            #editor { 
+              width: 100%; 
+              min-height: 200px;
+              outline: none; 
+            }
+            ul { padding-left: 20px; }
+          </style>
+        </head>
+        <body>
+          <div id="editor" contenteditable="true">$htmlContent</div>
+          <script>
+             document.getElementById("editor").focus();
+          </script>
+        </body>
+        </html>
+      ''');
   }
 
   @override
@@ -279,7 +336,7 @@ class _MidtermReviewDialogState extends State<MidtermReviewDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(width: 32.w), // để căn giữa tiêu đề
+                SizedBox(width: 32.w), // Để căn giữa tiêu đề
                 Text(
                   "Đánh giá giữa kỳ",
                   style: TextStyle(
@@ -296,77 +353,31 @@ class _MidtermReviewDialogState extends State<MidtermReviewDialog> {
             SizedBox(height: 12.h),
 
             // ====== NỘI DUNG ======
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(14.w),
-              decoration: BoxDecoration(
-                color: const Color(0xffF6F6F6),
-                borderRadius: BorderRadius.circular(14.r),
-              ),
-              child: Html(
-                data: _controller.text,
-              ),
-              // isEditing
-              //     ? TextField(
-              //         controller: _controller,
-              //         maxLines: 5,
-              //         style: TextStyle(fontSize: 13.sp),
-              //         decoration: const InputDecoration(
-              //           border: InputBorder.none,
-              //           isDense: true,
-              //           contentPadding: EdgeInsets.zero,
-              //         ),
-              //       )
-              //     : Text(
-              //         _controller.text,
-              //         style: TextStyle(fontSize: 13.sp),
-              //       ),
-            ),
-            SizedBox(height: 20.h),
-
-            // ====== NÚT HÀNH ĐỘNG ======
-            GestureDetector(
-              onTap: () {
-                if (isEditing) {
-                  // xử lý lưu hoặc gửi API tại đây nếu cần
-                }
-                setState(() {
-                  isEditing = !isEditing;
-                });
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                decoration: BoxDecoration(
-                  color: isEditing ? const Color(0xffF06423) : Colors.white,
-                  borderRadius: BorderRadius.circular(14.r),
-                  border: Border.all(
-                    color: isEditing
-                        ? Colors.transparent
-                        : const Color(0xffF06423),
-                    width: 1.4,
+            Flexible(
+              child: SingleChildScrollView(
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(14.w),
+                  decoration: BoxDecoration(
+                    color: const Color(0xffF6F6F6),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (!isEditing) ...[
-                      Icon(Icons.edit_outlined,
-                          color: const Color(0xffF06423), size: 20.w),
-                      SizedBox(width: 6.w),
-                    ],
-                    Text(
-                      isEditing ? "Cập nhật" : "Chỉnh sửa đánh giá",
-                      style: TextStyle(
-                        color:
-                            isEditing ? Colors.white : const Color(0xffF06423),
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14.sp,
-                      ),
-                    ),
-                  ],
+                  child: Html(
+                    data: _controller.text
+                        .replaceAll(RegExp(r'<p>\s*<li>'), '<ul><li>')
+                        .replaceAll(RegExp(r'</li>\s*</p>'), '</li></ul>'),
+                    onLinkTap: (url, attributes, element) async {
+                      if (url != null) {
+                        final Uri uri = Uri.parse(url);
+                        try {
+                          await launchUrl(uri,
+                              mode: LaunchMode.externalApplication);
+                        } catch (e) {
+                          debugPrint('Could not launch $url: $e');
+                        }
+                      }
+                    },
+                  ),
                 ),
               ),
             ),

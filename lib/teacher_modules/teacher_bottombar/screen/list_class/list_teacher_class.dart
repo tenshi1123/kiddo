@@ -248,10 +248,9 @@ class _ListTeacherClassScreenState extends State<ListTeacherClassScreen> {
         child: Center(
           child: Text(
             title,
-            style: TextStyle(
-              color: isSelected ? mainGreen : Colors.white,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
+            style: isSelected
+                ? defaultText14B.copyWith(color: mainGreen)
+                : defaultText14M.copyWith(color: Colors.white),
           ),
         ),
       ),

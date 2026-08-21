@@ -145,7 +145,7 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                               await TeacherClassRepo().getTeacherClass();
                           listCategory = await HomeRepo().getCategories();
                           if (!mounted) return;
-                          AppRouter.toPage(
+                          AppRouter.replaceAllWithPage(
                             context,
                             AppPages.BottomNavBarTeacher,
                           );

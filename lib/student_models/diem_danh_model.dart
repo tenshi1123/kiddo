@@ -41,6 +41,7 @@ class ClassModel {
 }
 
 class DetailDiemDanh {
+  final String id;
   final String nameBuoiHoc;
   final String day;
   final String timeStart;
@@ -58,6 +59,7 @@ class DetailDiemDanh {
   final List<GiaoVienModel> giaoVien;
 
   DetailDiemDanh({
+    required this.id,
     required this.nameBuoiHoc,
     required this.day,
     required this.timeStart,
@@ -77,6 +79,7 @@ class DetailDiemDanh {
 
   factory DetailDiemDanh.fromJson(Map<String, dynamic> json) {
     return DetailDiemDanh(
+      id: json['id']?.toString() ?? json['buoi_hoc_id']?.toString() ?? '',
       nameBuoiHoc: json['name_buoi_hoc'] ?? '',
       day: json['day'] ?? '',
       timeStart: json['time_start'] ?? '',
@@ -153,6 +156,59 @@ class InfoDiemDanh {
       saptoi: ((json['chua_dien_ra'] as List)
           .map((e) => DetailDiemDanh.fromJson(e))
           .toList()),
+    );
+  }
+}
+
+class InfoTinhHinhThaiDo {
+  final DetailTinhHinhThaiDo thaiDo;
+  final DetailTinhHinhThaiDo tinhHinh;
+  InfoTinhHinhThaiDo({
+    required this.thaiDo,
+    required this.tinhHinh,
+  });
+  factory InfoTinhHinhThaiDo.fromJson(Map<String, dynamic> json) {
+    return InfoTinhHinhThaiDo(
+        thaiDo: DetailTinhHinhThaiDo.fromJson(json['thai_do']),
+        tinhHinh: DetailTinhHinhThaiDo.fromJson(json['tinh_hinh']));
+  }
+}
+
+class DetailTinhHinhThaiDo {
+  final String id;
+  final String customerId;
+  final String lectureId;
+  final String buoiHocId;
+  final String settingCourseTypeId;
+  final String type;
+  final String content;
+  final String isActive;
+  final String createdAt;
+  final String violationErrorName;
+  DetailTinhHinhThaiDo({
+    required this.id,
+    required this.customerId,
+    required this.lectureId,
+    required this.buoiHocId,
+    required this.settingCourseTypeId,
+    required this.type,
+    required this.content,
+    required this.isActive,
+    required this.createdAt,
+    required this.violationErrorName,
+  });
+  factory DetailTinhHinhThaiDo.fromJson(Map<String, dynamic> json) {
+    return DetailTinhHinhThaiDo(
+      id: json['id'] ?? '',
+      customerId: json['customer_id'] ?? '',
+      lectureId: json['lecture_id'] ?? '',
+      buoiHocId: json['buoi_hoc_id'] ?? '',
+      settingCourseTypeId: json['setting_course_type_id'] ?? '',
+      type: json['type'] ?? '',
+      content: json['content'] ?? '',
+      isActive: json['is_active'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      violationErrorName: json['violation_error_name'] ?? '',
     );
   }
 }
