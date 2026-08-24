@@ -35,7 +35,7 @@ class _FeedbackUserScreenState extends State<FeedbackUserScreen> {
         isLoading = false;
       });
     } catch (e) {
-      debugPrint('LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i khi gÃƒÂ¡Ã‚Â»Ã‚Âi API: $e');
+      debugPrint('Lỗi khi gọi API: $e');
       setState(() {
         isLoading = false;
       });
@@ -51,7 +51,7 @@ class _FeedbackUserScreenState extends State<FeedbackUserScreen> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'PhÃƒÂ¡Ã‚ÂºÃ‚Â£n hÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“i',
+          'Phản hồi',
           style: defaultText16B.copyWith(color: Colors.white),
         ),
         leading: IconButton(
@@ -142,7 +142,7 @@ class _FeedbackUserScreenState extends State<FeedbackUserScreen> {
                                       color: Color(0xffF9F6F4),
                                     ),
                                     child: Text(
-                                      "ThÃƒÆ’Ã‚Âªm phÃƒÂ¡Ã‚ÂºÃ‚Â£n hÃƒÂ¡Ã‚Â»Ã¢â‚¬Å“i - gÃƒÆ’Ã‚Â³p ÃƒÆ’Ã‚Â½",
+                                      "Thêm phản hồi - góp ý",
                                       textAlign: TextAlign.center,
                                       style: defaultText14SB.copyWith(
                                         color: mainOrange,
@@ -170,7 +170,7 @@ class CustomTabs extends StatefulWidget {
 
 class _CustomTabsState extends State<CustomTabs> {
   int selectedIndex = 0;
-  final List<String> tabs = ['Feedback HV', 'GÃƒÆ’Ã‚Â³p ÃƒÆ’Ã‚Â½'];
+  final List<String> tabs = ['Feedback HV', 'Góp ý'];
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +255,7 @@ class FeedbackHocVien extends StatelessWidget {
           Row(
             children: [
               Text(
-                'NgÃƒÆ’Ã‚Â y:\n\nChÃƒÂ¡Ã‚Â»Ã‚Â§ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Â:\n',
+                'Ngày:\n\nChủ đề:\n',
                 style: defaultText14M.copyWith(
                     color: colorText.withValues(alpha: 0.8)),
               ),
@@ -269,7 +269,7 @@ class FeedbackHocVien extends StatelessWidget {
             ],
           ),
           Text(
-            'NÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢i dung:\n',
+            'Nội dung:\n',
             style: defaultText14M.copyWith(
               color: colorText.withValues(alpha: 0.8),
             ),
@@ -311,12 +311,12 @@ void showFeedbackDialog(BuildContext context) {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ====== Header mÃƒÆ’Ã‚Â u cam ======
+              // ====== Header màu cam ======
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                 decoration: BoxDecoration(
-                  color: mainOrange, // mÃƒÆ’Ã‚Â u cam
+                  color: mainOrange,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16.r),
                     topRight: Radius.circular(16.r),
@@ -326,7 +326,7 @@ void showFeedbackDialog(BuildContext context) {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'GÃƒÆ’Ã‚Â³p ÃƒÆ’Ã‚Â½ tÃƒÂ¡Ã‚Â»Ã¢â‚¬Âºi trung tÃƒÆ’Ã‚Â¢m',
+                      'Góp ý tới trung tâm',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.sp,
@@ -341,16 +341,16 @@ void showFeedbackDialog(BuildContext context) {
                 ),
               ),
 
-              // ====== NÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢i dung dialog ======
+              // ====== Nội dung dialog ======
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 child: Column(
                   children: [
-                    // ÃƒÆ’Ã¢â‚¬Â nhÃƒÂ¡Ã‚ÂºÃ‚Â­p chÃƒÂ¡Ã‚Â»Ã‚Â§ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Â
+                    // Ô nhập chủ đề
                     TextField(
                       controller: titleController,
                       decoration: InputDecoration(
-                        hintText: 'ChÃƒÂ¡Ã‚Â»Ã‚Â§ Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚Â»Ã‚Â',
+                        hintText: 'Chủ đề',
                         filled: true,
                         fillColor: const Color(0xffF7F7F7),
                         contentPadding: EdgeInsets.symmetric(
@@ -365,12 +365,12 @@ void showFeedbackDialog(BuildContext context) {
                     ),
                     SizedBox(height: 12.h),
 
-                    // ÃƒÆ’Ã¢â‚¬Â nhÃƒÂ¡Ã‚ÂºÃ‚Â­p nÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢i dung
+                    // Ô nhập nội dung
                     TextField(
                       controller: contentController,
                       maxLines: 4,
                       decoration: InputDecoration(
-                        hintText: 'NÃƒÂ¡Ã‚Â»Ã¢â€žÂ¢i dung gÃƒÆ’Ã‚Â³p ÃƒÆ’Ã‚Â½',
+                        hintText: 'Nội dung góp ý',
                         filled: true,
                         fillColor: const Color(0xffF7F7F7),
                         contentPadding: EdgeInsets.symmetric(
@@ -385,32 +385,29 @@ void showFeedbackDialog(BuildContext context) {
                     ),
                     SizedBox(height: 20.h),
 
-                    // NÃƒÆ’Ã‚Âºt LÃƒâ€ Ã‚Â°u
+                    // Nút Lưu
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
-                          print(
-                              "--- BÃƒâ€ Ã‚Â¯ÃƒÂ¡Ã‚Â»Ã…Â¡C 1: BÃƒÂ¡Ã‚ÂºÃ‚Â¯t Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â§u bÃƒÂ¡Ã‚ÂºÃ‚Â¥m nÃƒÆ’Ã‚Âºt ---");
+                          print("--- BƯỚC 1: Bắt đầu bấm nút ---");
                           try {
-                            print(
-                                "--- BÃƒâ€ Ã‚Â¯ÃƒÂ¡Ã‚Â»Ã…Â¡C 2: Ãƒâ€žÃ‚Âang gÃƒÂ¡Ã‚Â»Ã‚Âi API addGopY... ---");
+                            print("--- BƯỚC 2: Đang gọi API addGopY... ---");
                             await TeacherInfoRepo().addGopY(
                               topic: titleController.text,
                               content: contentController.text,
                             );
 
-                            // ThÃƒÆ’Ã‚Âªm 'await' ÃƒÂ¡Ã‚Â»Ã…Â¸ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â¢y. ÃƒÂ¡Ã‚Â»Ã‚Â¨ng dÃƒÂ¡Ã‚Â»Ã‚Â¥ng sÃƒÂ¡Ã‚ÂºÃ‚Â½ TÃƒÂ¡Ã‚ÂºÃ‚Â M DÃƒÂ¡Ã‚Â»Ã‚ÂªNG ÃƒÂ¡Ã‚Â»Ã…Â¸ dÃƒÆ’Ã‚Â²ng nÃƒÆ’Ã‚Â y cho Ãƒâ€žÃ¢â‚¬ËœÃƒÂ¡Ã‚ÂºÃ‚Â¿n khi Dialog bÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ Ãƒâ€žÃ¢â‚¬ËœÃƒÆ’Ã‚Â³ng
+                            // Thêm 'await' ở đây. Ứng dụng sẽ TẠM DỪNG ở dòng này cho đến khi Dialog bị đóng
                             showSuccessDialog(context, 2);
                           } catch (e) {
                             if (!context.mounted) {
                               print(
-                                  "--- LÃƒÂ¡Ã‚Â»Ã¢â‚¬â€œI: CÃƒÆ’Ã‚Â³ Exception nhÃƒâ€ Ã‚Â°ng context khÃƒÆ’Ã‚Â´ng cÃƒÆ’Ã‚Â²n mounted nÃƒÆ’Ã‚Âªn khÃƒÆ’Ã‚Â´ng thÃƒÂ¡Ã‚Â»Ã†â€™ hiÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¡n SnackBar ---");
+                                  "--- LỖI: Có Exception nhưng context không còn mounted nên không thể hiện SnackBar ---");
                               return;
                             }
 
-                            print(
-                                "--- BÃƒâ€ Ã‚Â¯ÃƒÂ¡Ã‚Â»Ã…Â¡C 6: HiÃƒÂ¡Ã‚Â»Ã†â€™n thÃƒÂ¡Ã‚Â»Ã¢â‚¬Â¹ SnackBar bÃƒÆ’Ã‚Â¡o lÃƒÂ¡Ã‚Â»Ã¢â‚¬â€i ---");
+                            print("--- BƯỚC 6: Hiện thị SnackBar báo lỗi ---");
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
@@ -428,7 +425,7 @@ void showFeedbackDialog(BuildContext context) {
                           padding: EdgeInsets.symmetric(vertical: 14.h),
                         ),
                         child: Text(
-                          'LÃƒâ€ Ã‚Â°u',
+                          'Lưu',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 15.sp,
