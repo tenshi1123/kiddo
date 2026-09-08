@@ -470,8 +470,8 @@ void showTeachingDialog(
   String? content,
   String? linkRecording,
 ) {
-  final TextEditingController contentController = TextEditingController();
-  final TextEditingController linkController = TextEditingController();
+  final TextEditingController contentController = TextEditingController(text: content);
+  final TextEditingController linkController = TextEditingController(text: linkRecording);
 
   showDialog(
     context: context,
