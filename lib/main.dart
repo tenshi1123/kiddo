@@ -11,17 +11,28 @@ import 'package:kiddo/utils/constants/api_path.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:kiddo/utils/constants/api_path_teacher.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+
 
 List<ClassModel> listClass = [];
 List<TeacherClassModel> listTeacherClass = [];
 List<CategoryModel> listCategory = [];
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // 1. Khởi tạo Firebase (Tránh crash khi FirebaseInitProvider chạy)
+  await Firebase.initializeApp();
+
+  // 2. Khởi tạo OneSignal ngay từ đầu (Tránh crash khi bấm push notification vào app)
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  OneSignal.initialize("c4d95506-f931-4d7c-9f02-793f2cbe76c2");
+  OneSignal.Notifications.requestPermission(true);
+
   await initApiConfig();
   initializeDateFormatting().then((_) => runApp(
         MultiBlocProvider(
           providers: [
-            // ⭐ THÊM DÒNG NÀY
             BlocProvider(
               create: (_) => LanguageCubit(),
             ),

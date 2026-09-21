@@ -13,6 +13,7 @@ import 'package:kiddo/modules/bottombar/screen/user_info/account_screen.dart';
 import 'package:kiddo/modules/bottombar/screen/info_learning.dart';
 import 'screen/offer_screen.dart';
 import 'screen/home_screen.dart';
+import 'package:kiddo/modules/splash/onboarding.dart';
 import 'package:kiddo/l10n/l10n.dart';
 
 class Bottombar2 extends StatefulWidget {
@@ -47,6 +48,19 @@ class _Bottombar2State extends State<Bottombar2> {
           .getCustomerProfile()
           .timeout(const Duration(seconds: 10));
       if (!mounted) return;
+
+      // Nếu không có data (id không có hoặc không hợp lệ)
+      if (response.fullName.isEmpty ||
+          response.fullName == 'Không có dữ liệu') {
+        debugPrint('[Bottombar2] ⚠️ Không có data profile → onboarding');
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const Onbonding()),
+          (route) => false,
+        );
+        return;
+      }
+
       setState(() {
         profileModel = response;
         isLoading = false;
@@ -55,11 +69,13 @@ class _Bottombar2State extends State<Bottombar2> {
     } catch (e) {
       debugPrint('[Bottombar2] ❌ fetchData lỗi: $e');
       if (!mounted) return;
-      // ✅ FIX: Dù lỗi vẫn set isLoading=false để không block UI vô hạn
-      // profileModel sẽ là null, UI phải xử lý null-safe
-      setState(() {
-        isLoading = false;
-      });
+
+      debugPrint('[Bottombar2] ➡️ Lỗi fetch data → onboarding');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const Onbonding()),
+        (route) => false,
+      );
     }
   }
 

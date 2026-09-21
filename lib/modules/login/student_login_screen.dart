@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kiddo/main.dart';
+import 'package:kiddo/modules/login/cubit/student_login_cubit.dart';
 import 'package:kiddo/modules/login/forgot_password_screen.dart';
 import 'package:kiddo/router/app_pages.dart';
 import 'package:kiddo/router/app_router.dart';
@@ -44,152 +46,170 @@ class _StudentLoginState extends State<StudentLogin> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 82.h,
-            ),
-            Row(
+    return BlocProvider(
+      create: (context) => StudentLoginCubit(
+        loginRepo: LoginRepo(),
+        homeRepo: HomeRepo(),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: BlocListener<StudentLoginCubit, StudentLoginState>(
+          listener: (context, state) {
+            if (state is StudentLoginSuccess) {
+              AppRouter.replaceAllWithPage(
+                context,
+                AppPages.BottomNavBarPage,
+              );
+            } else if (state is StudentLoginFailure) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CupertinoAlertDialog(
+                    title: const Text('Vui lòng thử lại'),
+                    content: Text(state.error),
+                    actions: <Widget>[
+                      CupertinoDialogAction(
+                        isDefaultAction: true,
+                        child: Text(
+                          'Đồng ý',
+                          style: TextStyle(fontSize: 20, color: mainBlue),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true).pop();
+                        },
+                      )
+                    ],
+                  );
+                },
+              );
+            }
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Image.asset(
-                    "assets/images/back_icon.png",
-                    width: 68.w,
-                    //height: 48.h,
-                    fit: BoxFit.fitWidth,
-                  ),
+                SizedBox(
+                  height: 82.h,
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 40.h,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Image.asset(
+                        "assets/images/back_icon.png",
+                        width: 68.w,
+                        //height: 48.h,
+                        fit: BoxFit.fitWidth,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 40.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Đăng nhập!',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.clip,
+                      style: defaultText20B.copyWith(
+                        fontSize: 24.sp,
+                      ),
+                    ),
+                    // Column(children: [
+                    //   SvgPicture.asset('assets/icons/wave_hand.svg'),
+                    //   SizedBox(
+                    //     height: 16.h,
+                    //   ),
+                    // ]),
+                  ],
+                ),
                 Text(
-                  'Đăng nhập!',
-                  textAlign: TextAlign.center,
+                  'Chào mừng đã trở lại, hãy đăng nhập',
+                  textAlign: TextAlign.right,
+                  style: defaultText14Re,
                   overflow: TextOverflow.clip,
-                  style: defaultText20B.copyWith(
-                    fontSize: 24.sp,
+                ),
+                SizedBox(
+                  height: 32.h,
+                ),
+                CustomInputField(
+                  hintText: "Số điện thoại",
+                  controller: phoneController,
+                  prefixIcon: "assets/icons/user.svg",
+                  suffixIcon: "assets/icons/clear.svg",
+                  onSuffixTap: () => phoneController.clear(),
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 12),
+                CustomInputField(
+                  hintText: "Mật khẩu",
+                  controller: passwordController,
+                  prefixIcon: "assets/icons/padlock.svg",
+                  suffixIcon: _obscurePassword
+                      ? "assets/icons/eye_off.svg"
+                      : "assets/icons/eye_on.svg",
+                  obscureText: _obscurePassword,
+                  onSuffixTap: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                ),
+                SizedBox(height: 12.h),
+                _buildRememberPassword(),
+                SizedBox(height: 16.h),
+                SizedBox(
+                  width: double.infinity,
+                  child: BlocBuilder<StudentLoginCubit, StudentLoginState>(
+                    builder: (context, state) {
+                      final isLoading = state is StudentLoginLoading;
+
+                      return ElevatedButton(
+                        onPressed: (isFilled && !isLoading)
+                            ? () {
+                                context.read<StudentLoginCubit>().login(
+                                      phoneController.text,
+                                      passwordController.text,
+                                    );
+                              }
+                            : null, // null sẽ làm disable button
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: (isFilled && !isLoading)
+                              ? mainOrange
+                              : mainOrange.withValues(alpha: 0.4),
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r)),
+                          disabledBackgroundColor:
+                              mainOrange.withValues(alpha: 0.4),
+                        ),
+                        child: isLoading
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                "Đăng nhập",
+                                style: defaultText16B.copyWith(
+                                    color: Colors.white),
+                              ),
+                      );
+                    },
                   ),
                 ),
-                // Column(children: [
-                //   SvgPicture.asset('assets/icons/wave_hand.svg'),
-                //   SizedBox(
-                //     height: 16.h,
-                //   ),
-                // ]),
               ],
             ),
-            Text(
-              'Chào mừng đã trở lại, hãy đăng nhập',
-              textAlign: TextAlign.right,
-              style: defaultText14Re,
-              overflow: TextOverflow.clip,
-            ),
-            SizedBox(
-              height: 32.h,
-            ),
-            CustomInputField(
-              hintText: "Số điện thoại",
-              controller: phoneController,
-              prefixIcon: "assets/icons/user.svg",
-              suffixIcon: "assets/icons/clear.svg",
-              onSuffixTap: () => phoneController.clear(),
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 12),
-            CustomInputField(
-              hintText: "Mật khẩu",
-              controller: passwordController,
-              prefixIcon: "assets/icons/padlock.svg",
-              suffixIcon: _obscurePassword
-                  ? "assets/icons/eye_off.svg"
-                  : "assets/icons/eye_on.svg",
-              obscureText: _obscurePassword,
-              onSuffixTap: () {
-                setState(() {
-                  _obscurePassword = !_obscurePassword;
-                });
-              },
-            ),
-            SizedBox(height: 12.h),
-            _buildRememberPassword(),
-            SizedBox(height: 16.h),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: isFilled
-                    ? () async {
-                        bool loged = await LoginRepo().login(
-                          phoneController.text,
-                          passwordController.text,
-                        );
-                        if (!mounted) return;
-                        if (loged == true) {
-                          // StudentHomeModel? infoModel =
-                          //     await CustomerRepo().getHomeInfo();
-                          listClass = await LoginRepo().getListClass();
-                          listCategory = await HomeRepo().getCategories();
-                          if (!mounted) return;
-                          AppRouter.replaceAllWithPage(
-                            context,
-                            AppPages.BottomNavBarPage,
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return CupertinoAlertDialog(
-                                title: const Text('Vui lòng thử lại'),
-                                content: const Text(
-                                    'Vui lòng kiểm tra lại mã học sinh và mật khẩu của bạn'),
-                                actions: <Widget>[
-                                  CupertinoDialogAction(
-                                    isDefaultAction: true,
-                                    child: Text(
-                                      'Đồng ý',
-                                      style: TextStyle(
-                                          fontSize: 20, color: mainBlue),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop(
-                                        (_) => false,
-                                      );
-                                    },
-                                  )
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      }
-                    : () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      isFilled ? mainOrange : mainOrange.withValues(alpha: 0.4),
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r)),
-                ),
-                child: Text(
-                  "Đăng nhập",
-                  style: defaultText16B.copyWith(color: Colors.white),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

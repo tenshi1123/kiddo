@@ -13,6 +13,7 @@ import 'package:kiddo/utils/constants/styles.dart';
 import 'package:kiddo/utils/onesignal.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:kiddo/modules/bottombar/screen/user_info/account_screen.dart';
+import 'package:kiddo/modules/splash/onboarding.dart';
 
 class BottombarTeacher extends StatefulWidget {
   final int index;
@@ -48,6 +49,19 @@ class _BottombarTeacherState extends State<BottombarTeacher> {
           .getCustomerProfile()
           .timeout(const Duration(seconds: 10));
       if (!mounted) return;
+
+      // Nếu không có data (id không có hoặc không hợp lệ)
+      if (response.fullName.isEmpty ||
+          response.fullName == 'Không có dữ liệu') {
+        debugPrint('[BottombarTeacher] ⚠️ Không có data profile → onboarding');
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const Onbonding()),
+          (route) => false,
+        );
+        return;
+      }
+
       setState(() {
         profileModel = response;
         isLoading = false;
@@ -56,10 +70,13 @@ class _BottombarTeacherState extends State<BottombarTeacher> {
     } catch (e) {
       debugPrint('[BottombarTeacher] ❌ lỗi khi gọi API: $e');
       if (!mounted) return;
-      // ✅ FIX: Dù lỗi vẫn set isLoading=false, không để UI bị treo
-      setState(() {
-        isLoading = false;
-      });
+
+      debugPrint('[BottombarTeacher] ➡️ Lỗi fetch data → onboarding');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const Onbonding()),
+        (route) => false,
+      );
     }
   }
 
