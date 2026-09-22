@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kiddo/student_models/info_class_model.dart';
@@ -9,9 +10,7 @@ import 'package:kiddo/student_repo/video_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:screen_protector/screen_protector.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:video_player/video_player.dart';
 
 class DetailVideo extends StatefulWidget {
   const DetailVideo({
@@ -34,17 +33,26 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   bool _isLandscape = false;
   StreamSubscription? _recordingSub;
 
-  late final WebViewController _controller;
   Timer? _trackingTimer;
   int _totalSecondsWatched = 0;
   int? _videoId;
+
+  // Video Player
+  late VideoPlayerController _videoPlayerController;
+  ChewieController? _chewieController;
+  bool _isVideoInitialized = false;
+
+  // Watermark
+  int _watermarkIndex = 0;
+  Timer? _watermarkTimer;
+
   @override
   void initState() {
     super.initState();
     _videoId = widget.bunnyModel.customerTrackWithVideoId;
     WidgetsBinding.instance.addObserver(this);
     _initSecurity();
-    _initWebView();
+    _initVideoPlayer();
     _startTrackingTime();
   }
 
@@ -87,174 +95,138 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     }
   }
 
-  /// 🌐 WebView setup + detect fullscreen
-  void _initWebView() {
+  /// 🌐 Native Video Player setup
+  Future<void> _initVideoPlayer() async {
+    final videoId = widget.bunnyModel.streamingUrl;
+    // Sử dụng Pull Zone gốc và Video ID
+    final directM3u8Url =
+        "https://vz-549a7ea4-e2a.b-cdn.net/$videoId/playlist.m3u8";
+
+    _videoPlayerController = VideoPlayerController.networkUrl(
+      Uri.parse(directM3u8Url),
+      httpHeaders: {
+        'Referer': 'https://lms.kiddo.edu.vn/',
+        'Origin': 'https://lms.kiddo.edu.vn',
+      },
+    );
+
+    try {
+      await _videoPlayerController.initialize();
+      
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController,
+        autoPlay: true,
+        looping: false,
+        allowFullScreen: false, // Theo logic cũ, không cho phép fullscreen
+        allowPlaybackSpeedChanging: false,
+        hideControlsTimer: const Duration(seconds: 3),
+        errorBuilder: (context, errorMessage) {
+          return Center(
+            child: Text(
+              errorMessage,
+              style: const TextStyle(color: Colors.white),
+            ),
+          );
+        },
+      );
+
+      _videoPlayerController.addListener(() {
+        final position = _videoPlayerController.value.position;
+        final duration = _videoPlayerController.value.duration;
+        
+        if (position >= duration && duration > Duration.zero) {
+          if (mounted) {
+            Navigator.pop(context, true);
+          }
+        }
+      });
+
+      if (mounted) {
+        setState(() {
+          _isVideoInitialized = true;
+        });
+      }
+
+      _startWatermarkAnimation();
+    } catch (e) {
+      print("Lỗi khi khởi tạo video: $e");
+    }
+  }
+
+  void _startWatermarkAnimation() {
+    _watermarkTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (mounted) {
+        setState(() {
+          _watermarkIndex = (_watermarkIndex + 1) % 4;
+        });
+      }
+    });
+  }
+
+  Widget _buildWatermark() {
     String watermarkText = widget.model != null
         ? "${widget.model?.fullName} - ${widget.model?.phone}"
-        : "Bản quyền thuộc về Kiido";
-    final url =
-        "https://iframe.mediadelivery.net/embed/${widget.bunnyModel.idBunny}/${widget.bunnyModel.streamingUrl}?autoplay=true&muted=false";
+        : "Bản quyền thuộc về Kiddo";
 
-    late final PlatformWebViewControllerCreationParams params;
-    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-      params = WebKitWebViewControllerCreationParams(
-        allowsInlineMediaPlayback: true, // Khóa inline cho iOS
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{}, // Bật tự động phát cho iOS
-      );
-    } else {
-      params = const PlatformWebViewControllerCreationParams();
+    double? top, bottom, left, right;
+    const double padding = 20.0;
+    const double bottomOffset = 60.0; // Tránh thanh điều khiển video
+
+    switch (_watermarkIndex) {
+      case 0:
+        top = padding;
+        left = padding;
+        break;
+      case 1:
+        top = padding;
+        right = padding;
+        break;
+      case 2:
+        bottom = bottomOffset;
+        right = padding;
+        break;
+      case 3:
+        bottom = bottomOffset;
+        left = padding;
+        break;
     }
-    _controller = WebViewController.fromPlatformCreationParams(params)
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..addJavaScriptChannel(
-        'VideoChannel',
-        onMessageReceived: (JavaScriptMessage message) {
-          if (message.message == 'video_ended') {
-            if (mounted) {
-              Navigator.pop(context, true);
-            }
-          }
-        },
-      )
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageFinished: (String url) async {
-            // CHẶN PHÓNG TO VÀ CHÈN WATERMARK DI CHUYỂN
-            await _controller.runJavaScript('''
-          // Bước A: Ẩn nút Fullscreen bằng CSS
-          var style = document.createElement('style');
-          style.innerHTML = `
-            video::-webkit-media-controls-fullscreen-button { display: none !important; }
-            video::-internal-media-controls-fullscreen-button { display: none !important; }
-            .fullscreen-button, .custom-fs-btn { display: none !important; }
-          `;
-          document.head.appendChild(style);
 
-          // Bước B: Bẻ gãy tính năng Fullscreen của Javascript API
-          Element.prototype.requestFullscreen = function() { return Promise.reject(); };
-          Element.prototype.webkitRequestFullscreen = function() { return Promise.reject(); };
-          Element.prototype.mozRequestFullScreen = function() { return Promise.reject(); };
-          Element.prototype.msRequestFullscreen = function() { return Promise.reject(); };
-          
-          // Bước C: Chèn watermark giới hạn TRONG KHUNG VIDEO
-          if (!document.getElementById("flutter-watermark")) {
-          var wm = document.createElement("div");
-          wm.id = "flutter-watermark";
-          wm.innerHTML = "$watermarkText";
-          wm.style.position = "absolute"; // Đổi thành absolute
-          wm.style.color = "rgba(255, 165, 0, 0.8)";
-          wm.style.fontSize = "14px";
-          wm.style.fontWeight = "bold";
-          wm.style.zIndex = "999999"; 
-          wm.style.pointerEvents = "none";
-          wm.style.textShadow = "1px 1px 2px rgba(0, 0, 0, 0.8)"; 
-          wm.style.transition = "all 0.3s ease"; // Cho phép mượt mà khi đổi góc
-          // Tìm thẻ chứa video (Thường BunnyCDN dùng Plyr player)
-          var videoElement = document.querySelector('video');
-          var videoContainer = videoElement ? videoElement.parentElement : document.body;
-          // Đảm bảo container chứa video có position relative để watermark neo theo
-          if (getComputedStyle(videoContainer).position === "static") {
-          videoContainer.style.position = "relative";
-          }
-          videoContainer.appendChild(wm);
-          var currentIndex = 0;
-          function updatePosition() {
-            var video = document.querySelector('video');
-            var wm = document.getElementById("flutter-watermark");
-            if (!video || !wm) return;
-
-            var rect = video.getBoundingClientRect();
-            var vw = video.videoWidth;
-            var vh = video.videoHeight;
-
-            // Đợi đến khi video tải xong metadata mới có kích thước thực
-            if (!vw || !vh) return;
-
-            var videoRatio = vw / vh;
-            var containerRatio = rect.width / rect.height;
-
-            var actualWidth = rect.width;
-            var actualHeight = rect.height;
-            var startX = rect.left;
-            var startY = rect.top;
-
-            // BƯỚC QUAN TRỌNG: Loại bỏ khoảng viền đen (Black bars)
-            if (containerRatio > videoRatio) {
-              // Viền đen ở 2 bên trái/phải (Ví dụ: Video dọc xem trên màn hình ngang)
-              actualWidth = rect.height * videoRatio;
-              startX = rect.left + (rect.width - actualWidth) / 2;
-            } else {
-              // Viền đen ở trên/dưới (Ví dụ: Video ngang xem trên màn hình đứng)
-              actualHeight = rect.width / videoRatio;
-              startY = rect.top + (rect.height - actualHeight) / 2;
-            }
-
-            var padding = 15;
-            var bottomOffset = 50; // Tránh thanh điều khiển video
-            var wmWidth = wm.offsetWidth || 150; 
-            var wmHeight = wm.offsetHeight || 20;
-
-            // Reset toàn bộ CSS vị trí
-            wm.style.top = "auto"; 
-            wm.style.bottom = "auto"; 
-            wm.style.left = "auto"; 
-            wm.style.right = "auto";
-
-            // Gắn tọa độ theo góc của VÙNG HÌNH ẢNH THỰC TẾ
-            if (currentIndex === 0) { // Góc trên trái
-              wm.style.top = (startY + padding) + "px";
-              wm.style.left = (startX + padding) + "px";
-            } else if (currentIndex === 1) { // Góc trên phải
-              wm.style.top = (startY + padding) + "px";
-              wm.style.left = (startX + actualWidth - wmWidth - padding) + "px";
-            } else if (currentIndex === 2) { // Góc dưới phải
-              wm.style.top = (startY + actualHeight - wmHeight - bottomOffset) + "px";
-              wm.style.left = (startX + actualWidth - wmWidth - padding) + "px";
-            } else if (currentIndex === 3) { // Góc dưới trái
-              wm.style.top = (startY + actualHeight - wmHeight - bottomOffset) + "px";
-              wm.style.left = (startX + padding) + "px";
-            }
-          }
-
-          updatePosition();
-
-          setInterval(function() {
-            currentIndex = (currentIndex + 1) % 4;
-            updatePosition();
-          }, 3000); 
-
-          // Sử dụng Event Capturing để bắt sự kiện ended kể cả khi video được tạo động (ended không bubble)
-          document.addEventListener('ended', function(e) {
-            if (e.target && e.target.tagName && e.target.tagName.toLowerCase() === 'video') {
-              try {
-                if (typeof VideoChannel !== 'undefined') {
-                  VideoChannel.postMessage('video_ended');
-                } else if (window.VideoChannel) {
-                  window.VideoChannel.postMessage('video_ended');
-                }
-              } catch(err) {
-                console.error(err);
-              }
-            }
-          }, true);
-        }
-        ''');
-          },
+    return AnimatedPositioned(
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOut,
+      top: top,
+      bottom: bottom,
+      left: left,
+      right: right,
+      child: IgnorePointer(
+        child: Text(
+          watermarkText,
+          style: TextStyle(
+            color: Colors.orange.withValues(alpha: 0.8),
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            shadows: [
+              Shadow(
+                color: Colors.black.withValues(alpha: 0.8),
+                blurRadius: 3,
+                offset: const Offset(1, 1),
+              ),
+            ],
+          ),
         ),
-      );
-
-    if (_controller.platform is AndroidWebViewController) {
-      (_controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false); // Bật tự động phát cho Android
-    }
-
-    _controller.loadRequest(Uri.parse(url));
+      ),
+    );
   }
 
   @override
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WidgetsBinding.instance.removeObserver(this);
+    
+    _videoPlayerController.dispose();
+    _chewieController?.dispose();
+    _watermarkTimer?.cancel();
+    
     _recordingSub?.cancel();
     ScreenProtector.preventScreenshotOff();
     _trackingTimer?.cancel();
@@ -267,6 +239,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     return Stack(
       children: [
         Scaffold(
+          backgroundColor: Colors.black, // Nền đen cho video player
           appBar: AppBar(
             backgroundColor: mainOrange,
             elevation: 0,
@@ -277,7 +250,8 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
             ),
             leading: IconButton(
               onPressed: () {
-                SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                SystemChrome.setPreferredOrientations(
+                    [DeviceOrientation.portraitUp]);
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
@@ -300,13 +274,30 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
                   }
                 },
                 icon: Icon(
-                  _isLandscape ? Icons.screen_lock_portrait : Icons.screen_rotation,
+                  _isLandscape
+                      ? Icons.screen_lock_portrait
+                      : Icons.screen_rotation,
                   color: Colors.white,
                 ),
               ),
             ],
           ),
-          body: WebViewWidget(controller: _controller),
+          body: _isVideoInitialized && _chewieController != null
+              ? Stack(
+                  children: [
+                    Center(
+                      child: Chewie(
+                        controller: _chewieController!,
+                      ),
+                    ),
+                    _buildWatermark(),
+                  ],
+                )
+              : const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.orange,
+                  ),
+                ),
         ),
         if (_isRecording) _buildBlockOverlay("Screen recording is not allowed"),
         if (_isFullscreen && Platform.isIOS)
