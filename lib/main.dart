@@ -11,7 +11,6 @@ import 'package:kiddo/utils/constants/api_path.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:kiddo/utils/constants/api_path_teacher.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 
@@ -21,8 +20,6 @@ List<CategoryModel> listCategory = [];
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // 1. Khởi tạo Firebase (Tránh crash khi FirebaseInitProvider chạy)
-  await Firebase.initializeApp();
 
   // 2. Khởi tạo OneSignal ngay từ đầu (Tránh crash khi bấm push notification vào app)
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
