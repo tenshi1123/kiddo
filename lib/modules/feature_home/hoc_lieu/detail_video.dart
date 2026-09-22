@@ -168,50 +168,49 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
         ? "${widget.model?.fullName} - ${widget.model?.phone}"
         : "Bản quyền thuộc về Kiddo";
 
-    double? top, bottom, left, right;
-    const double padding = 20.0;
-    const double bottomOffset = 60.0; // Tránh thanh điều khiển video
-
+    AlignmentGeometry alignment;
     switch (_watermarkIndex) {
       case 0:
-        top = padding;
-        left = padding;
+        alignment = Alignment.topLeft;
         break;
       case 1:
-        top = padding;
-        right = padding;
+        alignment = Alignment.topRight;
         break;
       case 2:
-        bottom = bottomOffset;
-        right = padding;
+        alignment = Alignment.bottomRight;
         break;
       case 3:
-        bottom = bottomOffset;
-        left = padding;
+      default:
+        alignment = Alignment.bottomLeft;
         break;
     }
 
-    return AnimatedPositioned(
+    return AnimatedAlign(
+      alignment: alignment,
       duration: const Duration(milliseconds: 400),
       curve: Curves.easeInOut,
-      top: top,
-      bottom: bottom,
-      left: left,
-      right: right,
-      child: IgnorePointer(
-        child: Text(
-          watermarkText,
-          style: TextStyle(
-            color: Colors.orange.withValues(alpha: 0.8),
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            shadows: [
-              Shadow(
-                color: Colors.black.withValues(alpha: 0.8),
-                blurRadius: 3,
-                offset: const Offset(1, 1),
-              ),
-            ],
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 20.0,
+          left: 20.0,
+          right: 20.0,
+          bottom: 60.0, // Tránh thanh điều khiển video
+        ),
+        child: IgnorePointer(
+          child: Text(
+            watermarkText,
+            style: TextStyle(
+              color: Colors.orange.withValues(alpha: 0.8),
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: Colors.black.withValues(alpha: 0.8),
+                  blurRadius: 3,
+                  offset: const Offset(1, 1),
+                ),
+              ],
+            ),
           ),
         ),
       ),
