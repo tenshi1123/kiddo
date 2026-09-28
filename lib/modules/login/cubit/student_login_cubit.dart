@@ -21,15 +21,15 @@ class StudentLoginCubit extends Cubit<StudentLoginState> {
 
     try {
       bool loged = await _loginRepo.login(phone, password);
-      
+
       if (loged) {
-        // Tải dữ liệu lớp và danh mục
         listClass = await _loginRepo.getListClass();
         listCategory = await _homeRepo.getCategories();
-        
+
         emit(StudentLoginSuccess());
       } else {
-        emit(StudentLoginFailure('Đăng nhập thất bại. Vui lòng kiểm tra lại mã học sinh và mật khẩu.'));
+        emit(StudentLoginFailure(
+            'Đăng nhập thất bại. Vui lòng kiểm tra lại mã học sinh và mật khẩu.'));
       }
     } catch (e) {
       emit(StudentLoginFailure('Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.'));

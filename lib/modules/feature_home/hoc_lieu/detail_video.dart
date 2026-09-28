@@ -41,6 +41,8 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   late VideoPlayerController _videoPlayerController;
   ChewieController? _chewieController;
   bool _isVideoInitialized = false;
+  bool _hasError = false;
+  String _errorMessage = "";
 
   // Watermark
   int _watermarkIndex = 0;
@@ -144,12 +146,19 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
       if (mounted) {
         setState(() {
           _isVideoInitialized = true;
+          _hasError = false;
         });
       }
 
       _startWatermarkAnimation();
     } catch (e) {
       print("Lỗi khi khởi tạo video: $e");
+      if (mounted) {
+        setState(() {
+          _hasError = true;
+          _errorMessage = "Lỗi mạng/Bảo mật:\n$e";
+        });
+      }
     }
   }
 
@@ -281,22 +290,33 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
               ),
             ],
           ),
-          body: _isVideoInitialized && _chewieController != null
-              ? Stack(
-                  children: [
-                    Center(
-                      child: Chewie(
-                        controller: _chewieController!,
-                      ),
+          body: _hasError
+              ? Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Center(
+                    child: Text(
+                      _errorMessage,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.red, fontSize: 14),
                     ),
-                    _buildWatermark(),
-                  ],
-                )
-              : const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.orange,
                   ),
-                ),
+                )
+              : (_isVideoInitialized && _chewieController != null
+                  ? Stack(
+                      children: [
+                        Center(
+                          child: Chewie(
+                            controller: _chewieController!,
+                          ),
+                        ),
+                        _buildWatermark(),
+                      ],
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.orange,
+                      ),
+                    )),
         ),
         if (_isRecording) _buildBlockOverlay("Screen recording is not allowed"),
         if (_isFullscreen && Platform.isIOS)
