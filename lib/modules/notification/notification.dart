@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kiddo/modules/notification/detail_notification.dart';
@@ -58,15 +59,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
       } else {
         data = await CustomerRepo().getListNoti();
       }
-      
+
       if (mounted) {
         setState(() {
-          notifications = data.map((noti) => NotificationModel(
-            title: noti.title,
-            message: noti.content,
-            time: noti.createdAt,
-            isRead: true,
-          )).toList();
+          notifications = data
+              .map((noti) => NotificationModel(
+                    title: noti.title,
+                    message: noti.content,
+                    time: noti.createdAt,
+                    isRead: true,
+                  ))
+              .toList();
           isLoading = false;
         });
       }
@@ -125,7 +128,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : notifications.isEmpty
-                      ? const Center(child: Text("Không có thông báo"))
+                      ? Center(
+                          child:
+                              Text(AppLocalizations.of(context).noNotification))
                       : ListView.builder(
                           itemCount: notifications.length,
                           itemBuilder: (context, index) {

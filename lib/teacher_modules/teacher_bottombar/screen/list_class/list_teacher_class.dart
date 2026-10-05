@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kiddo/l10n/l10n.dart';
@@ -565,8 +566,8 @@ class _AttendanceDetailCardState extends State<AttendanceDetailCard> {
                             showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
-                                title: const Text("Lỗi"),
-                                content: Text("Có lỗi xảy ra: $e"),
+                                title: Text(AppLocalizations.of(context).error),
+                                content: Text("${AppLocalizations.of(context).error}: $e"),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(context),

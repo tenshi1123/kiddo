@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -202,7 +203,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
             children: [
               ListTile(
                 leading: const Icon(Icons.insert_drive_file),
-                title: const Text('Chọn file'),
+                title: Text(AppLocalizations.of(context).chooseFile),
                 onTap: () {
                   Navigator.pop(context);
                   _pickFile();
@@ -210,7 +211,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo),
-                title: const Text('Chọn ảnh từ thư viện'),
+                title: Text(AppLocalizations.of(context).choosePhotoFromLibrary),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.gallery);
@@ -218,7 +219,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
               ),
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text('Chụp ảnh'),
+                title: Text(AppLocalizations.of(context).takePhoto),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.camera);
@@ -289,7 +290,7 @@ class _AddDocumentSheetState extends State<AddDocumentSheet> {
                     useRootNavigator: true,
                     builder: (_) => AlertDialog(
                       backgroundColor: Colors.white,
-                      title: const Text('Thông báo'),
+                      title: Text(AppLocalizations.of(context).notification),
                       content: Text(message),
                     ),
                   );

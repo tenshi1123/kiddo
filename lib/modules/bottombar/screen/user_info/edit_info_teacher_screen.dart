@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kiddo/teacher_model/home_teacher_model.dart';
 import 'package:kiddo/utils/constants/styles.dart';
@@ -19,7 +20,7 @@ class InfoUser extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('Thông tin tài khoản'),
+        title: Text(AppLocalizations.of(context).accountInfo),
       ),
       body: Center(
         child: Column(

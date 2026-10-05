@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -154,7 +155,7 @@ class _TeacherLoginScreenState extends State<TeacherLoginScreen> {
                             context: context,
                             builder: (BuildContext context) {
                               return CupertinoAlertDialog(
-                                title: const Text('Vui lòng thử lại'),
+                                title: Text(AppLocalizations.of(context).pleaseTryAgain),
                                 content: const Text(
                                     'Vui lòng kiểm tra lại sdt và mật khẩu của bạn'),
                                 actions: <Widget>[

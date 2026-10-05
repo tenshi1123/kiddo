@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kiddo/modules/bottombar/screen/user_info/change_pass_screen.dart';
 import 'package:kiddo/modules/bottombar/screen/user_info/edit_info_teacher_screen.dart';
@@ -181,7 +182,7 @@ Future<void> _dialogBuilder(BuildContext context) {
             style: TextButton.styleFrom(
               textStyle: Theme.of(context).textTheme.labelLarge,
             ),
-            child: const Text('Hủy'),
+            child: Text(AppLocalizations.of(context).cancel),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -190,7 +191,7 @@ Future<void> _dialogBuilder(BuildContext context) {
             style: TextButton.styleFrom(
               textStyle: Theme.of(context).textTheme.labelLarge,
             ),
-            child: const Text('Xác nhận'),
+            child: Text(AppLocalizations.of(context).confirm),
             onPressed: () async {
               // Xóa token và thông tin người dùng khỏi SharedPreferences
               // (Thay thế bằng mã của bạn để xóa token và thông tin người dùng)

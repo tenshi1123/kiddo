@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:kiddo/l10n/l10n.dart';
@@ -418,8 +419,8 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                           showDialog(
                                             context: context,
                                             builder: (_) => AlertDialog(
-                                              title: const Text("Lỗi"),
-                                              content: Text("Có lỗi xảy ra: $errorMessage"),
+                                              title: Text(AppLocalizations.of(context).error),
+                                              content: Text("${AppLocalizations.of(context).error}: $errorMessage"),
                                               actions: [
                                                 TextButton(
                                                   onPressed: () =>
@@ -526,8 +527,8 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                               showDialog(
                                                 context: context,
                                                 builder: (_) => AlertDialog(
-                                                  title: const Text("Lỗi"),
-                                                  content: Text("Có lỗi xảy ra: $errorMessage"),
+                                                  title: Text(AppLocalizations.of(context).error),
+                                                  content: Text("${AppLocalizations.of(context).error}: $errorMessage"),
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () =>
@@ -542,7 +543,7 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                               showDialog(
                                                 context: context,
                                                 builder: (_) => AlertDialog(
-                                                  title: const Text("Thành công"),
+                                                  title: Text(AppLocalizations.of(context).success),
                                                   content: const Text(
                                                       "Đã cập nhật thái độ cho học sinh."),
                                                   actions: [
@@ -645,7 +646,7 @@ class _DetailRollCallScreenState extends State<DetailRollCallScreen> {
                                                 showDialog(
                                                   context: context,
                                                   builder: (_) => AlertDialog(
-                                                    title: const Text("Lỗi"),
+                                                    title: Text(AppLocalizations.of(context).error),
                                                     content: Text(
                                                         "Có lỗi xảy ra: $e"),
                                                     actions: [

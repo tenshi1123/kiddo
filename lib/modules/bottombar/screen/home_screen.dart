@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final controller1 = PageController(viewportFraction: 1, keepPage: true);
   final controller3 = PageController(viewportFraction: 0.75, keepPage: true);
   final ValueNotifier<int> _centralBoard = ValueNotifier<int>(0);
-  String selectedCategory = 'Tất cả';
+  String selectedCategory = 'all';
   bool isLoading = true;
   List<ScheduleModel> listLichHoc = [];
   List<ChildrenModel> listChild = [];
@@ -164,7 +165,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                               //   selectedIndex = index;
                                               // });
                                             },
-                                            child: const Text('OK'),
+                                            child: Text(
+                                                AppLocalizations.of(context)
+                                                    .ok),
                                           ),
                                         ],
                                       );
@@ -331,7 +334,7 @@ class _Upcoming extends StatelessWidget {
                     ),
                   ),
                   child: (Text(
-                    '${model.createdDate.day}, tháng ${model.createdDate.month}',
+                    '${model.createdDate.day}, ${AppLocalizations.of(context).month} ${model.createdDate.month}',
                     style: defaultText14B.copyWith(
                       color: Colors.white,
                     ),
@@ -383,7 +386,7 @@ class _Upcoming extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      'Xin nghỉ',
+                      AppLocalizations.of(context).missWithPermission,
                       style: defaultText14B.copyWith(
                         color: mainRed,
                         fontWeight: FontWeight.w500,
@@ -403,7 +406,7 @@ class _Upcoming extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        'Vào lớp  ',
+                        '${AppLocalizations.of(context).enterClass}  ',
                         style: defaultText14B.copyWith(
                           color: Colors.white,
                         ),
@@ -429,18 +432,18 @@ class _Upcoming extends StatelessWidget {
   }
 }
 
-Widget dateTimeDisplayWidget() {
+Widget dateTimeDisplayWidget(BuildContext context) {
   final now = DateTime.now();
   final dateFormat = DateFormat("dd/MM/yyyy", "vi_VN");
   final timeFormat = DateFormat("hh:mm a", "vi_VN");
-  const weekdays = {
-    1: "Thứ 2",
-    2: "Thứ 3",
-    3: "Thứ 4",
-    4: "Thứ 5",
-    5: "Thứ 6",
-    6: "Thứ 7",
-    7: "Chủ nhật",
+  final weekdays = {
+    1: AppLocalizations.of(context).monday,
+    2: AppLocalizations.of(context).tuesday,
+    3: AppLocalizations.of(context).wednesday,
+    4: AppLocalizations.of(context).thursday,
+    5: AppLocalizations.of(context).friday,
+    6: AppLocalizations.of(context).saturday,
+    7: AppLocalizations.of(context).sunday,
   };
   final weekday = weekdays[now.weekday] ?? "";
   final dateString = "$weekday, ${dateFormat.format(now)}";
@@ -538,7 +541,7 @@ class _SmoothHorizontalMenuState extends State<SmoothHorizontalMenu> {
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
-          height: 90.h,
+          height: 100.h,
           width: 343.w,
           child: ListView.builder(
             controller: _scrollController,
@@ -664,7 +667,7 @@ class _Header extends StatelessWidget {
                 style: defaultText18B.copyWith(color: colorText),
               ),
             ),
-            dateTimeDisplayWidget()
+            dateTimeDisplayWidget(context)
           ],
         ),
         const Spacer(),
@@ -736,7 +739,7 @@ class _ScheduleList extends StatelessWidget {
               ),
               SizedBox(width: 10.w),
               Text(
-                'Lịch học sắp tới',
+                AppLocalizations.of(context).upcomingSchedule,
                 style: defaultText14B,
               ),
               const Spacer(),
@@ -772,7 +775,7 @@ class _ScheduleList extends StatelessWidget {
                       SvgPicture.asset('assets/icons/schedule.svg',
                           width: 14.w, height: 14.h),
                       Text(
-                        '  Xem lịch học',
+                        '  ${AppLocalizations.of(context).seeSchedule}',
                         style: defaultText12B.copyWith(color: Colors.white),
                       ),
                     ],
@@ -786,7 +789,7 @@ class _ScheduleList extends StatelessWidget {
               ? const CircularProgressIndicator()
               : listLichHoc.isEmpty
                   ? Text(
-                      'Chưa có lịch học sắp tới',
+                      AppLocalizations.of(context).noUpcomingSchedule,
                       style: defaultText14M,
                     )
                   : ClipRRect(
@@ -872,7 +875,7 @@ class _InviteBanner extends StatelessWidget {
               height: 16.h,
             ),
             Text(
-              '  Mời bạn bè, nhận quà liền tay',
+              '  ${AppLocalizations.of(context).inviteFriends}',
               style: defaultText14B.copyWith(color: Colors.white),
             ),
           ],
@@ -907,7 +910,7 @@ class _NewsSection extends StatelessWidget {
                 height: 16.h,
               ),
               Text(
-                '  Bảng tin trung tâm',
+                '  ${AppLocalizations.of(context).centerNews}',
                 style: defaultText14B,
               ),
             ],
@@ -969,7 +972,7 @@ class _NewsSection extends StatelessWidget {
                           );
                         } else if (snapshot.hasError) {
                           return Text(
-                            'Vui lòng kiểm tra lại kết nối internet',
+                            AppLocalizations.of(context).checkInternet,
                             style: defaultText14M,
                           );
                         } else if (snapshot.hasData) {
@@ -1050,7 +1053,7 @@ class _NewsSection extends StatelessWidget {
                           );
                         } else {
                           return Text(
-                            'Vui lòng kiểm tra lại kết nối internet2',
+                            AppLocalizations.of(context).checkInternet,
                             style: defaultText14M,
                           );
                         }

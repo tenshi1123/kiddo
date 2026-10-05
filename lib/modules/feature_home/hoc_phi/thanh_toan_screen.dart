@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:kiddo/l10n/l10n.dart';
 import 'package:kiddo/modules/feature_home/hoc_phi/confirm_screen.dart';
 import 'package:kiddo/modules/notification/notification.dart';
@@ -185,8 +186,9 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
         if (!granted) {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Quyền truy cập thư viện ảnh bị từ chối.')),
+            SnackBar(
+                content: Text(
+                    AppLocalizations.of(context).photoLibraryAccessDenied)),
           );
 
           if (await Permission.photos.isPermanentlyDenied) {
@@ -220,7 +222,7 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
               title: Text(
                 L10n.of(context).notification,
               ),
-              content: Text("Đã lưu ảnh mã QR vào thư viện ảnh!"),
+              content: Text(AppLocalizations.of(context).savedQrToGallery),
               actions: [
                 ElevatedButton(
                   onPressed: () {
@@ -246,7 +248,7 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               title: Text(L10n.of(context).notification),
-              content: Text("Không thể chụp ảnh widget."),
+              content: Text(AppLocalizations.of(context).cannotCaptureWidget),
               actions: [
                 ElevatedButton(
                   onPressed: () {
@@ -274,7 +276,7 @@ class _ThanhToanScreenState extends State<ThanhToanScreen> {
             title: Text(
               L10n.of(context).success,
             ),
-            content: Text("Lỗi: $e"),
+            content: Text("${AppLocalizations.of(context).error}: $e"),
             actions: [
               ElevatedButton(
                 onPressed: () {

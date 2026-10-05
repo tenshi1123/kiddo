@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -137,7 +138,7 @@ class _DetailLessonScreenState extends State<DetailLessonScreen> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : detailBuoiHocModel == null
-              ? Center(child: Text('Không thể tải dữ liệu'))
+              ? Center(child: Text(AppLocalizations.of(context).cannotLoadData))
               : Container(
                   width: double.infinity,
                   height: double.infinity,

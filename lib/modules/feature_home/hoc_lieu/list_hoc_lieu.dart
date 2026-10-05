@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 
 import 'package:kiddo/modules/feature_home/hoc_lieu/video_course.dart';
 import 'package:kiddo/modules/notification/notification.dart';
@@ -21,48 +22,48 @@ class ListDocuments extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: mainOrange,
+      appBar: AppBar(
         backgroundColor: mainOrange,
-        appBar: AppBar(
-          backgroundColor: mainOrange,
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            'Học liệu khoá học',
-            style: defaultText16B.copyWith(color: Colors.white),
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          AppLocalizations.of(context)!.courseMaterials,
+          style: defaultText16B.copyWith(color: Colors.white),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
           ),
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-            ),
-          ),
-          actions: [
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => NotificationScreen(),
-                  ),
-                );
-              },
-              child: SvgPicture.asset(
-                'assets/icons/bell.svg',
-                width: 20.w,
-                height: 20.h,
-                colorFilter: ColorFilter.mode(
-                  Colors.white,
-                  BlendMode.srcIn,
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NotificationScreen(),
                 ),
+              );
+            },
+            child: SvgPicture.asset(
+              'assets/icons/bell.svg',
+              width: 20.w,
+              height: 20.h,
+              colorFilter: ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
               ),
             ),
-            SizedBox(width: 16.w),
-          ],
-        ),
-        body: ListHocLieuBodyWidget(model: model),
+          ),
+          SizedBox(width: 16.w),
+        ],
+      ),
+      body: ListHocLieuBodyWidget(model: model),
     );
   }
 }
@@ -73,11 +74,11 @@ class ListHocLieuBodyWidget extends StatefulWidget {
   final ScrollPhysics? physics;
 
   const ListHocLieuBodyWidget({
-    Key? key,
+    super.key,
     this.model,
     this.shrinkWrap = false,
     this.physics,
-  }) : super(key: key);
+  });
 
   @override
   State<ListHocLieuBodyWidget> createState() => _ListHocLieuBodyWidgetState();
@@ -188,12 +189,13 @@ class _ListHocLieuBodyWidgetState extends State<ListHocLieuBodyWidget> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text('Thông báo'),
-                            content: const Text(
-                                'Bạn đã hết thời gian xem video.'),
+                            title:
+                                Text(AppLocalizations.of(context).notification),
+                            content:
+                                const Text('Bạn đã hết thời gian xem video.'),
                             actions: <Widget>[
                               TextButton(
-                                child: const Text('Đóng'),
+                                child: Text(AppLocalizations.of(context).close),
                                 onPressed: () {
                                   Navigator.of(context).pop(); // Đóng dialog
                                 },

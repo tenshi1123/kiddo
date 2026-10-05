@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -147,7 +148,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                     throw Exception('Could not launch ');
                   }
                 },
-                child: const Text('Mở trình duyệt')),
+                child: Text(AppLocalizations.of(context).openWeb)),
           ),
         ),
       ),

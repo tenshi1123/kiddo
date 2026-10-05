@@ -9,6 +9,9 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
+  String get courseMaterials => 'Học liệu khoá học';
+
+  @override
   String get wellcome => 'Chào mừng quay trở lại !';
 
   @override
@@ -580,4 +583,83 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get menuPolicy => 'Chính sách';
+
+  @override
+  String get chooseFile => 'Chọn file';
+
+  @override
+  String get choosePhotoFromLibrary => 'Chọn ảnh từ thư viện';
+
+  @override
+  String get takePhoto => 'Chụp ảnh';
+
+  @override
+  String get error => 'Lỗi';
+
+  @override
+  String get noNotification => 'Không có thông báo';
+
+  @override
+  String get cannotLoadData => 'Không thể tải dữ liệu';
+
+  @override
+  String get redeemSuccess => 'Đổi quà thành công';
+
+  @override
+  String get photoLibraryAccessDenied =>
+      'Quyền truy cập thư viện ảnh bị từ chối.';
+
+  @override
+  String get savedQrToGallery => 'Đã lưu ảnh mã QR vào thư viện ảnh!';
+
+  @override
+  String get cannotCaptureWidget => 'Không thể chụp ảnh widget.';
+
+  @override
+  String get noDataOrLoadFailed => 'Không có dữ liệu hoặc tải thất bại';
+
+  @override
+  String get enterClass => 'Vào lớp';
+
+  @override
+  String get upcomingSchedule => 'Lịch học sắp tới';
+
+  @override
+  String get seeSchedule => 'Xem lịch học';
+
+  @override
+  String get noUpcomingSchedule => 'Chưa có lịch học sắp tới';
+
+  @override
+  String get inviteFriends => 'Mời bạn bè, nhận quà liền tay';
+
+  @override
+  String get centerNews => 'Bảng tin trung tâm';
+
+  @override
+  String get checkInternet => 'Vui lòng kiểm tra lại kết nối internet';
+
+  @override
+  String get monday => 'Thứ 2';
+
+  @override
+  String get tuesday => 'Thứ 3';
+
+  @override
+  String get wednesday => 'Thứ 4';
+
+  @override
+  String get thursday => 'Thứ 5';
+
+  @override
+  String get friday => 'Thứ 6';
+
+  @override
+  String get saturday => 'Thứ 7';
+
+  @override
+  String get sunday => 'Chủ nhật';
+
+  @override
+  String get ok => 'OK';
 }

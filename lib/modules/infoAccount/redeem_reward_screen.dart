@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kiddo/student_models/gift_models.dart';
 import 'package:kiddo/utils/constants/color.dart';
@@ -228,8 +229,8 @@ class _RedeemRewardScreenState extends State<RedeemRewardScreen> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text('Thông báo'),
-                                      content: Text('Đổi quà thành công'),
+                                      title: Text(AppLocalizations.of(context).notification),
+                                      content: Text(AppLocalizations.of(context).redeemSuccess),
                                       actions: [
                                         TextButton(
                                           onPressed: () {

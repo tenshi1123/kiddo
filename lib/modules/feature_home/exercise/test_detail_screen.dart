@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -167,7 +168,7 @@ class _TestDetailScreenState extends State<TestDetailScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return CupertinoAlertDialog(
-                        title: const Text('Bạn có chắc chắn muốn nộp bài'),
+                        title: Text(AppLocalizations.of(context).confirmSubmit),
                         actions: <Widget>[
                           CupertinoDialogAction(
                             isDefaultAction: true,

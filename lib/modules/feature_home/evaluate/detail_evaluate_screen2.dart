@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -136,8 +137,9 @@ class _DetailEvaluateScreenState extends State<DetailEvaluateScreen> {
                         ),
                       )
                     : listLichHoc == null
-                        ? const Center(
-                            child: Text("Không có dữ liệu hoặc tải thất bại"),
+                        ? Center(
+                            child: Text(AppLocalizations.of(context)
+                                .noDataOrLoadFailed),
                           )
                         : LessonHistoryBody(
                             model: listLichHoc!,

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -45,7 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
-            title: const Text('Tin nhắn đã được gửi'),
+            title: Text(AppLocalizations.of(context).messageSended),
             actions: <Widget>[
               CupertinoDialogAction(
                 isDefaultAction: true,
@@ -317,7 +318,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               context: context,
                               builder: (BuildContext context) {
                                 return CupertinoAlertDialog(
-                                  title: const Text('Tin nhắn đã được gửi'),
+                                  title: Text(AppLocalizations.of(context).messageSended),
                                   actions: <Widget>[
                                     CupertinoDialogAction(
                                       isDefaultAction: true,
@@ -346,7 +347,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         //     context: context,
                         //     builder: (BuildContext context) {
                         //       return CupertinoAlertDialog(
-                        //         title: const Text('Tin nhắn đã được gửi'),
+                        //         title: Text(AppLocalizations.of(context).messageSended),
                         //         actions: <Widget>[
                         //           CupertinoDialogAction(
                         //             isDefaultAction: true,

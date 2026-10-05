@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kiddo/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -71,7 +72,7 @@ class LeaveRequestDialog extends StatelessWidget {
                       backgroundColor: const Color(0xFFF7F4F6),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: const Text('Hủy'),
+                    child: Text(AppLocalizations.of(context).cancel),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -114,7 +115,7 @@ class LeaveRequestDialog extends StatelessWidget {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
-                    child: const Text('Xác nhận'),
+                    child: Text(AppLocalizations.of(context).confirm),
                   ),
                 ),
               ],

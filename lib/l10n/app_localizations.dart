@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('vi')
   ];
 
+  /// No description provided for @courseMaterials.
+  ///
+  /// In vi, this message translates to:
+  /// **'Học liệu khoá học'**
+  String get courseMaterials;
+
   /// No description provided for @wellcome.
   ///
   /// In vi, this message translates to:
@@ -1237,6 +1243,162 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Chính sách'**
   String get menuPolicy;
+
+  /// No description provided for @chooseFile.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn file'**
+  String get chooseFile;
+
+  /// No description provided for @choosePhotoFromLibrary.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chọn ảnh từ thư viện'**
+  String get choosePhotoFromLibrary;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chụp ảnh'**
+  String get takePhoto;
+
+  /// No description provided for @error.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi'**
+  String get error;
+
+  /// No description provided for @noNotification.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có thông báo'**
+  String get noNotification;
+
+  /// No description provided for @cannotLoadData.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể tải dữ liệu'**
+  String get cannotLoadData;
+
+  /// No description provided for @redeemSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đổi quà thành công'**
+  String get redeemSuccess;
+
+  /// No description provided for @photoLibraryAccessDenied.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quyền truy cập thư viện ảnh bị từ chối.'**
+  String get photoLibraryAccessDenied;
+
+  /// No description provided for @savedQrToGallery.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã lưu ảnh mã QR vào thư viện ảnh!'**
+  String get savedQrToGallery;
+
+  /// No description provided for @cannotCaptureWidget.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể chụp ảnh widget.'**
+  String get cannotCaptureWidget;
+
+  /// No description provided for @noDataOrLoadFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có dữ liệu hoặc tải thất bại'**
+  String get noDataOrLoadFailed;
+
+  /// No description provided for @enterClass.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vào lớp'**
+  String get enterClass;
+
+  /// No description provided for @upcomingSchedule.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lịch học sắp tới'**
+  String get upcomingSchedule;
+
+  /// No description provided for @seeSchedule.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem lịch học'**
+  String get seeSchedule;
+
+  /// No description provided for @noUpcomingSchedule.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có lịch học sắp tới'**
+  String get noUpcomingSchedule;
+
+  /// No description provided for @inviteFriends.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mời bạn bè, nhận quà liền tay'**
+  String get inviteFriends;
+
+  /// No description provided for @centerNews.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bảng tin trung tâm'**
+  String get centerNews;
+
+  /// No description provided for @checkInternet.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng kiểm tra lại kết nối internet'**
+  String get checkInternet;
+
+  /// No description provided for @monday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thứ 2'**
+  String get monday;
+
+  /// No description provided for @tuesday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thứ 3'**
+  String get tuesday;
+
+  /// No description provided for @wednesday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thứ 4'**
+  String get wednesday;
+
+  /// No description provided for @thursday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thứ 5'**
+  String get thursday;
+
+  /// No description provided for @friday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thứ 6'**
+  String get friday;
+
+  /// No description provided for @saturday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thứ 7'**
+  String get saturday;
+
+  /// No description provided for @sunday.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chủ nhật'**
+  String get sunday;
+
+  /// No description provided for @ok.
+  ///
+  /// In vi, this message translates to:
+  /// **'OK'**
+  String get ok;
 }
 
 class _AppLocalizationsDelegate

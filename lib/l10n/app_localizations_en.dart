@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get courseMaterials => 'Course Materials';
+
+  @override
   String get wellcome => 'Wellcome back !';
 
   @override
@@ -582,4 +585,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get menuPolicy => 'Policy';
+
+  @override
+  String get chooseFile => 'Choose file';
+
+  @override
+  String get choosePhotoFromLibrary => 'Choose photo from library';
+
+  @override
+  String get takePhoto => 'Take a photo';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get noNotification => 'No notification';
+
+  @override
+  String get cannotLoadData => 'Cannot load data';
+
+  @override
+  String get redeemSuccess => 'Redeem successful';
+
+  @override
+  String get photoLibraryAccessDenied => 'Photo library access denied.';
+
+  @override
+  String get savedQrToGallery => 'QR code saved to gallery!';
+
+  @override
+  String get cannotCaptureWidget => 'Cannot capture widget.';
+
+  @override
+  String get noDataOrLoadFailed => 'No data or load failed';
+
+  @override
+  String get enterClass => 'Enter';
+
+  @override
+  String get upcomingSchedule => 'Upcoming schedule';
+
+  @override
+  String get seeSchedule => 'View schedule';
+
+  @override
+  String get noUpcomingSchedule => 'No upcoming schedule';
+
+  @override
+  String get inviteFriends => 'Invite friends, get instant rewards';
+
+  @override
+  String get centerNews => 'Center news';
+
+  @override
+  String get checkInternet => 'Please check your internet connection';
+
+  @override
+  String get monday => 'Monday';
+
+  @override
+  String get tuesday => 'Tuesday';
+
+  @override
+  String get wednesday => 'Wednesday';
+
+  @override
+  String get thursday => 'Thursday';
+
+  @override
+  String get friday => 'Friday';
+
+  @override
+  String get saturday => 'Saturday';
+
+  @override
+  String get sunday => 'Sunday';
+
+  @override
+  String get ok => 'OK';
 }
