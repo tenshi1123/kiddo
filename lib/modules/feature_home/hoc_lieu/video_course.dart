@@ -285,111 +285,93 @@ class _LessonItemState extends State<LessonItem> {
     if (index >= listLessonVideoModels.length) return;
     final e = listLessonVideoModels[index];
 
-    if (e.lessonType == '3') {
-      setState(() {
-        _isLoading = true;
-      });
-      try {
-        BunnyModel model = await VideoRepository().getBunny(
-          lessonId: e.lessonsId,
-          settingCoureTypeId: e.settingCourseTypeId,
-          lessonType: e.lessonType,
-        );
+    setState(() {
+      _isLoading = true;
+    });
 
-        if (!mounted) return;
+    try {
+      // Luôn thử gọi Bunny trước
+      BunnyModel model = await VideoRepository().getBunny(
+        lessonId: e.lessonsId,
+        settingCoureTypeId: e.settingCourseTypeId,
+        lessonType: e.lessonType,
+      );
 
-        // Tiến hành điều hướng sang màn hình mới
-        final result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailVideo(
-              bunnyModel: model,
-              model: widget.infoModel,
-              name: e.name,
-            ),
-          ),
-        );
+      if (!mounted) return;
 
-        if (result == true) {
-          if (mounted) {
-            playVideoAtIndex(index + 1);
-          }
-        }
-      } catch (error) {
-        print("Lỗi khi tải video: $error");
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
-      }
-    } else if (e.lessonType == '') {
-      setState(() {
-        _isLoading = true;
-      });
-      await Navigator.push(
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) {
-            return WebViewScreen(link: e.link, title: e.name, type: 0);
-          },
+          builder: (context) => DetailVideo(
+            bunnyModel: model,
+            model: widget.infoModel,
+            name: e.name,
+          ),
         ),
       );
+
+      if (result == true && mounted) {
+        playVideoAtIndex(index + 1);
+      }
+    } catch (bunnyError) {
+      print("Không tải được Bunny, chuyển sang link dự phòng: $bunnyError");
+      
+      // Fallback
+      if (e.lessonType == '') {
+        if (!mounted) return;
+        await Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) {
+              return WebViewScreen(link: e.link, title: e.name, type: 0);
+            },
+          ),
+        );
+      } else {
+        try {
+          String link = await VideoRepository().getLinkVideo(
+            lessonId: e.lessonsId,
+            settingCoureTypeId: e.settingCourseTypeId,
+            lessonType: e.lessonType,
+          );
+          
+          if (!mounted) return;
+
+          bool isYoutube = link.contains('youtube.com') || link.contains('youtu.be');
+
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                if (isYoutube) {
+                  return DetailYoutubeVideo(
+                    url: link,
+                    name: e.name,
+                    model: widget.infoModel,
+                  );
+                } else {
+                  return DetailWebViewVideo(
+                    url: link,
+                    name: e.name,
+                    model: widget.infoModel,
+                  );
+                }
+              },
+            ),
+          );
+
+          if (result == true && mounted) {
+            playVideoAtIndex(index + 1);
+          }
+        } catch (error) {
+          print("Lỗi khi tải video link ngoài: $error");
+        }
+      }
+    } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
-      }
-    } else {
-      setState(() {
-        _isLoading = true;
-      });
-      try {
-        String link = await VideoRepository().getLinkVideo(
-          lessonId: e.lessonsId,
-          settingCoureTypeId: e.settingCourseTypeId,
-          lessonType: e.lessonType,
-        );
-        if (!mounted) return;
-
-        bool isYoutube =
-            link.contains('youtube.com') || link.contains('youtu.be');
-
-        final result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              if (isYoutube) {
-                return DetailYoutubeVideo(
-                  url: link,
-                  name: e.name,
-                  model: widget.infoModel,
-                );
-              } else {
-                return DetailWebViewVideo(
-                  url: link,
-                  name: e.name,
-                  model: widget.infoModel,
-                );
-              }
-            },
-          ),
-        );
-
-        if (result == true) {
-          if (mounted) {
-            playVideoAtIndex(index + 1);
-          }
-        }
-      } catch (error) {
-        print("Lỗi khi tải video: $error");
-      } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
       }
     }
   }
