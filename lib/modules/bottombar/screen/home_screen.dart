@@ -517,14 +517,14 @@ class _SmoothHorizontalMenuState extends State<SmoothHorizontalMenu> {
         'screen': ListEvalueteScreen(),
       },
       {
-        "icon": 'assets/images/danh_gia.png',
-        "title": L10n.of(context).menuTuition,
-        'screen': HocPhiScreen(),
-      },
-      {
         "icon": 'assets/images/hoc_lieu.png',
         "title": L10n.of(context).menuMaterials,
         'screen': ListDocuments(model: widget.model),
+      },
+      {
+        "icon": 'assets/images/danh_gia.png',
+        "title": L10n.of(context).menuTuition,
+        'screen': HocPhiScreen(),
       },
       {
         "icon": 'assets/images/chinh_sach.png',
