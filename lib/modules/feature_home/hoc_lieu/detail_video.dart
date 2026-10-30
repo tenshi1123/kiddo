@@ -44,10 +44,6 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   bool _hasError = false;
   String _errorMessage = "";
 
-  // Watermark
-  int _watermarkIndex = 0;
-  Timer? _watermarkTimer;
-
   @override
   void initState() {
     super.initState();
@@ -115,13 +111,24 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     try {
       await _videoPlayerController.initialize();
       
+      final videoAspectRatio = _videoPlayerController.value.aspectRatio > 0
+          ? _videoPlayerController.value.aspectRatio
+          : (16 / 9);
+
       _chewieController = ChewieController(
         videoPlayerController: _videoPlayerController,
+        aspectRatio: videoAspectRatio,
         autoPlay: true,
         looping: false,
         allowFullScreen: false, // Theo logic cũ, không cho phép fullscreen
         allowPlaybackSpeedChanging: false,
         hideControlsTimer: const Duration(seconds: 3),
+        overlay: Center(
+          child: AspectRatio(
+            aspectRatio: videoAspectRatio,
+            child: VideoWatermarkOverlay(model: widget.model),
+          ),
+        ),
         errorBuilder: (context, errorMessage) {
           return Center(
             child: Text(
@@ -149,8 +156,6 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
           _hasError = false;
         });
       }
-
-      _startWatermarkAnimation();
     } catch (e) {
       print("Lỗi khi khởi tạo video: $e");
       if (mounted) {
@@ -162,70 +167,6 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     }
   }
 
-  void _startWatermarkAnimation() {
-    _watermarkTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (mounted) {
-        setState(() {
-          _watermarkIndex = (_watermarkIndex + 1) % 4;
-        });
-      }
-    });
-  }
-
-  Widget _buildWatermark() {
-    String watermarkText = widget.model != null
-        ? "${widget.model?.fullName} - ${widget.model?.phone}"
-        : "Bản quyền thuộc về Kiddo";
-
-    AlignmentGeometry alignment;
-    switch (_watermarkIndex) {
-      case 0:
-        alignment = Alignment.topLeft;
-        break;
-      case 1:
-        alignment = Alignment.topRight;
-        break;
-      case 2:
-        alignment = Alignment.bottomRight;
-        break;
-      case 3:
-      default:
-        alignment = Alignment.bottomLeft;
-        break;
-    }
-
-    return AnimatedAlign(
-      alignment: alignment,
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeInOut,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 20.0,
-          left: 20.0,
-          right: 20.0,
-          bottom: 60.0, // Tránh thanh điều khiển video
-        ),
-        child: IgnorePointer(
-          child: Text(
-            watermarkText,
-            style: TextStyle(
-              color: Colors.orange.withValues(alpha: 0.8),
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              shadows: [
-                Shadow(
-                  color: Colors.black.withValues(alpha: 0.8),
-                  blurRadius: 3,
-                  offset: const Offset(1, 1),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -233,7 +174,6 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
     
     _videoPlayerController.dispose();
     _chewieController?.dispose();
-    _watermarkTimer?.cancel();
     
     _recordingSub?.cancel();
     ScreenProtector.preventScreenshotOff();
@@ -302,15 +242,10 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
                   ),
                 )
               : (_isVideoInitialized && _chewieController != null
-                  ? Stack(
-                      children: [
-                        Center(
-                          child: Chewie(
-                            controller: _chewieController!,
-                          ),
-                        ),
-                        _buildWatermark(),
-                      ],
+                  ? Center(
+                      child: Chewie(
+                        controller: _chewieController!,
+                      ),
                     )
                   : const Center(
                       child: CircularProgressIndicator(
@@ -332,6 +267,102 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
       child: Text(
         text,
         style: const TextStyle(color: Colors.white, fontSize: 16),
+      ),
+    );
+  }
+}
+
+class VideoWatermarkOverlay extends StatefulWidget {
+  const VideoWatermarkOverlay({
+    super.key,
+    this.model,
+  });
+
+  final ProfileModel? model;
+
+  @override
+  State<VideoWatermarkOverlay> createState() => _VideoWatermarkOverlayState();
+}
+
+class _VideoWatermarkOverlayState extends State<VideoWatermarkOverlay> {
+  int _watermarkIndex = 0;
+  Timer? _watermarkTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startWatermarkAnimation();
+  }
+
+  void _startWatermarkAnimation() {
+    _watermarkTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (mounted) {
+        setState(() {
+          _watermarkIndex = (_watermarkIndex + 1) % 4;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _watermarkTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final watermarkText = widget.model != null
+        ? "${widget.model?.fullName} - ${widget.model?.phone}"
+        : "Bản quyền thuộc về Kiddo";
+
+    Alignment alignment;
+    switch (_watermarkIndex) {
+      case 0:
+        alignment = Alignment.topLeft;
+        break;
+      case 1:
+        alignment = Alignment.topRight;
+        break;
+      case 2:
+        alignment = Alignment.bottomRight;
+        break;
+      case 3:
+      default:
+        alignment = Alignment.bottomLeft;
+        break;
+    }
+
+    return SafeArea(
+      child: AnimatedAlign(
+        alignment: alignment,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 14.0,
+            left: 14.0,
+            right: 14.0,
+            bottom: 45.0, // Tránh thanh điều khiển video
+          ),
+          child: IgnorePointer(
+            child: Text(
+              watermarkText,
+              style: TextStyle(
+                color: Colors.orange.withValues(alpha: 0.8),
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withValues(alpha: 0.8),
+                    blurRadius: 3,
+                    offset: const Offset(1, 1),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

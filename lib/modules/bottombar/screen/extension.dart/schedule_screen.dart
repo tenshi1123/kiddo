@@ -57,46 +57,63 @@ class _CalenderScreenState extends State<CalenderScreen> {
     final start = DateTime(date.year, date.month, 1);
     final end = DateTime(date.year, date.month + 1, 0);
 
-    final fetchedEvents = await DiemdanhRepo().getScheduleList(
-      DateFormat('dd-MM-yyyy').format(start),
-      DateFormat('dd-MM-yyyy').format(end),
-    );
-    // CustomerRepo().getListTkb(
-    //     day1: DateFormat('dd-MM-yyyy').format(start),
-    //     day2: DateFormat('dd-MM-yyyy').format(end));
+    try {
+      final fetchedEvents = await DiemdanhRepo().getScheduleList(
+        DateFormat('dd-MM-yyyy').format(start),
+        DateFormat('dd-MM-yyyy').format(end),
+      );
 
-    if (fetchedEvents.isEmpty) return;
-    setState(() {
-      for (final e in fetchedEvents) {
-        final day = DateTime(
-            e.createdDate.year, e.createdDate.month, e.createdDate.day);
-        _events.putIfAbsent(day, () => []).add(e);
+      if (!mounted) return;
+      if (fetchedEvents.isEmpty) {
+        _loadedMonths.add(key);
+        return;
       }
-      _loadedMonths.add(key);
-      if (_selectedDay != null) {
-        _selectedEvents.value = _events[_selectedDay!] ?? [];
-      }
-    });
+
+      setState(() {
+        for (final e in fetchedEvents) {
+          final day = DateTime(
+              e.createdDate.year, e.createdDate.month, e.createdDate.day);
+          _events.putIfAbsent(day, () => []).add(e);
+        }
+        _loadedMonths.add(key);
+        if (_selectedDay != null) {
+          final dayKey = DateTime(
+              _selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
+          _selectedEvents.value = _events[dayKey] ?? [];
+        }
+      });
+    } catch (e) {
+      debugPrint('Lỗi tải lịch học tháng $key: $e');
+    }
   }
 
   Future<void> getSchedule(
       {required String dayStart, required String dayEnd}) async {
-    _listLichHoc = await DiemdanhRepo().getScheduleList(dayStart, dayEnd);
-    _selectedEvents.value = _listLichHoc;
+    try {
+      final list = await DiemdanhRepo().getScheduleList(dayStart, dayEnd);
+      if (!mounted) return;
+      _listLichHoc = list;
+      _selectedEvents.value = _listLichHoc;
+    } catch (e) {
+      debugPrint('Lỗi tải lịch học: $e');
+    }
   }
 
   List<ScheduleModel> _getEventsForDay(DateTime day) {
-    // Implementation example
+    final dayKey = DateTime(day.year, day.month, day.day);
+    if (_events.containsKey(dayKey)) {
+      return _events[dayKey] ?? [];
+    }
     getSchedule(
-        dayStart: DateFormat('yyyy-MM-dd').format(day),
-        dayEnd: DateFormat('yyyy-MM-dd').format(day));
+        dayStart: DateFormat('dd-MM-yyyy').format(day),
+        dayEnd: DateFormat('dd-MM-yyyy').format(day));
     return _listLichHoc;
   }
 
   List<ScheduleModel> _getEventsForRange(DateTime start, DateTime end) {
     getSchedule(
-      dayStart: DateFormat('yyyy-MM-dd').format(start),
-      dayEnd: DateFormat('yyyy-MM-dd').format(end),
+      dayStart: DateFormat('dd-MM-yyyy').format(start),
+      dayEnd: DateFormat('dd-MM-yyyy').format(end),
     );
     return _listLichHoc;
   }

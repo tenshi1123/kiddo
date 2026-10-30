@@ -19,7 +19,7 @@ class DetailDiemDanhScreen extends StatefulWidget {
 
 class _DetailDiemDanhScreenState extends State<DetailDiemDanhScreen> {
   bool isLoading = true;
-  late InfoDiemDanh data;
+  InfoDiemDanh? data;
   @override
   void initState() {
     super.initState();
@@ -29,13 +29,14 @@ class _DetailDiemDanhScreenState extends State<DetailDiemDanhScreen> {
   Future<void> fetchData() async {
     try {
       final response = await DiemdanhRepo().getDetailDiemDanh(widget.id);
+      if (!mounted) return;
       setState(() {
         data = response;
         isLoading = false;
       });
     } catch (e) {
-      // Xử lý lỗi nếu cần
       debugPrint('Lỗi khi gọi API: $e');
+      if (!mounted) return;
       setState(() {
         isLoading = false;
       });
@@ -87,50 +88,77 @@ class _DetailDiemDanhScreenState extends State<DetailDiemDanhScreen> {
           ],
         ),
         body: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(26.r),
-                    topRight: Radius.circular(26.r),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 12.h),
-                      padding: EdgeInsets.all(12.w),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            'assets/images/computer.png',
-                            width: 40.w,
-                            height: 40.h,
+            ? const Center(
+                child: CircularProgressIndicator(color: Colors.white))
+            : data == null
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Không thể tải dữ liệu điểm danh',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            fetchData();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: mainOrange,
                           ),
-                          SizedBox(width: 12.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: const Text('Thử lại'),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(26.r),
+                        topRight: Radius.circular(26.r),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 12.h),
+                          padding: EdgeInsets.all(12.w),
+                          child: Row(
                             children: [
-                              Text(data.name, style: defaultText16B),
-                              SizedBox(height: 4.h),
-                              Text(data.type,
-                                  style: defaultText14M.copyWith(
-                                    color: Colors.grey.shade600,
-                                  )),
+                              Image.asset(
+                                'assets/images/computer.png',
+                                width: 40.w,
+                                height: 40.h,
+                              ),
+                              SizedBox(width: 12.w),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(data!.name, style: defaultText16B),
+                                  SizedBox(height: 4.h),
+                                  Text(data!.type,
+                                      style: defaultText14M.copyWith(
+                                        color: Colors.grey.shade600,
+                                      )),
+                                ],
+                              ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                        Expanded(
+                          child: LessonHistoryBody(
+                            infoDiemDanh: data!,
+                          ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: LessonHistoryBody(
-                        infoDiemDanh: data,
-                      ),
-                    ),
-                  ],
-                ),
-              ));
+                  ));
   }
 }
 

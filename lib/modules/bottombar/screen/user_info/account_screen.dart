@@ -92,20 +92,24 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                     ),
                     Positioned(
-                        bottom: 0,
-                        left: 138.w,
-                        child: Container(
-                          padding: EdgeInsets.all(4.dg),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                          ),
+                      bottom: 0,
+                      left: 138.w,
+                      child: Container(
+                        padding: EdgeInsets.all(3.w),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: ClipOval(
                           child: AppImage(
                             url: widget.model?.avatar ?? '',
                             width: 96.w,
                             height: 96.h,
-                            fit: BoxFit.contain,
+                            fit: BoxFit.cover,
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
                   ]),
                 ),
                 SizedBox(height: 16.h),
