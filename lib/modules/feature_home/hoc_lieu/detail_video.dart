@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kiddo/student_models/info_class_model.dart';
@@ -8,9 +9,8 @@ import 'package:kiddo/student_models/profile_model.dart';
 import 'package:kiddo/student_repo/video_repo.dart';
 import 'package:kiddo/utils/constants/color.dart';
 import 'package:kiddo/utils/constants/styles.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
 import 'package:screen_protector/screen_protector.dart';
+import 'package:video_player/video_player.dart';
 
 class DetailVideo extends StatefulWidget {
   const DetailVideo({
@@ -23,7 +23,6 @@ class DetailVideo extends StatefulWidget {
   final ProfileModel? model;
   final BunnyModel bunnyModel;
   final String name;
-
   @override
   State<DetailVideo> createState() => _DetailVideoState();
 }
@@ -38,12 +37,9 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   int _totalSecondsWatched = 0;
   int? _videoId;
 
-  // MediaKit Video Player
-  late final Player _player;
-  late final VideoController _videoController;
-  StreamSubscription? _completedSub;
-  StreamSubscription? _errorSub;
-
+  // Video Player
+  late VideoPlayerController _videoPlayerController;
+  ChewieController? _chewieController;
   bool _isVideoInitialized = false;
   bool _hasError = false;
   String _errorMessage = "";
@@ -72,7 +68,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
         time: totalTime,
       );
     } catch (e) {
-      debugPrint('Lỗi khi gửi API tracking: $e');
+      print('Lỗi khi gửi API tracking: $e');
     }
   }
 
@@ -85,58 +81,74 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
       await ScreenProtector.protectDataLeakageWithBlur();
 
       bool isRecording = await ScreenProtector.isRecording();
-      if (mounted) setState(() => _isRecording = isRecording);
+      setState(() => _isRecording = isRecording);
 
       _recordingSub =
           Stream.periodic(const Duration(seconds: 1)).listen((_) async {
         bool recording = await ScreenProtector.isRecording();
-        if (recording != _isRecording && mounted) {
+        if (recording != _isRecording) {
           setState(() => _isRecording = recording);
         }
       });
     }
   }
 
-  /// 🌐 Native MediaKit Video Player setup
+  /// 🌐 Native Video Player setup
   Future<void> _initVideoPlayer() async {
     final videoId = widget.bunnyModel.streamingUrl;
     // Sử dụng Pull Zone gốc và Video ID
     final directM3u8Url =
         "https://vz-549a7ea4-e2a.b-cdn.net/$videoId/playlist.m3u8";
 
-    _player = Player();
-    _videoController = VideoController(_player);
+    _videoPlayerController = VideoPlayerController.networkUrl(
+      Uri.parse(directM3u8Url),
+      httpHeaders: {
+        'Referer': 'https://lms.kiddo.edu.vn/',
+        'Origin': 'https://lms.kiddo.edu.vn',
+      },
+    );
 
     try {
-      // Lắng nghe lỗi phát video
-      _errorSub = _player.stream.error.listen((error) {
-        debugPrint("MediaKit error: $error");
-        if (mounted) {
-          setState(() {
-            _hasError = true;
-            _errorMessage = "Lỗi phát video:\n$error";
-          });
-        }
-      });
+      await _videoPlayerController.initialize();
+      
+      final videoAspectRatio = _videoPlayerController.value.aspectRatio > 0
+          ? _videoPlayerController.value.aspectRatio
+          : (16 / 9);
 
-      // Lắng nghe khi video kết thúc để tự động pop
-      _completedSub = _player.stream.completed.listen((completed) {
-        if (completed && mounted) {
-          Navigator.pop(context, true);
-        }
-      });
-
-      // Mở luồng HLS với header Referer và Origin cho BunnyCDN
-      await _player.open(
-        Media(
-          directM3u8Url,
-          httpHeaders: {
-            'Referer': 'https://lms.kiddo.edu.vn/',
-            'Origin': 'https://lms.kiddo.edu.vn',
-          },
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController,
+        aspectRatio: videoAspectRatio,
+        autoPlay: true,
+        looping: false,
+        allowFullScreen: false, // Theo logic cũ, không cho phép fullscreen
+        allowPlaybackSpeedChanging: false,
+        hideControlsTimer: const Duration(seconds: 3),
+        overlay: Center(
+          child: AspectRatio(
+            aspectRatio: videoAspectRatio,
+            child: VideoWatermarkOverlay(model: widget.model),
+          ),
         ),
-        play: true,
+        errorBuilder: (context, errorMessage) {
+          return Center(
+            child: Text(
+              errorMessage,
+              style: const TextStyle(color: Colors.white),
+            ),
+          );
+        },
       );
+
+      _videoPlayerController.addListener(() {
+        final position = _videoPlayerController.value.position;
+        final duration = _videoPlayerController.value.duration;
+        
+        if (position >= duration && duration > Duration.zero) {
+          if (mounted) {
+            Navigator.pop(context, true);
+          }
+        }
+      });
 
       if (mounted) {
         setState(() {
@@ -145,7 +157,7 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
         });
       }
     } catch (e) {
-      debugPrint("Lỗi khi khởi tạo video: $e");
+      print("Lỗi khi khởi tạo video: $e");
       if (mounted) {
         setState(() {
           _hasError = true;
@@ -159,11 +171,10 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     WidgetsBinding.instance.removeObserver(this);
-
-    _completedSub?.cancel();
-    _errorSub?.cancel();
-    _player.dispose();
-
+    
+    _videoPlayerController.dispose();
+    _chewieController?.dispose();
+    
     _recordingSub?.cancel();
     ScreenProtector.preventScreenshotOff();
     _trackingTimer?.cancel();
@@ -230,40 +241,10 @@ class _DetailVideoState extends State<DetailVideo> with WidgetsBindingObserver {
                     ),
                   ),
                 )
-              : (_isVideoInitialized
+              : (_isVideoInitialized && _chewieController != null
                   ? Center(
-                      child: AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            MaterialVideoControlsTheme(
-                              normal: const MaterialVideoControlsThemeData(
-                                automaticallyImplySkipNextButton: false,
-                                automaticallyImplySkipPreviousButton: false,
-                                displaySeekBar: true,
-                                speedUpOnLongPress: false,
-                              ),
-                              fullscreen: const MaterialVideoControlsThemeData(
-                                automaticallyImplySkipNextButton: false,
-                                automaticallyImplySkipPreviousButton: false,
-                                displaySeekBar: true,
-                                speedUpOnLongPress: false,
-                              ),
-                              child: Video(
-                                controller: _videoController,
-                                controls: MaterialVideoControls,
-                              ),
-                            ),
-                            Positioned.fill(
-                              child: IgnorePointer(
-                                child: VideoWatermarkOverlay(
-                                  model: widget.model,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      child: Chewie(
+                        controller: _chewieController!,
                       ),
                     )
                   : const Center(

@@ -11,7 +11,6 @@ import 'package:kiddo/utils/constants/api_path.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:kiddo/utils/constants/api_path_teacher.dart';
-import 'package:media_kit/media_kit.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 
@@ -20,7 +19,6 @@ List<TeacherClassModel> listTeacherClass = [];
 List<CategoryModel> listCategory = [];
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  MediaKit.ensureInitialized();
   
 
   // 2. Khởi tạo OneSignal ngay từ đầu (Tránh crash khi bấm push notification vào app)
